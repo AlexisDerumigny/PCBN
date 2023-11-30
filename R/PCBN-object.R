@@ -29,6 +29,7 @@
 #'   DAG, order_hash,
 #'   copula_mat = list(tau = tau, fam = fam))
 #'
+#' @export
 #'
 new_PCBN <- function(DAG, order_hash, copula_mat){
   PCBN = list(DAG = DAG,

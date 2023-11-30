@@ -40,5 +40,4 @@ my_PCBN = new_PCBN(
   DAG, order_hash,
   copula_mat = list(tau = tau, fam = fam))
 
-
 }
