@@ -1,11 +1,11 @@
 #' Remove all possible elements form conditioning set
-#' 
+#'
 #' @param DAG Directed Acyclic Graph
 #' @param node node
 #' @param cond_set vector of nodes in conditioning set
-#' 
+#'
 #' @returns a vector containing the nodes not removable from the conditioning set
-#' 
+#'
 remove_CondInd <- function(DAG, node, cond_set){
   new_cond_set = cond_set
   for (i in cond_set){
@@ -45,11 +45,11 @@ create_DAG <- function(N_nodes){
 
 
 #' Checks if graph has interfering v-structures
-#' 
+#'
 #' @param DAG Directed Acyclic Graph
-#' 
-#' @Returns TRUE if graph contains interfering vs and FALSE if not
-#' 
+#'
+#' @returns TRUE if graph contains interfering vs and FALSE if not
+#'
 interfering_vstrucs_check <- function(DAG){
   return(find_B_sets(DAG)$interfering_vstrucs)
 }
@@ -57,25 +57,25 @@ interfering_vstrucs_check <- function(DAG){
 #' loops over the nodes of the graph, finding all B-sets for each node
 #'
 #' @param DAG A bnlearn graph object
-#' 
+#'
 #' @returns A list of B-sets for each node, a boolean specifying if the graph contains interfering v-structures
 #' or not, and a list containing nodes forming the interfering v-structures.
-#' 
+#'
 find_B_sets <- function(DAG) {
   interfering_vstrucs = FALSE
   nodes_with_inter_vs = list()
   node.names = bnlearn::nodes(DAG)
   adj.mat = bnlearn::amat(DAG)
   B_set_list = list()
-  
+
   for (v in node.names) {
     parents = DAG$nodes[[v]]$parent
     if (length(parents) > 0) {
       children = DAG$nodes[[v]]$children
-      
+
       # Initialize with {pa(v)}
       B_set = sets::set(sets::as.set(parents))
-      
+
       for (w in children) {
         # B = pa(v) intersect pa(w) =/= empty
         B = sets::as.set(parents) & sets::as.set(DAG$nodes[[w]]$parent)
@@ -83,16 +83,16 @@ find_B_sets <- function(DAG) {
           B_set = append(B_set, sets::set(B))
         }
       }
-      
+
       # Turn set into ordered list
       B_set = as.list(B_set)
       for (i in 1:(length(B_set))) {
         B_set[[i]] = unlist(B_set[[i]])
-        
+
       }
       B_set[order(sapply(B_set, length), decreasing = FALSE)]
       B_set_list[[v]] = B_set
-      
+
       if (!increasing_B_set_check(B_set)) {
         interfering_vstrucs = TRUE
         nodes_with_inter_vs = append(nodes_with_inter_vs, v)
@@ -109,9 +109,9 @@ find_B_sets <- function(DAG) {
 }
 
 #' Checks if the B-sets for a particular node form an increasing sequence.
-#' 
+#'
 #' @param B_set list containig nodes in a B-set.
-#' 
+#'
 #' @returns TRUE if the list forms an ordered sequence, FALSE if not.
 increasing_B_set_check <- function(B_set){
   increasing = TRUE
@@ -130,9 +130,9 @@ increasing_B_set_check <- function(B_set){
 
 
 #' Checks if a graph contains active cycles
-#' 
+#'
 #' @param DAG Directed Acyclic Graph
-#' 
+#'
 #' @returns a list containing a boolean specifying if DAG contains active cycles,
 #' number of active cycles, and list of the active cycles.
 active_cycle_check <- function(DAG){
@@ -140,7 +140,7 @@ active_cycle_check <- function(DAG){
   adj.mat = bnlearn::amat(DAG)
   active_cycles = FALSE
   active_cycle_list = list()
-  
+
   for (v in node.names){
     parents = DAG$nodes[[v]]$parent
     children = DAG$nodes[[v]]$children
@@ -153,9 +153,9 @@ active_cycle_check <- function(DAG){
             if (adj.mat[w,z]==0 & adj.mat[z,w]==0){
               # Parents in an active cycle are joined by a trail with no chords with no converging connection
               # consisting of nodes not adjacent to v (the undirected cycle has no chords)
-              
+
               # This means that no node in pa(v) or ch(v) can be on the trail
-              
+
               # 1: Turn DAG into undirected graph
               DAG_igraph = igraph::as.undirected(bnlearn::as.igraph(DAG))
               # 2: Remove all nodes in pa(v)\{w,z}, ch(v) and v
@@ -184,20 +184,20 @@ active_cycle_check <- function(DAG){
 }
 
 #' Checks a path for converging connections and chords.
-#' 
+#'
 #' @param DAG Directed Acyclic Graph.
 #' @param path list of nodes in DAG forming a trail.
-#' 
+#'
 #' @returns TRUE if the path contains no converging connections and chords.
-#' 
+#'
 path_check <- function(DAG, path){
   node.names = bnlearn::nodes(DAG)
   adj.mat = bnlearn::amat(DAG)
   no_chords_vstrucs = TRUE
-  
+
   path.nodes = names(unlist(path))
   N = length(path.nodes)
-  
+
   for (i in 1:N){
     # Check vstrucs
     if (i > 1 & i < N-1){
@@ -205,7 +205,7 @@ path_check <- function(DAG, path){
         no_chords_vstrucs = FALSE
       }
     }
-    
+
     # Check chords
     if(i < length(path.nodes)-1){
       for(j in (i+2):N){ # Ensures that we don't check arcs twice
@@ -221,14 +221,14 @@ path_check <- function(DAG, path){
 
 
 #' Turns a general graph into a restricted graph.
-#' 
+#'
 #' @param DAG Directed Acyclic Graph.
-#' 
+#'
 #' @returns Restricted DAG.
 #'
 DAG_to_restricted <- function(DAG) {
   DAG_copy = DAG
-  
+
   # Remove active cycles
   res = active_cycle_check(DAG)
   if (res$active_cycles) {
@@ -243,7 +243,7 @@ DAG_to_restricted <- function(DAG) {
       }
     }
   }
-  
+
   # Remove interfering v-structures
   res = find_B_sets(DAG)
   if (res$interfering_vstrucs) {
@@ -259,7 +259,7 @@ DAG_to_restricted <- function(DAG) {
             for (parent in B_sets[[j]]){
               bqs = intersect(DAG$nodes[[parent]]$children, bqs)
             }
-            
+
             # Point arcs from each node in B_sets[[i]] to bqs
             for (a in B_sets[[i]]){
               for (b in bqs){
@@ -271,6 +271,6 @@ DAG_to_restricted <- function(DAG) {
       }
     }
   }
-  
+
   return(DAG_copy)
 }
