@@ -32,7 +32,7 @@ create_margin_tag <- function(DAG, order_hash, v, cond_set){
   nodev = paste_margin(v, cond_set_minus_w)
 
   g = g + igraph::vertices(top_node, nodew, nodev)
-  g = g %>% igraph::add_edges(c(top_node, nodew, top_node, nodev))
+  g = g |> igraph::add_edges(c(top_node, nodew, top_node, nodev))
 
   tree_size = length(cond_set_minus_w)
   if (tree_size>0){
@@ -117,15 +117,15 @@ tree_to_string <- function(g, top_node){
 ###################################################
 
 #' Hill climbing algorithm for restricted PCBNs
-#' 
+#'
 #' @param data data frame
 #' @param start starting Directed Acyclic Graph
-#' 
+#'
 #' @returns DAG which locally maximizes BIC based score function
 hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE){
   assign("copula_hash", r2r::hashmap(), envir = .GlobalEnv)
   assign("margin_hash", r2r::hashmap(), envir = .GlobalEnv)
-  
+
   nodes = names(data)
   n.nodes = length(nodes)
   adj.mat = bnlearn::amat(start)
@@ -153,7 +153,7 @@ hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE){
     allowed.operations = allowed.operations.general(DAG)
     # Compute data frame with the score delta of each operation
     df = operation_score_deltas(data, DAG, familyset, reference, allowed.operations)
-    
+
     ## Select best operation based on column order
     bestop = df[which.max(df$score.delta),]
 
@@ -169,7 +169,7 @@ hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE){
         cat("*best operation:\n")
         print(bestop)
       }
-      
+
       # There is a function for this below
       if (bestop$operation == 'set'){
         DAG = bnlearn::set.arc(DAG, bestop$from, bestop$to)
@@ -195,7 +195,7 @@ operation_score_deltas = function(data, DAG, familyset, reference, allowed.opera
   nodes = names(data)
   n.nodes = length(nodes)
   adj.mat = bnlearn::amat(DAG)
-  
+
   # Create dataframe to store all operations
   df <- data.frame(matrix(ncol = 5, nrow = 0))
   colnames(df) <- c("from", "to", "operation", "score.delta", "improve")
@@ -204,7 +204,7 @@ operation_score_deltas = function(data, DAG, familyset, reference, allowed.opera
   for (i in 1:nrow(allowed.operations)){
     op = allowed.operations[i,]
     DAG_new = apply.operation(DAG, op)
-    
+
     # Fit all possible orders
     fitted = fit_all_orders(data, DAG_new, familyset, reuse_hash = TRUE)
     score.delta = fitted$best_fit$metrics$BIC - reference
@@ -236,7 +236,7 @@ allowed.operations.general <- function(DAG){
   nodes = bnlearn::nodes(DAG)
   n.nodes = length(nodes)
   adj.mat = bnlearn::amat(DAG)
-  
+
   # Create data frame to store all operations
   df <- data.frame(matrix(ncol = 5, nrow = 0))
   colnames(df) <- c("from", "to", "operation")
@@ -695,9 +695,9 @@ check_correct_order <- function(PCBN1, PCBN2) {
   order2 = PCBN2$order_hash
   DAG1 = PCBN1$DAG
   DAG2 = PCBN2$DAG
-  
+
   # TODO: Graphs should have distance equal to 0
-  
+
   # For now assume they do
   node.names = bnlearn::nodes(DAG1)
   # Loop over all v-structures
@@ -720,8 +720,8 @@ plot_active_cycles = function(DAG, active_cycle_list){
     stop("No active cycles")
     break
   }
-  
-  
+
+
   no_list = c("N", "n", "No", "NO")
   adj.mat = bnlearn::amat(DAG)
   L = length(active_cycle_list)
@@ -732,22 +732,22 @@ plot_active_cycles = function(DAG, active_cycle_list){
         break
       }
     }
-    
+
     cat("Plotting active cycle ", i, "of", L, "\n")
     active_cycle = active_cycle_list[[i]]
-    
+
     # Graphviz requires a dataframe of the arcs to highlight them
     # So, vector active_cycle -> dataframe of arcs along this active cycle df
     df <- data.frame(matrix(ncol = 2, nrow = 0))
     for (j in 1:(length(active_cycle))){
       node1 = active_cycle[j]
-      
+
       if (j<length(active_cycle)){
         node2 = active_cycle[j+1]
       } else{
         node2 = active_cycle[1]
       }
-      
+
       if (adj.mat[node1,node2]==1){ # node1 -> node2
         df = rbind(df, data.frame(list(from=node1, to=node2)))
       }
