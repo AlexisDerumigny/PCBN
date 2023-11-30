@@ -1,27 +1,12 @@
-# Initializes PCBN class
-new_PCBN <- function(PCBN = list()){
-  structure(PCBN, class = "PCBN")
-}
-
-# Plot function
-plot.PCBN <- function(object){
-  plot(object$DAG)
-}
-
-# Print function
-print.PCBN <- function(object){
-  object$copula_mat
-}
-
 #' D-separation of two nodes given a set in a DAG
-#' 
+#'
 #' @param DAG Directed Acyclic Graph
-#' @param X node 
+#' @param X node
 #' @param Y node
 #' @param Z set
-#' 
+#'
 #' @return TRUE if the sets are d-separated and FALSE if not
-#' 
+#'
 dsep_set <- function(DAG, X, Y, Z=c()){
   dseparated = TRUE
   for (x in X){
@@ -73,9 +58,9 @@ mat_to_order_hash <- function(DAG, order_mat) {
 }
 
 #' Makes a copy of a hashmap
-#' 
+#'
 #' @param hash hashmap
-#' 
+#'
 #' @returns hashmap
 copy_hash <- function(hash) {
   new = r2r::hashmap()
@@ -88,10 +73,10 @@ copy_hash <- function(hash) {
 }
 
 #' Take symmetric difference of two vectors
-#' 
+#'
 #' @param a Vector 1
 #' @param b Vector 2
-#' 
+#'
 #' @returns Symmetric difference of a and b
 sym_diff <- function(a,b) setdiff(union(a,b), intersect(a,b))
 
