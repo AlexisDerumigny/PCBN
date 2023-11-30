@@ -1,13 +1,22 @@
 Package: PCBN
-Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Title: Create and sample pair-copula Bayesian networks not requiring integration
+Version: 0.0.1.0
+Authors@R: 
+    person("Niels", "Horsman", , "niels.horsman@hotmail.nl", role = c("aut", "cre"))
+Description: Is able to create and sample pair-copula Bayesian networks not requiring integration.
+    That is, it uses graphs with no active cycles or interfering v-structures.
+    Furthermore, it can fit a PCBN to a data set using a hill climbing alogrithm.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Imports: Rcpp (>= 1.0.11)
+Imports: 
+    Rcpp (>= 1.0.11),
+    bnlearn,
+    hash,
+    igraph,
+    r2r,
+    sets,
+    sloop,
+    VineCopula
+
 LinkingTo: Rcpp

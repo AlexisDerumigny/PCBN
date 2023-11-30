@@ -1,0 +1,219 @@
+#' Finds all possible copula assignments given a DAG
+#' 
+#' @param DAG Directed Acyclic Graph
+#' 
+#' @returns a list of hashmaps containing the possible orders
+find_all_orders <- function(DAG) {
+  # Start with empty order
+  order_hash = r2r::hashmap()
+  all_orders = list(order_hash)
+  
+  well_ordering = bnlearn::node.ordering(DAG)
+  # Add all possible orders for node v to each order_hash
+  for (node in well_ordering) {
+    all_orders = extend_orders(DAG, all_orders, node)
+  }
+  return(all_orders)
+}
+
+#' Fills in all possible orders for the next node for each possible order
+#' 
+#' @param DAG Directed Acyclic Graph
+#' @param all_orders list of orders
+#' @param node node
+#' 
+#' @returns list of order hashmaps
+#' 
+extend_orders <- function(DAG, all_orders, node) {
+  extended = list()
+  # For each order hashmap we add all possible orders for v
+  for (order in all_orders) {
+    copy_order = copy_hash(order)
+    # If node has no parents do add NULL
+    if (length(DAG$nodes[[node]]$parents) == 0) {
+      copy_order[[node]] = NULL
+      extended[[length(extended) + 1]] = copy_order
+    } else{
+      # Else add all possible orders for v to the list
+      orders_node = find_all_orders_v(DAG, node, order)
+      for (node_order in orders_node) {
+        copy_order = copy_hash(order)
+        copy_order[[node]] = node_order
+        extended[[length(extended) + 1]] = copy_order
+      }
+    }
+  }
+  return(extended)
+}
+
+#' Finds all possible orders of node v given previous copula assignments
+#' 
+#' @param DAG Directed Acyclic Graph
+#' @param v node
+#' @param order_hash hashmap of orders
+#' 
+#' @returns list of vectors containing all possible orders for v
+#' 
+find_all_orders_v <- function(DAG, v, order_hash) {
+  parents = DAG$nodes[[v]]$parents
+  B_sets = PCBN:::find_B_sets(DAG)$B_sets
+  B_sets_v = B_sets[[v]]
+  
+  # Order_list contains the partial orders (starting with empty)
+  order_list = list(NULL)
+  for (i in 1:length(parents)) {
+    new_order_list = list()
+    for (order in order_list) {
+      B_minus_O = PCBN:::find_B_minus_O(B_sets_v, order)
+      # Each possible candidate results in a different order
+      for (w in possible_candidates(DAG, v, order, order_hash, B_minus_O)) {
+        new_order = append(order, w)
+        new_order_list[[length(new_order_list) + 1]] = new_order
+      }
+    }
+    order_list = new_order_list
+  }
+  return(order_list)
+}
+
+#' Finds the smallest B-set of v larger than the current partial order
+#' 
+#' @param B_sets list of B-sets for a particular node
+#' @param partial_order order list of parents for particular node
+#' 
+#' @returns Smallest B-set strictly larger than the partial order
+#' 
+find_B_minus_O <- function(B_sets, partial_order){
+  for (q in 1:length(B_sets)){
+    if (sets::as.set(partial_order)<sets::as.set(B_sets[[q]])){
+      return(setdiff(B_sets[[q]], partial_order))
+    }
+  }
+}
+
+#' Gives possible candidates to be added to a partial order
+#' 
+#' @param DAG Directed Acyclic Graph.
+#' @param v node in DAG
+#' @param order_v partial order for node v.
+#' @param order_hash hashmap of parental orders
+#' @param B_minus_O B-set setminus partial order
+#' 
+#' @returns vector of possible candidates
+#' 
+possible_candidates <- function(DAG, v, order_v, order_hash, B_minus_O){
+  Poss.Cand = c()
+  
+  for (w in B_minus_O){
+    # Independence
+    if (dsep_set(DAG, w, order_v)){
+      Poss.Cand = append(Poss.Cand, w)
+    } else if (incoming_arc(DAG, w, v, order_v, order_hash)){
+      Poss.Cand = append(Poss.Cand, w)
+    } else if (outgoing_arc(DAG, w, v, order_v, order_hash)){
+      Poss.Cand = append(Poss.Cand, w)
+    }
+  }
+  return(Poss.Cand)
+}
+
+
+#' Checks if w can be added by an incoming arc
+#' 
+#' @param DAG Directed Acyclic Graph.
+#' @param w node in DAG
+#' @param v node in DAG
+#' @param order_v partial order for node v
+#' @param order_hash hashmap of parental orders
+#' 
+#' @returns TRUE if w is a possible candidate, FALSE if not
+#' 
+incoming_arc <- function(DAG, w, v, order_v, order_hash){
+  adj.mat = bnlearn::amat(DAG)
+  
+  for (o in order_v){
+    if (adj.mat[w,o]==1){
+      order_o = order_hash[[o]]
+      if ((which(order_o == w)-1)>0){
+        pa_o_up_to_w = order_o[1:which(order_o == w)-1]
+      } else{
+        pa_o_up_to_w = c()
+      }
+      
+      if (length(setdiff(order_v, union(o, pa_o_up_to_w)))==0){
+        return(TRUE)
+      } else if (sets::as.set(pa_o_up_to_w) < sets::as.set(order_o)){
+        if (dsep_set(DAG, w, setdiff(order_v, union(o, pa_o_up_to_w)), union(o, pa_o_up_to_w))){
+          return(TRUE)
+        }
+      }
+    }
+  }
+  return(FALSE)
+}
+
+#' Checks if w can be added by an outgoing arc
+#' 
+#' @param DAG Directed Acyclic Graph.
+#' @param w node in DAG
+#' @param v node in DAG
+#' @param order_v partial order for node v
+#' @param order_hash hashmap of parental orders
+#' 
+#' @returns TRUE if w is a possible candidate, FALSE if not
+#' 
+outgoing_arc <- function(DAG, w, v, order_v, order_hash){
+  adj.mat = bnlearn::amat(DAG)
+  
+  for (o in order_v){
+    if (adj.mat[o,w]==1){
+      order_w = order_hash[[w]]
+      if ((which(order_w == o)-1)>0){
+        pa_w_up_to_o = order_w[1:which(order_w == o)-1]
+      } else{
+        pa_w_up_to_o = c()
+      }
+      
+      if (length(setdiff(order_v, union(o, pa_w_up_to_o)))==0){
+        return(TRUE)
+      } else if (sets::as.set(pa_w_up_to_o) < sets::as.set(order_w)){
+        if (dsep_set(DAG, w,setdiff(order_v, union(o, pa_w_up_to_o)), union(o, pa_w_up_to_o))){
+          return(TRUE)
+        }
+      }
+    }
+  }
+  return(FALSE)
+}
+
+
+#' Checks if a copula is specified
+#' 
+#' @param DAG Directed Acyclic Graph
+#' @param order_hash hashmap of orders
+#' @param w node in DAG
+#' @param v node in DAG
+#' @param cond vector of nodes in DAG
+#' 
+#' @returns TRUE if d-sep(w, v | cond)
+#' 
+copula_is_specified <- function(DAG, order_hash, w, v, cond){
+  if (dsep_set(DAG, w, v, cond)){
+    return(TRUE)
+  }
+  parents_v = order_hash[[v]]
+  if (w %in% parents_v){
+    parents_up_to_w = parents_v[0:(which(parents_v == w)-1)]
+    if (sets::as.set(parents_up_to_w) == sets::as.set(cond)){
+      return(TRUE)
+    }
+  }
+  parents_w = order_hash[[w]]
+  if (v %in% parents_w){
+    parents_up_to_v = parents_w[0:(which(parents_w == v)-1)]
+    if (sets::as.set(parents_up_to_v) == sets::as.set(cond)){
+      return(TRUE)
+    }
+  }
+  return(FALSE)
+}
