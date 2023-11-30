@@ -57,7 +57,7 @@ compute_sample_margin <- function(object, data, v, cond_set) {
   copula_mat = object$copula_mat
   
   # Remove nodes by conditional independence
-  cond_set = PCBN:::remove_CondInd(DAG, v, cond_set)
+  cond_set = remove_CondInd(DAG, v, cond_set)
   
   if (length(cond_set) == 0) {
     return(data[[v]])

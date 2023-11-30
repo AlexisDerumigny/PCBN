@@ -474,10 +474,10 @@ metrics_GBN <- function(data, PCBN, margins, GBN_fit, N_monte_carlo){
 
 
   # Generate data for KL and CvM
-  data_help_uniform = PCBN:::sample_PCBN(PCBN, N_monte_carlo)
-  data_help = PCBN:::to_normal_scale(data_help_uniform)
+  data_help_uniform = sample_PCBN(PCBN, N_monte_carlo)
+  data_help = to_normal_scale(data_help_uniform)
 
-  KL = PCBN:::KL_divergence_GBN(data_help, PCBN, margins, GBN_fit)
+  KL = KL_divergence_GBN(data_help, PCBN, margins, GBN_fit)
 
   return(list(logLik = log_lik, AIC = AIC, BIC = BIC, KL = KL))
 }
@@ -507,10 +507,10 @@ metrics_PCBN <- function(data, PCBN, margins, PCBN_fit, margins_fit, N_monte_car
 
 
   # Generate data for KL and CvM
-  data_help_uniform = PCBN:::sample_PCBN(PCBN, N_monte_carlo)
-  data_help = PCBN:::to_normal_scale(data_help_uniform)
+  data_help_uniform = sample_PCBN(PCBN, N_monte_carlo)
+  data_help = to_normal_scale(data_help_uniform)
 
-  KL = PCBN:::KL_divergence_PCBN(data_help, PCBN, margins, PCBN_fit, margins_fit)
+  KL = KL_divergence_PCBN(data_help, PCBN, margins, PCBN_fit, margins_fit)
 
   return(list(logLik = log_lik, AIC = AIC, BIC = BIC, KL = KL))
 }
@@ -569,10 +569,10 @@ KL_divergence_PCBN <-
     KL = 0
     L = length(data[[1]])
     KL_vec = rep(0, L)
-    data_uniform = PCBN:::to_uniform_scale(data)
+    data_uniform = to_uniform_scale(data)
 
-    log_lik_true = PCBN:::logLik_PCBN(data, PCBN, margins)
-    log_lik_est = PCBN:::logLik_PCBN(data, PCBN_fit, margins_fit)
+    log_lik_true = logLik_PCBN(data, PCBN, margins)
+    log_lik_est = logLik_PCBN(data, PCBN_fit, margins_fit)
     KL = (log_lik_true - log_lik_est)/L
     return(KL)
   }
@@ -582,9 +582,9 @@ KL_divergence_GBN <- function(data, PCBN, margins, GBN) {
   KL = 0
   L = length(data[[1]])
   KL_vec = rep(0, L)
-  data_uniform = PCBN:::to_uniform_scale(data)
+  data_uniform = to_uniform_scale(data)
 
-  log_lik_true = PCBN:::logLik_PCBN(data, PCBN, margins)
+  log_lik_true = logLik_PCBN(data, PCBN, margins)
   log_lik_est = logLik(GBN, data)
   KL = (log_lik_true - log_lik_est)/L
   return(KL)

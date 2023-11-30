@@ -56,7 +56,7 @@ extend_orders <- function(DAG, all_orders, node) {
 #' 
 find_all_orders_v <- function(DAG, v, order_hash) {
   parents = DAG$nodes[[v]]$parents
-  B_sets = PCBN:::find_B_sets(DAG)$B_sets
+  B_sets = find_B_sets(DAG)$B_sets
   B_sets_v = B_sets[[v]]
   
   # Order_list contains the partial orders (starting with empty)
@@ -64,7 +64,7 @@ find_all_orders_v <- function(DAG, v, order_hash) {
   for (i in 1:length(parents)) {
     new_order_list = list()
     for (order in order_list) {
-      B_minus_O = PCBN:::find_B_minus_O(B_sets_v, order)
+      B_minus_O = find_B_minus_O(B_sets_v, order)
       # Each possible candidate results in a different order
       for (w in possible_candidates(DAG, v, order, order_hash, B_minus_O)) {
         new_order = append(order, w)

@@ -230,7 +230,7 @@ DAG_to_restricted <- function(DAG) {
   DAG_copy = DAG
   
   # Remove active cycles
-  res = PCBN:::active_cycle_check(DAG)
+  res = active_cycle_check(DAG)
   if (res$active_cycles) {
     acs = res$active_cycle_list
     N_ac = res$N
@@ -245,7 +245,7 @@ DAG_to_restricted <- function(DAG) {
   }
   
   # Remove interfering v-structures
-  res = PCBN:::find_B_sets(DAG)
+  res = find_B_sets(DAG)
   if (res$interfering_vstrucs) {
     for (node in res$nodes_with_inter_vs) {
       B_sets = res$B_sets[[node]]
