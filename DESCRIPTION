@@ -18,5 +18,4 @@ Imports:
     sets,
     sloop,
     VineCopula
-
 LinkingTo: Rcpp
