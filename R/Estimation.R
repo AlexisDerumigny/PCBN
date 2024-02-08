@@ -1,13 +1,15 @@
-#' Fits the copula joining w and v given cond_set abiding by the conditional independencies of the graph
-#' 
+
+#' Fits the copula joining w and v given cond_set abiding
+#' by the conditional independencies of the graph
+#'
 #' @param data data frame
 #' @param DAG Directed Ayclic Graph
 #' @param cond_set vector of nodes of DAG in the conditioning set
 #' @param familyset vector of copula families
 #' @param order_hash hashmap of parental orders
-#' 
+#'
 #' @returns copula object
-#' 
+#'
 BiCopCondFit <- function(data, DAG, w, v, cond_set, familyset, order_hash){
   if (is.null(copula_hash[[create_copula_tag(DAG, order_hash, w, v, cond_set)]])){
     w_given_cond = ComputeCondMargin(data, DAG, w, cond_set, familyset, order_hash)
@@ -25,8 +27,8 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash){
   if (length(cond_set)==0){
     margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] = data[[v]]
   } else{
-    
-    
+
+
     # Check if we already computed the margin
     if (is.null(margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]])){
       # To compute we need C_{w,v|cond_set\{w}} and use the h-function
@@ -47,7 +49,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash){
       # Compute v|cond_set_minus_w and w|cond_set_minus_w with the h-functions
       w_given_rest = ComputeCondMargin(data, DAG, w, cond_set_minus_w, familyset, order_hash)
       v_given_rest = ComputeCondMargin(data, DAG, v, cond_set_minus_w, familyset, order_hash)
-      
+
       # Compute v|cond_set
       v_given_cond = VineCopula::BiCopHfunc1(w_given_rest, v_given_rest, obj = C_wv)
       margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] = v_given_cond
@@ -58,26 +60,26 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash){
 
 
 #' Fit all possible orders given a DAG
-#' 
+#'
 #' @param data data frame
 #' @param DAG Directed Acyclic Graph
 #' @param familyset vector of copula families
-#' 
+#'
 #' @returns list containing best fit and all fitted models
-#' 
+#'
 fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6), reuse_hash = FALSE) {
   if (!reuse_hash){
     assign("copula_hash", r2r::hashmap(), envir = .GlobalEnv)
     assign("margin_hash", r2r::hashmap(), envir = .GlobalEnv)
   }
-  
+
   all_orders = find_all_orders(DAG)
   fitted_list = list()
   for (order in all_orders) {
     fitted_PCBN = fit_copulas(data, DAG, order, familyset)
     fitted_list[[length(fitted_list) + 1]] = fitted_PCBN
   }
-  
+
   best_fit = fitted_list[[1]]
   for (i in 1:length(fitted_list)) {
     fit = fitted_list[[i]]
@@ -85,20 +87,20 @@ fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6), reuse_hash =
       best_fit = fit
     }
   }
-  
+
   return(list(best_fit = best_fit, fitted_list = fitted_list))
 }
 
 #' Fit the copulas of a PCBN given data
-#' 
+#'
 #' @param DAG Directed Acyclic Graph
 #' @param order_hash hashmap of parental orders
 #' @param familyset vector of copula families
-#' 
+#'
 #' @returns all fitted copulas
-#' 
+#'
 #' @seealso [BiCopCondFit] which this function wraps.
-#' 
+#'
 fit_copulas <-
   function(data,
            DAG,
@@ -106,11 +108,11 @@ fit_copulas <-
            familyset = c(1, 3, 4, 5, 6)) {
     tau = bnlearn::amat(DAG)
     fam = bnlearn::amat(DAG)
-    
+
     logLik = 0
     BIC = 0
     AIC = 0
-    
+
     node.names = bnlearn::node.ordering(DAG)
     for (v in node.names) {
       parents = order_hash[[v]]
@@ -122,7 +124,7 @@ fit_copulas <-
           to = which(bnlearn::nodes(DAG) == v)
           tau[from, to] = C$tau
           fam[from, to] = C$family
-          
+
           logLik = logLik + C$logLik
           BIC = BIC - C$BIC
           AIC = AIC - C$AIC
