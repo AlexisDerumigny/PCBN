@@ -2,10 +2,23 @@
 % Please edit documentation in R/Estimation.R
 \name{ComputeCondMargin}
 \alias{ComputeCondMargin}
-\title{Computes the margin v given cond_set abiding by the conditional independencies of the graph}
+\title{Computes the margin v given cond_set abiding by the conditional independenciese of the graph}
 \usage{
 ComputeCondMargin(data, DAG, v, cond_set, familyset, order_hash)
 }
+\arguments{
+\item{data}{data frame}
+
+\item{DAG}{Directed Ayclic Graph}
+
+\item{v}{node of the graph}
+
+\item{cond_set}{vector of nodes of DAG in the conditioning set}
+
+\item{familyset}{vector of copula families}
+
+\item{order_hash}{hashmap of parental orders}
+}
 \description{
-Computes the margin v given cond_set abiding by the conditional independencies of the graph
+Computes the margin v given cond_set abiding by the conditional independenciese of the graph
 }

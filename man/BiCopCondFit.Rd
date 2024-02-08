@@ -12,6 +12,8 @@ BiCopCondFit(data, DAG, w, v, cond_set, familyset, order_hash)
 
 \item{DAG}{Directed Ayclic Graph}
 
+\item{v, w}{nodes of the graph}
+
 \item{cond_set}{vector of nodes of DAG in the conditioning set}
 
 \item{familyset}{vector of copula families}

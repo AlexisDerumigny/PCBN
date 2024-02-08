@@ -4,6 +4,7 @@
 #'
 #' @param data data frame
 #' @param DAG Directed Ayclic Graph
+#' @param v,w nodes of the graph
 #' @param cond_set vector of nodes of DAG in the conditioning set
 #' @param familyset vector of copula families
 #' @param order_hash hashmap of parental orders
@@ -20,7 +21,15 @@ BiCopCondFit <- function(data, DAG, w, v, cond_set, familyset, order_hash){
   return(copula_hash[[create_copula_tag(DAG, order_hash, w, v, cond_set)]])
 }
 
-#' Computes the margin v given cond_set abiding by the conditional independencies of the graph
+#' Computes the margin v given cond_set abiding by the conditional independenciese of the graph
+#'
+#' @param data data frame
+#' @param DAG Directed Ayclic Graph
+#' @param v node of the graph
+#' @param cond_set vector of nodes of DAG in the conditioning set
+#' @param familyset vector of copula families
+#' @param order_hash hashmap of parental orders
+#'
 ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash){
   # remove elements by conditional independence
   cond_set = remove_CondInd(DAG, v, cond_set)

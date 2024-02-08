@@ -111,12 +111,18 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
 
 #' Plot function
 #'
+#' @param x PCBN object
+#' @param ... other arguments, unused
+#'
 #' @export
 plot.PCBN <- function(x, ...){
   plot(x$DAG)
 }
 
 #' Print function
+#'
+#' @param x PCBN object
+#' @param ... other arguments, unused
 #'
 #' @export
 print.PCBN <- function(x, ...){

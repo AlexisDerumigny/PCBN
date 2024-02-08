@@ -253,7 +253,7 @@ DAG_to_restricted <- function(DAG) {
       vstruc = ac[[1]]
       rest = ac[which(ac != vstruc)]
       for (node in rest) {
-        DAG_copy = set.arc(DAG_copy, node, vstruc)
+        DAG_copy = bnlearn::set.arc(DAG_copy, node, vstruc)
       }
     }
   }
@@ -277,7 +277,7 @@ DAG_to_restricted <- function(DAG) {
             # Point arcs from each node in B_sets[[i]] to bqs
             for (a in B_sets[[i]]){
               for (b in bqs){
-                DAG_copy = set.arc(DAG_copy, a, b)
+                DAG_copy = bnlearn::set.arc(DAG_copy, a, b)
               }
             }
           }

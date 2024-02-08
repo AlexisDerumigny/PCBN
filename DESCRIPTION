@@ -16,7 +16,6 @@ Imports:
     MASS,
     r2r,
     sets,
-    sloop,
     VineCopula
 LinkingTo: Rcpp
 RoxygenNote: 7.3.1
