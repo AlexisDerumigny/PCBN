@@ -9,6 +9,40 @@
 #' @param start starting Directed Acyclic Graph
 #'
 #' @returns DAG which locally maximizes BIC based score function
+#'
+#' @examples
+#'
+#' DAG = create_DAG(4)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#'
+#' order_hash = r2r::hashmap()
+#' order_hash[['U3']] = c("U1", "U2")
+#' order_hash[['U4']] = c("U2", "U3")
+#'
+#' fam = matrix(c(0, 1, 1, 1,
+#'                0, 0, 1, 1,
+#'                0, 0, 0, 1,
+#'                0, 0, 0, 0), byrow = TRUE, ncol = 4)
+#'
+#' # FIXME
+#' # automatically put the dimnames
+#' # when creating PCBN objects
+#'
+#' rownames(fam) <- c("U1", "U2", "U3", "U4")
+#' colnames(fam) <- c("U1", "U2", "U3", "U4")
+#' tau = 0.2 * fam
+#'
+#' my_PCBN = new_PCBN(
+#'   DAG, order_hash,
+#'   copula_mat = list(tau = tau, fam = fam))
+#'
+#' mydata = sample_PCBN(my_PCBN, N = 5)
+#'
+#'
+#'
 hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE){
   assign("copula_hash", r2r::hashmap(), envir = .GlobalEnv)
   assign("margin_hash", r2r::hashmap(), envir = .GlobalEnv)
