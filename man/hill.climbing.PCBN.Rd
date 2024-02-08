@@ -41,6 +41,10 @@ my_PCBN = new_PCBN(
 
 mydata = sample_PCBN(my_PCBN, N = 5)
 
-
+# Does not work yet
+# TODO: fix storing of the trees in the hash thing
+#
+# result = hill.climbing.PCBN(data = mydata, start = create_DAG(4),
+#                             familyset = 1, debug=FALSE)
 
 }
