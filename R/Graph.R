@@ -6,15 +6,24 @@
 #'
 #' @returns a vector containing the nodes not removable from the conditioning set
 #'
+#'
+#' @examples
+#'
+#' DAG = create_DAG(3)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#'
+#' remove_CondInd(DAG = DAG, node = "U1", cond_set = c("U2"))
+#' remove_CondInd(DAG = DAG, node = "U3", cond_set = c("U1"))
+#'
 remove_CondInd <- function(DAG, node, cond_set){
   new_cond_set = cond_set
   for (i in cond_set){
-    if (length(setdiff(cond_set,i))>0){
-      # check if dsep(node, i | cond_set\{i} )
-      if (bnlearn::dsep(DAG, node,i,setdiff(cond_set,i))){
-        new_cond_set = new_cond_set[-which(new_cond_set == i)]
-      }
+    # check if dsep(node, i | cond_set\{i} )
+    if (bnlearn::dsep(DAG, node,i,setdiff(cond_set,i))){
+      new_cond_set = new_cond_set[-which(new_cond_set == i)]
     }
+
   }
   return(new_cond_set)
 }
