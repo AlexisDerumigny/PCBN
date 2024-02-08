@@ -7,7 +7,10 @@
 sample_PCBN(object, N)
 }
 \arguments{
-\item{object}{PCBN object}
+\item{object}{PCBN object to sample from.
+\bold{This does not work if the PCBN does not abide by the B-sets.
+And in general, it does not work if the PCBN is outside of
+the class of restricted PCBNs.}}
 
 \item{N}{sample size}
 }

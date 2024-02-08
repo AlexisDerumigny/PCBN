@@ -26,7 +26,7 @@ DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
 DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
 
 order_hash = r2r::hashmap()
-order_hash[['U3']] = c("U1", "U2")
+order_hash[['U3']] = c("U2", "U1")
 order_hash[['U4']] = c("U2", "U3")
 
 fam = matrix(c(0, 1, 1, 1,

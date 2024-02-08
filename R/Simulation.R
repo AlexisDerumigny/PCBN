@@ -1,7 +1,12 @@
 
 #' Samples from a specified PCBN
 #'
-#' @param object PCBN object
+#'
+#' @param object PCBN object to sample from.
+#' \bold{This does not work if the PCBN does not abide by the B-sets.
+#' And in general, it does not work if the PCBN is outside of
+#' the class of restricted PCBNs.}
+#'
 #' @param N sample size
 #'
 #' @return a data frame of N samples
@@ -74,7 +79,11 @@ sample_PCBN <- function(object, N) {
 
 #' Computes a conditional margin during sampling
 #'
-#' @param object PCBN object
+#' @param object PCBN object to sample from.
+#' \bold{This does not work if the PCBN does not abide by the B-sets.
+#' And in general, it does not work if the PCBN is outside of
+#' the class of restricted PCBNs.}
+#'
 #' @param data data frame of observations of size \code{n}
 #' @param v name of the node
 #' @param cond_set conditioning set.
@@ -147,7 +156,9 @@ compute_sample_margin <- function(object, data, v, cond_set) {
     }
   }
   if (is.null(w)) {
-    stop("no specified conditional copula found in `compute_sample_margin`")
+    stop("no specified conditional copula found in `compute_sample_margin`.\n",
+         "Check that the PCBN satisfies the restrictions ",
+         "and that the orders of the parents are all compatible.")
   }
 
   # we must have w->v or v<-w
