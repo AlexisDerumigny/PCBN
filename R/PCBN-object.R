@@ -40,13 +40,17 @@ new_PCBN <- function(DAG, order_hash, copula_mat){
   return (PCBN)
 }
 
-# Plot function
-plot.PCBN <- function(object){
-  plot(object$DAG)
+#' Plot function
+#'
+#' @export
+plot.PCBN <- function(x, ...){
+  plot(x$DAG)
 }
 
-# Print function
-print.PCBN <- function(object){
-  object$copula_mat
+#' Print function
+#'
+#' @export
+print.PCBN <- function(x, ...){
+  x$copula_mat
 }
 
