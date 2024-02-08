@@ -16,6 +16,8 @@
 #' remove_CondInd(DAG = DAG, node = "U1", cond_set = c("U2"))
 #' remove_CondInd(DAG = DAG, node = "U3", cond_set = c("U1"))
 #'
+#' @export
+#'
 remove_CondInd <- function(DAG, node, cond_set){
   new_cond_set = cond_set
   for (i in cond_set){

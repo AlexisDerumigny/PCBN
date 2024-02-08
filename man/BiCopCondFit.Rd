@@ -2,7 +2,8 @@
 % Please edit documentation in R/Estimation.R
 \name{BiCopCondFit}
 \alias{BiCopCondFit}
-\title{Fits the copula joining w and v given cond_set abiding by the conditional independencies of the graph}
+\title{Fits the copula joining w and v given cond_set abiding
+by the conditional independencies of the graph}
 \usage{
 BiCopCondFit(data, DAG, w, v, cond_set, familyset, order_hash)
 }
@@ -21,5 +22,6 @@ BiCopCondFit(data, DAG, w, v, cond_set, familyset, order_hash)
 copula object
 }
 \description{
-Fits the copula joining w and v given cond_set abiding by the conditional independencies of the graph
+Fits the copula joining w and v given cond_set abiding
+by the conditional independencies of the graph
 }

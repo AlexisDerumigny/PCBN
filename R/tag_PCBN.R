@@ -16,6 +16,7 @@
 #' create_copula_tag(DAG = DAG, order_hash = order_hash,
 #'                   w = "U2", v = "U3", cond_set="U1")
 #'
+#' @export
 #'
 create_copula_tag <- function(DAG, order_hash, w, v, cond_set=NULL){
   tag_w_cond_set = create_margin_tag(DAG, order_hash, w, cond_set)
@@ -44,6 +45,8 @@ create_copula_tag <- function(DAG, order_hash, w, v, cond_set=NULL){
 #'
 #' create_margin_tag(DAG = DAG, order_hash = order_hash,
 #'                   v = "U3", cond_set="U1")
+#'
+#' @export
 #'
 create_margin_tag <- function(DAG, order_hash, v, cond_set){
   g = igraph::make_empty_graph()

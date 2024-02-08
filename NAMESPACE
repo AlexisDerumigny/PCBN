@@ -2,7 +2,11 @@
 
 S3method(plot,PCBN)
 S3method(print,PCBN)
+export(compute_sample_margin)
 export(create_DAG)
+export(create_copula_tag)
+export(create_margin_tag)
 export(is_cond_copula_specified)
 export(new_PCBN)
+export(remove_CondInd)
 export(sample_PCBN)
