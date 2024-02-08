@@ -44,7 +44,6 @@ sample_PCBN <- function(object, N) {
 
   well_ordering = bnlearn::node.ordering(object$DAG)
   for (node in well_ordering) {
-    V = runif(N, 0, 1)
     parents = object$order_hash[[node]]
     # Simulating is analogous to regular vine
     if (length(parents) > 0) {
@@ -56,13 +55,15 @@ sample_PCBN <- function(object, N) {
         # We must compute the conditional margin parent|lower using a proper recursion
         lower = parents[0:(which(parents == parent) - 1)]
         parent_given_lower = compute_sample_margin(object, data, parent, lower)
-        V = VineCopula::BiCopHinv1(parent_given_lower,
-                                   V,
+        V = VineCopula::BiCopHinv1(u1 = parent_given_lower,
+                                   u2 = runif(N, 0, 1),
                                    family = fam,
                                    par = par)
       }
+    } else { # if there are no parents
+      V = runif(N, 0, 1)
     }
-    data[node] = V
+    data[, node] = V
   }
   return(data)
 }
