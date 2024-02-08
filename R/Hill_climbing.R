@@ -26,13 +26,6 @@
 #'                0, 0, 1, 1,
 #'                0, 0, 0, 1,
 #'                0, 0, 0, 0), byrow = TRUE, ncol = 4)
-#'
-#' # FIXME
-#' # automatically put the dimnames
-#' # when creating PCBN objects
-#'
-#' rownames(fam) <- c("U1", "U2", "U3", "U4")
-#' colnames(fam) <- c("U1", "U2", "U3", "U4")
 #' tau = 0.2 * fam
 #'
 #' my_PCBN = new_PCBN(
