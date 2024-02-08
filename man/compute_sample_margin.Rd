@@ -2,22 +2,59 @@
 % Please edit documentation in R/Simulation.R
 \name{compute_sample_margin}
 \alias{compute_sample_margin}
-\title{Computes the conditional margins during sampling}
+\title{Computes a conditional margin during sampling}
 \usage{
 compute_sample_margin(object, data, v, cond_set)
 }
 \arguments{
 \item{object}{PCBN object}
 
-\item{data}{data frame}
+\item{data}{data frame of observations of size \code{n}}
 
-\item{v}{node}
+\item{v}{name of the node}
 
-\item{cond_set}{conditioning set}
+\item{cond_set}{conditioning set.
+This is a vector containing the names of all the nodes in the conditioning set.}
 }
 \value{
-a vector of realizations \eqn{u_{v|cond_set}}
+a vector of size \eqn{n} of realizations \eqn{u_{i, v | cond_set}}
+for \eqn{i = 1, \dots, n}.
 }
 \description{
-Computes the conditional margins during sampling
+Computes a conditional margin during sampling
+}
+\examples{
+
+DAG = create_DAG(3)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+
+order_hash = r2r::hashmap()
+order_hash[['U3']] = c("U1", "U2")
+
+fam = matrix(c(0, 1, 1,
+               0, 0, 1,
+               0, 0, 0), byrow = TRUE, ncol = 3)
+
+rownames(fam) <- c("U1", "U2", "U3")
+colnames(fam) <- c("U1", "U2", "U3")
+tau = 0.2 * fam
+
+my_PCBN = new_PCBN(
+  DAG, order_hash,
+  copula_mat = list(tau = tau, fam = fam))
+
+# Initialize data frame
+N = 100
+nodes = bnlearn::nodes(my_PCBN$DAG)
+data = data.frame(matrix(ncol = length(nodes), nrow = N))
+colnames(data) <- nodes
+
+data[, "U1"] = runif(N)
+data[, "U2"] = runif(N)
+u_1_given2 = compute_sample_margin(object = my_PCBN, data = data,
+                                   v = "U1", cond_set = c("U2"))
+
+identical(data[, "U1"], u_1_given2)
+
 }
