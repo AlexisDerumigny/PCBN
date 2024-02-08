@@ -152,11 +152,11 @@ fit_copulas <-
       BIC = BIC,
       AIC = AIC
     ))
-    PCBN = new_PCBN(list(
+    PCBN = new_PCBN(
       DAG = DAG,
       order_hash = order_hash,
-      copula_mat = copula_mat,
-      metrics = metrics
-    ))
+      copula_mat = copula_mat
+    )
+    PCBN$metrics = metrics
     return(PCBN)
   }
