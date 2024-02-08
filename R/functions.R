@@ -74,7 +74,6 @@ check_correct_order <- function(PCBN1, PCBN2) {
 plot_active_cycles = function(DAG, active_cycle_list){
   if (length(active_cycle_list)==0){
     stop("No active cycles")
-    break
   }
 
   no_list = c("N", "n", "No", "NO")
