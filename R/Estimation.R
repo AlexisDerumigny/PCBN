@@ -33,7 +33,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash){
       # Pick a w such that this copula is specified
       for (w in cond_set){
         cond_set_minus_w = cond_set[!cond_set==w]
-        if (copula_is_specified(DAG, order_hash, w, v, cond_set_minus_w)){
+        if (is_cond_copula_specified(DAG, order_hash, w, v, cond_set_minus_w)){
           break
         }
       }

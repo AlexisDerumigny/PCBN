@@ -92,7 +92,7 @@ compute_sample_margin <- function(object, data, v, cond_set) {
     # Find specified c_{wv|cond_set_minus_w}
     for (w in cond_set) {
       cond_set_minus_w = cond_set[!cond_set == w]
-      if (copula_is_specified(DAG, order_hash, w, v, cond_set_minus_w)) {
+      if (is_cond_copula_specified(DAG, order_hash, w, v, cond_set_minus_w)) {
         break
       }
     }

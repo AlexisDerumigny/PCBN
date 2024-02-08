@@ -22,7 +22,7 @@ create_margin_tag <- function(DAG, order_hash, v, cond_set){
   # Find specified copula
   for (w in cond_set){
     cond_set_minus_w = cond_set[!cond_set==w]
-    if (copula_is_specified(DAG, order_hash, w, v, cond_set_minus_w)){
+    if (is_cond_copula_specified(DAG, order_hash, w, v, cond_set_minus_w)){
       break
     }
   }
@@ -59,7 +59,7 @@ extend_margin_tree <- function(DAG, order_hash, top_node, g){
     # Find specified copula
     for (w in cond_set){
       cond_set_minus_w = cond_set[!cond_set==w]
-      if (copula_is_specified(DAG, order_hash, w, v, cond_set_minus_w)){
+      if (is_cond_copula_specified(DAG, order_hash, w, v, cond_set_minus_w)){
         break
       }
     }
