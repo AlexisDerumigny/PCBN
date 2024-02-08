@@ -89,7 +89,7 @@ pick_random_copulas <- function(adj_mat, familyset){
     for (j in 1:ncol(adj_mat)){
       if (adj_mat[i,j]==1){
         fam[i,j] = sample(familyset,1)
-        tau[i,j] = runif(1,0.3,0.9)
+        tau[i,j] = stats::runif(1,0.3,0.9)
       }
     }
   }

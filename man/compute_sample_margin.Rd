@@ -53,8 +53,8 @@ nodes = bnlearn::nodes(my_PCBN$DAG)
 data = data.frame(matrix(ncol = length(nodes), nrow = N))
 colnames(data) <- nodes
 
-data[, "U1"] = runif(N)
-data[, "U2"] = runif(N)
+data[, "U1"] = stats::runif(N)
+data[, "U2"] = stats::runif(N)
 u_1_given2 = compute_sample_margin(object = my_PCBN, data = data,
                                    v = "U1", cond_set = c("U2"))
 

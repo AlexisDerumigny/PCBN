@@ -65,12 +65,12 @@ sample_PCBN <- function(object, N) {
                                                    v = parents[i_parent],
                                                    cond_set = lower)
         data[, node] = VineCopula::BiCopHinv1(u1 = parent_given_lower,
-                                              u2 = runif(N, 0, 1),
+                                              u2 = stats::runif(N, 0, 1),
                                               family = fam,
                                               par = par)
       }
     } else { # if there are no parents
-      data[, node] = runif(N, 0, 1)
+      data[, node] = stats::runif(N, 0, 1)
     }
   }
   return(data)
@@ -119,8 +119,8 @@ sample_PCBN <- function(object, N) {
 #' data = data.frame(matrix(ncol = length(nodes), nrow = N))
 #' colnames(data) <- nodes
 #'
-#' data[, "U1"] = runif(N)
-#' data[, "U2"] = runif(N)
+#' data[, "U1"] = stats::runif(N)
+#' data[, "U2"] = stats::runif(N)
 #' u_1_given2 = compute_sample_margin(object = my_PCBN, data = data,
 #'                                    v = "U1", cond_set = c("U2"))
 #'

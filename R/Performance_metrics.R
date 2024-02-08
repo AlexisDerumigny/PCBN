@@ -38,7 +38,8 @@ metrics_PCBN <- function(data, PCBN, margins, PCBN_fit, margins_fit, N_monte_car
   for (v in nodes) {
     mean_v = margins[[v]]$mean
     sd_v = margins[[v]]$sd
-    log_lik_margins = log_lik_margins + sum( log( dnorm(data[[v]], mean = mean_v, sd = sd_v) ) )
+    log_lik_margins = log_lik_margins +
+      sum( log( stats::dnorm(data[[v]], mean = mean_v, sd = sd_v) ) )
   }
 
   log_lik = log_lik + log_lik_margins
