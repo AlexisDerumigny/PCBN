@@ -219,6 +219,7 @@ outgoing_arc <- function(DAG, w, v, order_v, order_hash){
 #'                     w = "U2", v = "U3", cond = c("U1"))
 #' # returns TRUE because the copula c_{2,3 | 1} is known
 #'
+#' @export
 #'
 is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
   if (dsep_set(DAG, w, v, cond)){

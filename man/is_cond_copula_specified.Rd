@@ -45,5 +45,4 @@ is_cond_copula_specified(DAG = DAG, order_hash = order_hash,
                     w = "U2", v = "U3", cond = c("U1"))
 # returns TRUE because the copula c_{2,3 | 1} is known
 
-
 }

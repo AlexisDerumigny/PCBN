@@ -3,5 +3,6 @@
 S3method(plot,PCBN)
 S3method(print,PCBN)
 export(create_DAG)
+export(is_cond_copula_specified)
 export(new_PCBN)
 export(sample_PCBN)
