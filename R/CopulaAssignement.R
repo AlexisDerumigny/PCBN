@@ -227,14 +227,14 @@ is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
   }
   parents_v = order_hash[[v]]
   if (w %in% parents_v){
-    parents_up_to_w = parents_v[0:(which(parents_v == w)-1)]
+    parents_up_to_w = parents_v[1:(which(parents_v == w)-1)]
     if (sets::as.set(parents_up_to_w) == sets::as.set(cond)){
       return(TRUE)
     }
   }
   parents_w = order_hash[[w]]
   if (v %in% parents_w){
-    parents_up_to_v = parents_w[0:(which(parents_w == v)-1)]
+    parents_up_to_v = parents_w[1:(which(parents_w == v)-1)]
     if (sets::as.set(parents_up_to_v) == sets::as.set(cond)){
       return(TRUE)
     }

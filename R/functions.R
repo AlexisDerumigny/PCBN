@@ -438,7 +438,7 @@ logLik_copulas_PCBN <- function(data_uniform, PCBN){
         par = VineCopula::BiCopTau2Par(fam, tau)
 
         # Compute the required margins
-        lower = parents[0:(which(parents == w) - 1)]
+        lower = parents[1:(which(parents == w) - 1)]
         v_given_lower = compute_sample_margin(PCBN, data_uniform, v, lower)
         w_given_lower = compute_sample_margin(PCBN, data_uniform, w, lower)
 
@@ -549,7 +549,7 @@ PDF_copulas_PCBN <- function(data_uniform, PCBN){
         par = VineCopula::BiCopTau2Par(fam, tau)
 
         # Compute the required margins
-        lower = parents[0:(which(parents == w) - 1)]
+        lower = parents[1:(which(parents == w) - 1)]
         v_given_lower = compute_sample_margin(PCBN, data_uniform, v, lower)
         w_given_lower = compute_sample_margin(PCBN, data_uniform, w, lower)
 

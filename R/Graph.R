@@ -155,7 +155,7 @@ active_cycle_check <- function(DAG){
     children = DAG$nodes[[v]]$children
     if (length(parents)>1){
       for (w in parents){
-        parents_up_to_w = parents[0:(which(parents == w)-1)] # No double checking of paths
+        parents_up_to_w = parents[1:(which(parents == w)-1)] # No double checking of paths
         if (length(parents_up_to_w)>0){
           for (z in parents_up_to_w){
             # Parents must be non-adjacent

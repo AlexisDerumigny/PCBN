@@ -116,7 +116,7 @@ fit_copulas <-
       parents = order_hash[[v]]
       if (length(parents) > 0) {
         for (w in parents) {
-          parents_up_to_w = parents[0:(which(parents == w) - 1)]
+          parents_up_to_w = parents[1:(which(parents == w) - 1)]
           C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset, order_hash)
           from = which(bnlearn::nodes(DAG) == w)
           to = which(bnlearn::nodes(DAG) == v)
