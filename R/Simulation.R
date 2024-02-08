@@ -45,25 +45,28 @@ sample_PCBN <- function(object, N) {
   well_ordering = bnlearn::node.ordering(object$DAG)
   for (node in well_ordering) {
     parents = object$order_hash[[node]]
+
     # Simulating is analogous to regular vine
     if (length(parents) > 0) {
-      for (parent in rev(parents)) {
-        fam = object$copula_mat$fam[parent, node]
-        tau = object$copula_mat$tau[parent, node]
+      for (i_parent in length(parents):1) {
+        fam = object$copula_mat$fam[parents[i_parent], node]
+        tau = object$copula_mat$tau[parents[i_parent], node]
         par = VineCopula::BiCopTau2Par(fam, tau)
 
         # We must compute the conditional margin parent|lower using a proper recursion
-        lower = parents[1:(which(parents == parent) - 1)]
-        parent_given_lower = compute_sample_margin(object, data, parent, lower)
-        V = VineCopula::BiCopHinv1(u1 = parent_given_lower,
-                                   u2 = runif(N, 0, 1),
-                                   family = fam,
-                                   par = par)
+        lower = if (i_parent == 1) {c()
+          } else {parents[1:(i_parent - 1)]}
+        parent_given_lower = compute_sample_margin(object = object, data = data,
+                                                   v = parents[i_parent],
+                                                   cond_set = lower)
+        data[, node] = VineCopula::BiCopHinv1(u1 = parent_given_lower,
+                                              u2 = runif(N, 0, 1),
+                                              family = fam,
+                                              par = par)
       }
     } else { # if there are no parents
-      V = runif(N, 0, 1)
+      data[, node] = runif(N, 0, 1)
     }
-    data[, node] = V
   }
   return(data)
 }
@@ -113,6 +116,8 @@ sample_PCBN <- function(object, N) {
 #'                                    v = "U1", cond_set = c("U2"))
 #'
 #' identical(data[, "U1"], u_1_given2)
+#'
+#' @export
 #'
 compute_sample_margin <- function(object, data, v, cond_set) {
 
