@@ -4,7 +4,16 @@
 \alias{ComputeCondMargin}
 \title{Computes the margin v given cond_set abiding by the conditional independenciese of the graph}
 \usage{
-ComputeCondMargin(data, DAG, v, cond_set, familyset, order_hash)
+ComputeCondMargin(
+  data,
+  DAG,
+  v,
+  cond_set,
+  familyset,
+  order_hash,
+  margin_hash,
+  copula_hash
+)
 }
 \arguments{
 \item{data}{data frame}
@@ -18,6 +27,8 @@ ComputeCondMargin(data, DAG, v, cond_set, familyset, order_hash)
 \item{familyset}{vector of copula families}
 
 \item{order_hash}{hashmap of parental orders}
+
+\item{margin_hash, copula_hash}{hashmaps containing already estimated objects}
 }
 \description{
 Computes the margin v given cond_set abiding by the conditional independenciese of the graph

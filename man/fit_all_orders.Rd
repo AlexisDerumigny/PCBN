@@ -4,7 +4,13 @@
 \alias{fit_all_orders}
 \title{Fit all possible orders given a DAG}
 \usage{
-fit_all_orders(data, DAG, familyset = c(1, 3, 4, 5, 6), reuse_hash = FALSE)
+fit_all_orders(
+  data,
+  DAG,
+  familyset = c(1, 3, 4, 5, 6),
+  copula_hash = r2r::hashmap(),
+  margin_hash = r2r::hashmap()
+)
 }
 \arguments{
 \item{data}{data frame}
@@ -12,6 +18,8 @@ fit_all_orders(data, DAG, familyset = c(1, 3, 4, 5, 6), reuse_hash = FALSE)
 \item{DAG}{Directed Acyclic Graph}
 
 \item{familyset}{vector of copula families}
+
+\item{margin_hash, copula_hash}{hashmaps containing already estimated objects}
 }
 \value{
 list containing best fit and all fitted models

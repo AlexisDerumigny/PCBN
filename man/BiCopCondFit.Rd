@@ -5,7 +5,17 @@
 \title{Fits the copula joining w and v given cond_set abiding
 by the conditional independencies of the graph}
 \usage{
-BiCopCondFit(data, DAG, w, v, cond_set, familyset, order_hash)
+BiCopCondFit(
+  data,
+  DAG,
+  w,
+  v,
+  cond_set,
+  familyset,
+  order_hash,
+  margin_hash,
+  copula_hash
+)
 }
 \arguments{
 \item{data}{data frame}
@@ -19,6 +29,8 @@ BiCopCondFit(data, DAG, w, v, cond_set, familyset, order_hash)
 \item{familyset}{vector of copula families}
 
 \item{order_hash}{hashmap of parental orders}
+
+\item{margin_hash, copula_hash}{hashmaps containing already estimated objects}
 }
 \value{
 copula object

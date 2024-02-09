@@ -42,9 +42,10 @@
 #'
 #' @export
 #'
-hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE){
-  assign("copula_hash", r2r::hashmap(), envir = .GlobalEnv)
-  assign("margin_hash", r2r::hashmap(), envir = .GlobalEnv)
+hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE,
+                               copula_hash = r2r::hashmap(),
+                               margin_hash = r2r::hashmap())
+{
 
   nodes = names(data)
   n.nodes = length(nodes)
@@ -71,8 +72,11 @@ hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE){
     }
 
     allowed.operations = allowed.operations.general(DAG)
+
     # Compute data frame with the score delta of each operation
-    df = operation_score_deltas(data, DAG, familyset, reference, allowed.operations)
+    df = operation_score_deltas(data, DAG, familyset, reference, allowed.operations,
+                                copula_hash = copula_hash,
+                                margin_hash = margin_hash)
 
     ## Select best operation based on column order
     bestop = df[which.max(df$score.delta),]
@@ -111,7 +115,8 @@ hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE){
 }
 
 # Computes the score delta for all allowed operations
-operation_score_deltas = function(data, DAG, familyset, reference, allowed.operations){
+operation_score_deltas = function(data, DAG, familyset, reference, allowed.operations,
+                                  copula_hash, margin_hash){
   nodes = names(data)
   n.nodes = length(nodes)
   adj.mat = bnlearn::amat(DAG)
@@ -126,13 +131,16 @@ operation_score_deltas = function(data, DAG, familyset, reference, allowed.opera
     DAG_new = apply.operation(DAG, op)
 
     # Fit all possible orders
-    fitted = fit_all_orders(data, DAG_new, familyset, reuse_hash = TRUE)
+    fitted = fit_all_orders(data, DAG_new, familyset,
+                            copula_hash = copula_hash,
+                            margin_hash = margin_hash)
     score.delta = fitted$best_fit$metrics$BIC - reference
 
 
     if (score.delta>0){improve = TRUE}
     else{improve=FALSE}
-    df = rbind(df, data.frame(list(from=op$from, to=op$to, operation=op$operation, score.delta=score.delta, improve=improve)))
+    df = rbind(df, data.frame(list(from=op$from, to=op$to, operation=op$operation,
+                                   score.delta=score.delta, improve=improve)))
   }
   return(df)
 }

@@ -4,7 +4,14 @@
 \alias{hill.climbing.PCBN}
 \title{Hill climbing algorithm for restricted PCBNs}
 \usage{
-hill.climbing.PCBN(data, start, familyset, debug = FALSE)
+hill.climbing.PCBN(
+  data,
+  start,
+  familyset,
+  debug = FALSE,
+  copula_hash = r2r::hashmap(),
+  margin_hash = r2r::hashmap()
+)
 }
 \arguments{
 \item{data}{data frame}

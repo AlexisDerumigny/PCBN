@@ -4,7 +4,14 @@
 \alias{fit_copulas}
 \title{Fit the copulas of a PCBN given data}
 \usage{
-fit_copulas(data, DAG, order_hash, familyset = c(1, 3, 4, 5, 6))
+fit_copulas(
+  data,
+  DAG,
+  order_hash,
+  familyset = c(1, 3, 4, 5, 6),
+  margin_hash,
+  copula_hash
+)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph}
@@ -12,6 +19,8 @@ fit_copulas(data, DAG, order_hash, familyset = c(1, 3, 4, 5, 6))
 \item{order_hash}{hashmap of parental orders}
 
 \item{familyset}{vector of copula families}
+
+\item{margin_hash, copula_hash}{hashmaps containing already estimated objects}
 }
 \value{
 all fitted copulas
