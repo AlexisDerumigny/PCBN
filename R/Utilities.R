@@ -26,7 +26,7 @@ dsep_set <- function(DAG, X, Y, Z=c()){
 }
 
 
-#' Turns an order hash into a matrix
+# Turns an order hash into a matrix
 order_hash_to_mat <- function(DAG, order_hash) {
   adj.mat = bnlearn::amat(DAG)
   for (v in bnlearn::nodes(DAG)) {
@@ -40,7 +40,7 @@ order_hash_to_mat <- function(DAG, order_hash) {
   return(adj.mat)
 }
 
-#' Turns a matrix of orders into an order hash
+# Turns a matrix of orders into an order hash
 mat_to_order_hash <- function(DAG, order_mat) {
   order_hash = r2r::hashmap()
   for (v in bnlearn::nodes(DAG)) {

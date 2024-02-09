@@ -7,6 +7,10 @@
 #'
 #' @param data data frame
 #' @param start starting Directed Acyclic Graph
+#' @param familyset vector of copula families
+#' @param debug to print debug information
+#' @param margin_hash,copula_hash hashmaps containing already estimated objects
+#'
 #'
 #' @returns DAG which locally maximizes BIC based score function
 #'

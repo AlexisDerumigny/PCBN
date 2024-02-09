@@ -14,6 +14,8 @@ fit_copulas(
 )
 }
 \arguments{
+\item{data}{data frame}
+
 \item{DAG}{Directed Acyclic Graph}
 
 \item{order_hash}{hashmap of parental orders}

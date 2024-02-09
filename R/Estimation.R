@@ -122,6 +122,7 @@ fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
 
 #' Fit the copulas of a PCBN given data
 #'
+#' @param data data frame
 #' @param DAG Directed Acyclic Graph
 #' @param order_hash hashmap of parental orders
 #' @param familyset vector of copula families

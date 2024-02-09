@@ -17,6 +17,12 @@ hill.climbing.PCBN(
 \item{data}{data frame}
 
 \item{start}{starting Directed Acyclic Graph}
+
+\item{familyset}{vector of copula families}
+
+\item{debug}{to print debug information}
+
+\item{margin_hash, copula_hash}{hashmaps containing already estimated objects}
 }
 \value{
 DAG which locally maximizes BIC based score function

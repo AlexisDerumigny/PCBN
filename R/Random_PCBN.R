@@ -16,8 +16,9 @@ pick_random_PCBN <- function(N.nodes, N.arcs, familyset=c(1,3,4,5,6)){
 }
 
 # Takes in a DAG and chooses a random order that will not require integration
-pick_random_ordering <- function(DAG){
-  assign("order_hash", r2r::hashmap(), envir = .GlobalEnv)
+pick_random_ordering <- function(DAG)
+{
+  order_hash = r2r::hashmap()
   node.names = bnlearn::node.ordering(DAG)
   B_sets = find_B_sets(DAG)$B_sets
 

@@ -8,9 +8,9 @@
 metrics_GBN <- function(data, PCBN, margins, GBN_fit, N_monte_carlo){
   metrics =list()
 
-  log_lik = logLik(GBN_fit, data)
-  AIC = -2*BIC(GBN_fit, data)
-  BIC = -2*AIC(GBN_fit, data)
+  log_lik = stats::logLik(GBN_fit, data)
+  AIC = -2*stats::BIC(GBN_fit, data)
+  BIC = -2*stats::AIC(GBN_fit, data)
 
 
   # Generate data for KL and CvM
@@ -126,7 +126,7 @@ KL_divergence_GBN <- function(data, PCBN, margins, GBN) {
   data_uniform = to_uniform_scale(data)
 
   log_lik_true = logLik_PCBN(data, PCBN, margins)
-  log_lik_est = logLik(GBN, data)
+  log_lik_est = stats::logLik(GBN, data)
   KL = (log_lik_true - log_lik_est)/L
   return(KL)
 }
