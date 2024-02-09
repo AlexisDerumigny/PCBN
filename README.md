@@ -23,13 +23,11 @@ Development of the PCBN package
 
 # Plan for future work
 
+- File `tag_PCBN.R` : to be deleted.
+
+- File `Estimation.R` : rewriting in progress.
+
 ## Files to be checked soon
-
-- File `tag_PCBN.R`
-
-  The plan is to redo / document the tag system.
-
-- File `Estimation.R`
 
 - File `Hill_climbing.R`
 

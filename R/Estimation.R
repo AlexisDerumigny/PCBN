@@ -1,92 +1,241 @@
 
+#' Default starting environment
+#'
+#' @examples
+#' e = default_envir()
+#' ls(e)
+#'
+#' @noRd
+default_envir <- function(){
+  e = new.env()
+  e$copula_hash = r2r::hashmap()
+  e$margin_hash = r2r::hashmap()
+  e$keychain = r2r::hashmap()
+  return (e)
+}
+
+
 #' Fits the copula joining w and v given cond_set abiding
 #' by the conditional independencies of the graph
 #'
 #' @param data data frame
 #' @param DAG Directed Ayclic Graph
 #' @param v,w nodes of the graph
-#' @param cond_set vector of nodes of DAG in the conditioning set
+#' @param cond_set vector of nodes of DAG. They should all be parents of v.
+#' They should be ordered from the smallest to the biggest.
 #' @param familyset vector of copula families
 #' @param order_hash hashmap of parental orders
-#' @param margin_hash,copula_hash hashmaps containing already estimated objects
+#' @param e environment containing all the hashmaps
 #'
 #' @returns copula object
 #'
-BiCopCondFit <- function(data, DAG, w, v, cond_set, familyset, order_hash,
-                         margin_hash, copula_hash)
+BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e)
 {
-  if (is.null(copula_hash[[create_copula_tag(DAG, order_hash, w, v, cond_set)]]))
-  {
-    w_given_cond = ComputeCondMargin(data, DAG, w, cond_set, familyset, order_hash,
-                                     copula_hash = copula_hash,
-                                     margin_hash = margin_hash)
-
-    v_given_cond = ComputeCondMargin(data, DAG, v, cond_set, familyset, order_hash,
-                                     copula_hash = copula_hash,
-                                     margin_hash = margin_hash)
-
-    C_wv = VineCopula::BiCopSelect(w_given_cond, v_given_cond, familyset = familyset)
-    copula_hash[[create_copula_tag(DAG, order_hash, w, v, cond_set)]] = C_wv
+  if (v > w){
+    # We switch them. From now on, v < w
+    return (BiCopCondFit(data = data, DAG = DAG, v = w, w = v,
+                         cond_set = cond_set, familyset = familyset,
+                         order_hash = order_hash, e = e))
   }
-  return(copula_hash[[create_copula_tag(DAG, order_hash, w, v, cond_set)]])
+
+  # We look for the copula in the hash.
+  copula_key = e$keychain[[list(margins = c(v, w), cond = cond_set)]]
+  if (!is.null(copula_key))
+  {
+    C_wv = e$copula_hash[[copula_key]]
+  } else {
+    # We look for the keys of the two conditional margins in the hash
+    # We try to simplify the conditioning set first
+
+    cond_set_v = remove_CondInd(DAG, w, cond_set)
+    v_key = e$keychain[[list(margin = v, cond = cond_set_v)]]
+
+    # We try to simplify the conditioning set for w
+    cond_set_w = remove_CondInd(DAG, w, cond_set)
+    w_key = e$keychain[[list(margin = w, cond = cond_set_w)]]
+
+    if (!is.null(v_key) && !is.null(w_key)){
+      copula_key <- list(margin1 = v_key, margin2 = w_key)
+      C_wv = e$copula_hash[[copula_key]]
+    } else {
+      # key not available yet
+      C_wv = NULL
+    }
+  }
+
+  if (!is.null(C_wv) ){
+    # We have already the copula, so we can just return it
+    return (C_wv)
+  }
+
+  # We now need to estimate the (conditional) copula
+  # so we first get the two margins
+  v_given_cond = ComputeCondMargin(data, DAG, v, cond_set, familyset, order_hash,
+                                   e = e)
+
+  w_given_cond = ComputeCondMargin(data, DAG, w, cond_set, familyset, order_hash,
+                                   e = e)
+
+  # We can now estimate the (simplified) conditional copula
+  C_wv = VineCopula::BiCopSelect(w_given_cond, v_given_cond, familyset = familyset)
+
+  if (is.null(copula_key)){
+    v_key = e$keychain[[list(margin = v, cond = cond_set_v)]]
+    w_key = e$keychain[[list(margin = w, cond = cond_set_w)]]
+
+    # The key for this conditional copula is not present
+    # so we rebuild it ourselves, from the two (conditional) marginal keys
+
+    # The copula key is just the (ordered) list of the two keys of the
+    # (conditional) margins.
+    e$keychain[[list(margins = c(v, w), cond = cond_set)]] <- copula_key <-
+      list(margin1 = v_key, margin2 = w_key)
+  }
+
+  # We finally store the copula in the hash
+  e$copula_hash[[copula_key]] = C_wv
+
+  # and we announce that two new conditional margins are available in the keychain
+  e$keychain[[list(margin = v, cond = sort(c(w, cond_set)))]] =
+    list(margin = v, cop = copula_key)
+
+  e$keychain[[list(margin = w, cond = sort(c(v, cond_set)))]] =
+    list(margin = w, cop = copula_key)
+
+  return(C_wv)
 }
 
-#' Computes the margin v given cond_set abiding by the conditional independenciese of the graph
+
+#' Computes the margin v given cond_set abiding by the conditional independencies of the graph
 #'
 #' @param data data frame
 #' @param DAG Directed Ayclic Graph
 #' @param v node of the graph
-#' @param cond_set vector of nodes of DAG in the conditioning set
+#' @param cond_set vector of nodes of DAG. They should all be parents of v.
+#' They should be ordered from the smallest to the biggest.
 #' @param familyset vector of copula families
 #' @param order_hash hashmap of parental orders
-#' @param margin_hash,copula_hash hashmaps containing already estimated objects
+#' @param e environment containing all the hashmaps
 #'
 ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
-                              margin_hash, copula_hash)
+                              e)
 {
-  # Remove elements by conditional independence
+  # Remove as much elements as possible by conditional independence
   cond_set = remove_CondInd(DAG, v, cond_set)
-  if (length(cond_set)==0){
-    margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] = data[, v]
 
-    return( margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] )
+  # 1- We see if the result is already available ===============================
+
+  # If there are no more elements in cond_set
+  # this means that we are in the case of an unconditional margin
+  if (length(cond_set) == 0){
+    v_key_result = list(margin = v, cond = cond_set)
+    # We can just save this in the hashmap
+    e$margin_hash[[v_key_result]] = data[, v]
+    # and the margin information in the keychain
+    e$keychain[[v_key_result]] = v_key_result
+
+    return (data[, v] )
   }
 
-  # Check if we already computed the margin
-  if ( !is.null(margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]]) )
+  # Check if we already computed this margin
+  v_key_result = e$keychain[[list(v, cond_set)]]
+  if ( !is.null(v_key_result) )
   {
-    return( margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] )
+    return ( e$margin_hash[[v_key_result]] )
   }
+
+  # 2- We find a good `w` ======================================================
 
   # To compute we need C_{w,v|cond_set\{w}} and use the h-function
-  # Pick a w such that this copula is specified
+  # Pick a `w` in `cond_set` such that this copula is specified
   cop_specified = find_cond_copula_specified(DAG = DAG, order_hash = order_hash,
                                              v = v, cond = cond_set)
   w = cop_specified$w
   cond_set_minus_w = cop_specified$cond_set_minus_w
 
+
+  # 3- We find all necessary keys ==============================================
+
+  # We look for the two conditional margins in the hash
+  v_key = e$keychain[[list(margin = v, cond = cond_set_minus_w)]]
+  if (is.null(v_key)){
+    stop("The conditional margin ", v, " | ", cond_set_minus_w,
+         "is not available.")
+  }
+
+  # We try to simplify the conditioning set for w
+  cond_set_minus_w_simpW = remove_CondInd(DAG, w, cond_set_minus_w)
+  w_key = e$keychain[[list(margin = w, cond = cond_set_minus_w_simpW)]]
+  if (is.null(w_key)){
+    stop("The conditional margin ", w, " | ", cond_set_minus_w_simpW,
+         "is not available.")
+  }
+
+  # We look for the copula in the hash.
+  copula_key = e$keychain[[list(margins = sort(v, w), cond = cond_set_minus_w)]]
+  if (is.null(copula_key)){
+    # The key for this conditional copula is not present
+    # so we rebuild it ourselves, from the two (conditional) marginal keys
+
+    # The copula key is just the ordered list of the two ordered keys of the
+    # (conditional) margins.
+    if (v < w){
+      e$keychain[[list(margins = c(v, w), cond = cond_set_minus_w)]] <-
+        copula_key <-
+        list(margin1 = v_key, margin2 = w_key)
+    } else {
+      e$keychain[[list(margins = c(w, v), cond = cond_set_minus_w)]] <-
+        copula_key <-
+        list(margin1 = w_key, margin2 = v_key)
+    }
+
+  }
+
+  # 4- We get the copula =======================================================
+
+  # We try to get the copula from the hash
+  C_wv = copula_hash[[copula_key]]
+
   # If our copula is not in the hash map -> fit it!
-  if (is.null(copula_hash[[create_copula_tag(DAG, order_hash, w, v, cond_set_minus_w)]])){
+  if (is.null(C_wv)){
     C_wv = BiCopCondFit(data, DAG, w, v, cond_set_minus_w, familyset, order_hash,
-                        copula_hash = copula_hash,
-                        margin_hash = margin_hash)
-  }
-  else{
-    C_wv = copula_hash[[create_copula_tag(DAG, order_hash, w, v, cond_set_minus_w)]]
+                        e = e)
   }
 
-  # Compute v|cond_set_minus_w and w|cond_set_minus_w with the h-functions
-  w_given_rest = ComputeCondMargin(data, DAG, w, cond_set_minus_w, familyset, order_hash,
-                                   margin_hash, copula_hash)
+  # 5- We get the two conditional margins ======================================
 
-  v_given_rest = ComputeCondMargin(data, DAG, v, cond_set_minus_w, familyset, order_hash,
-                                   margin_hash, copula_hash)
+  # Get v|cond_set_minus_w and w|cond_set_minus_w on the hash or recompute them
+  v_given_rest = e$margin_hash[[v_key]]
+  w_given_rest = e$margin_hash[[w_key]]
+  if (is.null(v_given_rest)){
+    v_given_rest <- ComputeCondMargin(data = data, DAG = DAG, v = v,
+                                      cond_set = cond_set_minus_w,
+                                      familyset = familyset,
+                                      order_hash = order_hash, e = e)
+  }
+  if (is.null(w_given_rest)){
+    w_given_rest <- ComputeCondMargin(data = data, DAG = DAG, v = w,
+                                      cond_set = cond_set_minus_w_simpW,
+                                      familyset = familyset,
+                                      order_hash = order_hash, e = e)
+  }
 
-  # Compute v|cond_set
-  v_given_cond = VineCopula::BiCopHfunc1(w_given_rest, v_given_rest, obj = C_wv)
-  margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] = v_given_cond
+  # 6- We compute the new conditional margin ===================================
 
-  return( margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] )
+  # Compute v|cond_set under the simplifying assumption
+  v_given_cond = VineCopula::BiCopHfunc1(w_given_rest, v_given_rest,
+                                         obj = C_wv)
+
+  # 7- We save and return the result ===========================================
+
+  # We can just save this in the hashmap
+  v_key_result = list(v, C_wv)
+  e$margin_hash[[v_key_result]] = v_given_cond
+
+  # and the key information in the keychain
+  e$keychain[[list(v, cond_set)]] = v_key_result
+
+  return( v_given_cond )
 }
 
 
