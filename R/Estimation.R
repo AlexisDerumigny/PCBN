@@ -44,45 +44,52 @@ BiCopCondFit <- function(data, DAG, w, v, cond_set, familyset, order_hash,
 ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
                               margin_hash, copula_hash)
 {
-  # remove elements by conditional independence
+  # Remove elements by conditional independence
   cond_set = remove_CondInd(DAG, v, cond_set)
   if (length(cond_set)==0){
-    margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] = data[[v]]
-  } else{
+    margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] = data[, v]
+
+    return( margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] )
+  }
+
+  # Check if we already computed the margin
+  if ( !is.null(margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]]) )
+  {
+    return( margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] )
+  }
 
 
-    # Check if we already computed the margin
-    if (is.null(margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]])){
-      # To compute we need C_{w,v|cond_set\{w}} and use the h-function
-      # Pick a w such that this copula is specified
-      for (w in cond_set){
-        cond_set_minus_w = cond_set[!cond_set==w]
-        if (is_cond_copula_specified(DAG, order_hash, w, v, cond_set_minus_w)){
-          break
-        }
-      }
-      # If our copula is not in the hash map -> fit it!
-      if (is.null(copula_hash[[create_copula_tag(DAG, order_hash, w, v, cond_set_minus_w)]])){
-        C_wv = BiCopCondFit(data, DAG, w, v, cond_set_minus_w, familyset, order_hash,
-                            copula_hash = copula_hash,
-                            margin_hash = margin_hash)
-      }
-      else{
-        C_wv = copula_hash[[create_copula_tag(DAG, order_hash, w, v, cond_set_minus_w)]]
-      }
-      # Compute v|cond_set_minus_w and w|cond_set_minus_w with the h-functions
-      w_given_rest = ComputeCondMargin(data, DAG, w, cond_set_minus_w, familyset, order_hash,
-                                       margin_hash, copula_hash)
-
-      v_given_rest = ComputeCondMargin(data, DAG, v, cond_set_minus_w, familyset, order_hash,
-                                       margin_hash, copula_hash)
-
-      # Compute v|cond_set
-      v_given_cond = VineCopula::BiCopHfunc1(w_given_rest, v_given_rest, obj = C_wv)
-      margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] = v_given_cond
+  # To compute we need C_{w,v|cond_set\{w}} and use the h-function
+  # Pick a w such that this copula is specified
+  for (w in cond_set){
+    cond_set_minus_w = cond_set[!cond_set==w]
+    if (is_cond_copula_specified(DAG, order_hash, w, v, cond_set_minus_w)){
+      break
     }
   }
-  return(margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]])
+
+  # If our copula is not in the hash map -> fit it!
+  if (is.null(copula_hash[[create_copula_tag(DAG, order_hash, w, v, cond_set_minus_w)]])){
+    C_wv = BiCopCondFit(data, DAG, w, v, cond_set_minus_w, familyset, order_hash,
+                        copula_hash = copula_hash,
+                        margin_hash = margin_hash)
+  }
+  else{
+    C_wv = copula_hash[[create_copula_tag(DAG, order_hash, w, v, cond_set_minus_w)]]
+  }
+
+  # Compute v|cond_set_minus_w and w|cond_set_minus_w with the h-functions
+  w_given_rest = ComputeCondMargin(data, DAG, w, cond_set_minus_w, familyset, order_hash,
+                                   margin_hash, copula_hash)
+
+  v_given_rest = ComputeCondMargin(data, DAG, v, cond_set_minus_w, familyset, order_hash,
+                                   margin_hash, copula_hash)
+
+  # Compute v|cond_set
+  v_given_cond = VineCopula::BiCopHfunc1(w_given_rest, v_given_rest, obj = C_wv)
+  margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] = v_given_cond
+
+  return( margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] )
 }
 
 
