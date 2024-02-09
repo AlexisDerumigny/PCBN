@@ -58,15 +58,12 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
     return( margin_hash[[create_margin_tag(DAG, order_hash, v, cond_set)]] )
   }
 
-
   # To compute we need C_{w,v|cond_set\{w}} and use the h-function
   # Pick a w such that this copula is specified
-  for (w in cond_set){
-    cond_set_minus_w = cond_set[!cond_set==w]
-    if (is_cond_copula_specified(DAG, order_hash, w, v, cond_set_minus_w)){
-      break
-    }
-  }
+  cop_specified = find_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+                                             v = v, cond = cond_set)
+  w = cop_specified$w
+  cond_set_minus_w = cop_specified$cond_set_minus_w
 
   # If our copula is not in the hash map -> fit it!
   if (is.null(copula_hash[[create_copula_tag(DAG, order_hash, w, v, cond_set_minus_w)]])){

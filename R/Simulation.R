@@ -119,8 +119,8 @@ sample_PCBN <- function(object, N) {
 #'
 #' @export
 #'
-compute_sample_margin <- function(object, data, v, cond_set) {
-
+compute_sample_margin <- function(object, data, v, cond_set)
+{
   # Unpack PCBN object
   DAG = object$DAG
   order_hash = object$order_hash
@@ -135,22 +135,10 @@ compute_sample_margin <- function(object, data, v, cond_set) {
   }
 
   # Find specified c_{wv|cond_set_minus_w}
-  w = NULL
-  for (i_w in 1:length(cond_set_dependent)) {
-    w_proposed = cond_set_dependent[i_w]
-    cond_set_minus_w = cond_set_dependent[-i_w]
-    if (is_cond_copula_specified(DAG = DAG, order_hash = order_hash,
-                                 w = w_proposed, v = v,
-                                 cond = cond_set_minus_w)) {
-      w = w_proposed
-      break
-    }
-  }
-  if (is.null(w)) {
-    stop("no specified conditional copula found in `compute_sample_margin`.\n",
-         "Check that the PCBN satisfies the restrictions ",
-         "and that the orders of the parents are all compatible.")
-  }
+  cop_specified = find_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+                                             v = v, cond = cond_set_dependent)
+  w = cop_specified$w
+  cond_set_minus_w = cop_specified$cond_set_minus_w
 
   # we must have w->v or v<-w
   if (copula_mat$fam[w, v] != 0) {

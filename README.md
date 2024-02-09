@@ -37,7 +37,8 @@ Development of the PCBN package
 
 - File `CopulaAssignement.R`
 
-  - `is_cond_copula_specified()` is already checked and working.
+  - `is_cond_copula_specified()` and `find_cond_copula_specified()` are
+    already checked and working.
 
 - File `functions.R`
 

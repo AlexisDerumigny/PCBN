@@ -247,3 +247,72 @@ is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
   }
   return(FALSE)
 }
+
+
+
+#' Find among parents of a node, the one that has a conditional copula specified
+#'
+#' @param DAG Directed Acyclic Graph object corresponding to the model
+#' @param order_hash hashmap of orders of the parental sets
+#' @param v node in DAG
+#' @param cond vector of nodes in DAG. This must not be empty.
+#' It is assumed that conditionally independent nodes have already been
+#' removed by the function \code{\link{remove_CondInd}}.
+#'
+#' @returns a list with \itemize{
+#'    \item a node \code{w} such that the conditional copula
+#'    \eqn{C_{w, v | cond[-v]}} has been specified in the model.
+#'
+#'    If no such node can be found, an error message is raised.
+#'
+#'    \item the set \code{cond[-v]}
+#' }
+#'
+#' @examples
+#'
+#' DAG = create_DAG(3)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#'
+#' order_hash = r2r::hashmap()
+#' order_hash[['U3']] = c("U1", "U2")
+#'
+#' find_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+#'                            v = "U3", cond = c("U1"))
+#' # returns "U1" because the copula c_{1,3} is known
+#'
+#' find_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+#'                            v = "U3", cond = c("U1", "U2"))
+#' # returns "U2" because the copula c_{2,3|1} is known
+#'
+#'
+#' @export
+#'
+find_cond_copula_specified <- function(DAG, order_hash, v, cond)
+{
+  # Find specified c_{wv|cond_set_minus_w}
+  w = NULL
+  for (i_w in 1:length(cond)) {
+    w_proposed = cond[i_w]
+    cond_set_minus_w = cond[-i_w]
+    if (is_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+                                 w = w_proposed, v = v,
+                                 cond = cond_set_minus_w)) {
+      w = w_proposed
+      break
+    }
+  }
+  if (is.null(w)) {
+    if (length(cond) == 0){
+      stop("'find_cond_copula_specified' should not be called ",
+           "with an empty conditioning set.")
+    }
+    stop("no specified conditional copula found.\n",
+         "We are at node: ", v, " and the conditioning set is: ", cond, "\n",
+         "Check that the PCBN satisfies the restrictions ",
+         "and that the orders of the parents are all compatible.")
+  }
+
+  return (list(w = w, cond_set_minus_w = cond_set_minus_w))
+}
+
