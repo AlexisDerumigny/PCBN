@@ -1,8 +1,9 @@
-test_that("is_cond_copula_specified works for 3 dimensional example", {
+test_that("is_cond_copula_specified works for 4 dimensional example", {
 
-  DAG = create_DAG(3)
+  DAG = create_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
 
   order_hash = r2r::hashmap()
   order_hash[['U3']] = c("U1", "U2")
@@ -24,10 +25,16 @@ test_that("is_cond_copula_specified works for 3 dimensional example", {
   expect_true(is_cond_copula_specified(DAG = DAG, order_hash = order_hash,
                                        w = "U3", v = "U2", cond = c("U1")))
   # returns TRUE because the copula c_{2,3 | 1} is known
+
+  expect_true(is_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+                                       w = "U3", v = "U4", cond = c()) )
+  expect_true(is_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+                                       w = "U4", v = "U3", cond = c()) )
+  # returns TRUE because the copula c_{3,4} is known
 })
 
 
-test_that("find_cond_copula_specified works for 1 dimensional example", {
+test_that("find_cond_copula_specified works for 4 dimensional example", {
 
 
   DAG = create_DAG(4)
