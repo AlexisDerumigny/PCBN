@@ -41,6 +41,10 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
                          order_hash = order_hash, e = e))
   }
 
+  # If the conditioning set is null,
+  # we assume it means that there is no conditioning, i.e. a vector of size 0
+  if (is.null(cond_set)) {cond_set = character(0)}
+
   # We look for the copula in the hash.
   copula_key = e$keychain[[list(margins = c(v, w), cond = cond_set)]]
   if (!is.null(copula_key))

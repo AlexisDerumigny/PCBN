@@ -24,9 +24,14 @@ test_that("BiCopCondFit works", {
 
   e = default_envir()
 
-  BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U2",
-               cond_set = c(), familyset = 1, order_hash = order_hash,
-               e = e)
+  C_12 = BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U2",
+                      cond_set = c(), familyset = 1, order_hash = order_hash,
+                      e = e)
+
+  C_12_direct = VineCopula::BiCopSelect(mydata[, "U1"], mydata[, "U2"], familyset = 1)
+
+  expect_equal(C_12$tau, C_12_direct$tau)
+
   ls(e)
 
   length(r2r::keys(e$keychain))
@@ -44,9 +49,17 @@ test_that("BiCopCondFit works", {
 
   e$keychain[[r2r::keys(e$keychain)[[1]]]]
 
-  BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",
-               cond_set = c(), familyset = 1, order_hash = order_hash,
-               e = e)
+  C_13 = BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",
+                      cond_set = c(), familyset = 1, order_hash = order_hash,
+                      e = e)
+
+  C_13_direct = VineCopula::BiCopSelect(mydata[, "U1"], mydata[, "U3"], familyset = 1)
+
+  expect_equal(C_13$tau, C_13_direct$tau)
+
+  # Both copulas are different, so the keys should also be different
+  expect_true(! identical(e$keychain[[list(margins = c("U1", "U2"), cond = character(0))]] ,
+                          e$keychain[[list(margins = c("U1", "U3"), cond = character(0))]] ) )
 
   length(r2r::keys(e$keychain))
   for (i in 1:9){
@@ -68,4 +81,52 @@ test_that("BiCopCondFit works", {
                cond_set = c("U1", "U2"), familyset = 1, order_hash = order_hash,
                e = e)
 
+
+  C_12_again = BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U2",
+                            cond_set = c(), familyset = 1, order_hash = order_hash,
+                            e = e)
+
+  expect_equal(C_12_again$tau, C_12_direct$tau)
+
 })
+
+
+
+test_that("BiCopCondFit works", {
+  DAG = create_DAG(4)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+
+  order_hash = r2r::hashmap()
+  order_hash[['U4']] = c("U2", "U1", "U3")
+
+  fam = matrix(c(0, 1, 1, 1,
+                 0, 0, 1, 1,
+                 0, 0, 0, 1,
+                 0, 0, 0, 0), byrow = TRUE, ncol = 4)
+
+  tau = 0.2 * fam
+
+  my_PCBN = new_PCBN(
+    DAG, order_hash,
+    copula_mat = list(tau = tau, fam = fam))
+
+  mydata = sample_PCBN(my_PCBN, N = 100)
+
+  e = default_envir()
+
+  U1 = ComputeCondMargin(data = mydata, DAG = my_PCBN, v = "U1", cond_set = NULL,
+                         familyset = 1, order_hash = order_hash,
+                         e = e)
+
+  expect_identical(U1, mydata[, "U1"])
+
+  key_U1 = list(margin = "U1", cond = character(0))
+  expect_true(r2r::has_key(x = e$keychain, key_U1))
+
+  expect_identical(key_U1, e$keychain[[key_U1]])
+})
+
