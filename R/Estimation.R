@@ -128,7 +128,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
   # If there are no more elements in cond_set
   # this means that we are in the case of an unconditional margin
   if (length(cond_set) == 0){
-    v_key_result = list(margin = v, cond = cond_set)
+    v_key_result = list(margin = v, cond = character(0))
     # We can just save this in the hashmap
     e$margin_hash[[v_key_result]] = data[, v]
     # and the margin information in the keychain
@@ -172,7 +172,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
   }
 
   # We look for the copula in the hash.
-  copula_key = e$keychain[[list(margins = sort(v, w), cond = cond_set_minus_w)]]
+  copula_key = e$keychain[[list(margins = sort(c(v, w)), cond = cond_set_minus_w)]]
   if (is.null(copula_key)){
     # The key for this conditional copula is not present
     # so we rebuild it ourselves, from the two (conditional) marginal keys
@@ -194,7 +194,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
   # 4- We get the copula =======================================================
 
   # We try to get the copula from the hash
-  C_wv = copula_hash[[copula_key]]
+  C_wv = e$copula_hash[[copula_key]]
 
   # If our copula is not in the hash map -> fit it!
   if (is.null(C_wv)){
