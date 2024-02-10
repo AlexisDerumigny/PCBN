@@ -34,6 +34,28 @@ test_that("is_cond_copula_specified works for 4 dimensional example", {
 })
 
 
+test_that("is_cond_copula_specified works for another 4 dimensional example", {
+
+  DAG = create_DAG(4)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+
+  order_hash = r2r::hashmap()
+  order_hash[['U4']] = c("U2", "U1", "U3")
+
+  expect_true(is_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+                                       w = "U2", v = "U4",
+                                       cond = NULL))
+
+  expect_true(is_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+                                       w = "U4", v = "U2",
+                                       cond = NULL))
+})
+
+
 test_that("find_cond_copula_specified works for 4 dimensional example", {
 
 

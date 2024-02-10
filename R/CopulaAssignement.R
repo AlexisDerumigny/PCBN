@@ -225,7 +225,12 @@ is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
   if (dsep_set(DAG, w, v, cond)){
     return(TRUE)
   }
-  parents_v = bnlearn::parents(x = DAG, node = v)
+
+  # If there is a value in 'order_hash[[v]]', we should use this
+  # as the order. But if it is null, 'v' may still have at most
+  # one parent.
+  parents_v = if(!is.null(order_hash[[v]])) {
+    order_hash[[v]]} else {bnlearn::parents(x = DAG, node = v)}
   if (w %in% parents_v){
     index_w_in_parents = which(parents_v == w)
     parents_up_to_w = if(index_w_in_parents == 1) { c() } else {
@@ -235,7 +240,12 @@ is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
       return(TRUE)
     }
   }
-  parents_w = bnlearn::parents(x = DAG, node = w)
+
+  # If there is a value in 'order_hash[[w]]', we should use this
+  # as the order. But if it is null, 'w' may still have at most
+  # one parent.
+  parents_w = if(!is.null(order_hash[[w]])) {
+    order_hash[[w]]} else {bnlearn::parents(x = DAG, node = w)}
   if (v %in% parents_w){
     index_v_in_parents = which(parents_w == v)
     parents_up_to_v = if(index_v_in_parents == 1) { c() } else {
