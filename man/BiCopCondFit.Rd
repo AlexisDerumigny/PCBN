@@ -5,17 +5,7 @@
 \title{Fits the copula joining w and v given cond_set abiding
 by the conditional independencies of the graph}
 \usage{
-BiCopCondFit(
-  data,
-  DAG,
-  w,
-  v,
-  cond_set,
-  familyset,
-  order_hash,
-  margin_hash,
-  copula_hash
-)
+BiCopCondFit(data, DAG, v, w, cond_set, familyset, order_hash, e, verbose = 1)
 }
 \arguments{
 \item{data}{data frame}
@@ -24,13 +14,17 @@ BiCopCondFit(
 
 \item{v, w}{nodes of the graph}
 
-\item{cond_set}{vector of nodes of DAG in the conditioning set}
+\item{cond_set}{vector of nodes of DAG. They should all be parents of v.
+They should be ordered from the smallest to the biggest.}
 
 \item{familyset}{vector of copula families}
 
 \item{order_hash}{hashmap of parental orders}
 
-\item{margin_hash, copula_hash}{hashmaps containing already estimated objects}
+\item{e}{environment containing all the hashmaps}
+
+\item{verbose}{if \code{0}, don't print anything.
+If \code{verbose = 1}, print information about the fitting procedure.}
 }
 \value{
 copula object
