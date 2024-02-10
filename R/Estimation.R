@@ -26,10 +26,13 @@ default_envir <- function(){
 #' @param familyset vector of copula families
 #' @param order_hash hashmap of parental orders
 #' @param e environment containing all the hashmaps
+#' @param verbose if \code{0}, don't print anything.
+#' If \code{verbose = 1}, print information about the fitting procedure.
 #'
 #' @returns copula object
 #'
-BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e)
+BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
+                         verbose = 1)
 {
   if (v > w){
     # We switch them. From now on, v < w
@@ -56,6 +59,7 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e)
 
     if (!is.null(v_key) && !is.null(w_key)){
       copula_key <- list(margin1 = v_key, margin2 = w_key)
+      e$keychain[[list(margins = c(v, w), cond = cond_set)]] <- copula_key
       C_wv = e$copula_hash[[copula_key]]
     } else {
       # key not available yet
@@ -71,12 +75,16 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e)
   # We now need to estimate the (conditional) copula
   # so we first get the two margins
   v_given_cond = ComputeCondMargin(data, DAG, v, cond_set, familyset, order_hash,
-                                   e = e)
+                                   e = e, verbose = verbose)
 
   w_given_cond = ComputeCondMargin(data, DAG, w, cond_set, familyset, order_hash,
-                                   e = e)
+                                   e = e, verbose = verbose)
 
   # We can now estimate the (simplified) conditional copula
+  if (verbose > 0){
+    cat("Estimating the copula of ", v, " and ", w,
+        if (length(cond_set)) {c(" given ", cond_set)} else {c()}, "\n")
+  }
   C_wv = VineCopula::BiCopSelect(w_given_cond, v_given_cond, familyset = familyset)
 
   if (is.null(copula_key)){
@@ -116,9 +124,11 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e)
 #' @param familyset vector of copula families
 #' @param order_hash hashmap of parental orders
 #' @param e environment containing all the hashmaps
+#' @param verbose if \code{0}, don't print anything.
+#' If \code{verbose = 1}, print information about the fitting procedure.
 #'
 ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
-                              e)
+                              e, verbose)
 {
   # Remove as much elements as possible by conditional independence
   cond_set = remove_CondInd(DAG, v, cond_set)
@@ -199,7 +209,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
   # If our copula is not in the hash map -> fit it!
   if (is.null(C_wv)){
     C_wv = BiCopCondFit(data, DAG, w, v, cond_set_minus_w, familyset, order_hash,
-                        e = e)
+                        e = e, verbose = verbose)
   }
 
   # 5- We get the two conditional margins ======================================
@@ -211,18 +221,21 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
     v_given_rest <- ComputeCondMargin(data = data, DAG = DAG, v = v,
                                       cond_set = cond_set_minus_w,
                                       familyset = familyset,
-                                      order_hash = order_hash, e = e)
+                                      order_hash = order_hash, e = e, verbose = verbose)
   }
   if (is.null(w_given_rest)){
     w_given_rest <- ComputeCondMargin(data = data, DAG = DAG, v = w,
                                       cond_set = cond_set_minus_w_simpW,
                                       familyset = familyset,
-                                      order_hash = order_hash, e = e)
+                                      order_hash = order_hash, e = e, verbose = verbose)
   }
 
   # 6- We compute the new conditional margin ===================================
 
   # Compute v|cond_set under the simplifying assumption
+  if (verbose > 0){
+    cat("Estimating the cond cdf of ", v, " given ", cond_set, "\n")
+  }
   v_given_cond = VineCopula::BiCopHfunc1(w_given_rest, v_given_rest,
                                          obj = C_wv)
 
