@@ -226,11 +226,7 @@ is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
     return(TRUE)
   }
 
-  # If there is a value in 'order_hash[[v]]', we should use this
-  # as the order. But if it is null, 'v' may still have at most
-  # one parent.
-  parents_v = if(!is.null(order_hash[[v]])) {
-    order_hash[[v]]} else {bnlearn::parents(x = DAG, node = v)}
+  parents_v = order_hash[[v]]
   if (w %in% parents_v){
     index_w_in_parents = which(parents_v == w)
     parents_up_to_w = if(index_w_in_parents == 1) { c() } else {
@@ -241,11 +237,7 @@ is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
     }
   }
 
-  # If there is a value in 'order_hash[[w]]', we should use this
-  # as the order. But if it is null, 'w' may still have at most
-  # one parent.
-  parents_w = if(!is.null(order_hash[[w]])) {
-    order_hash[[w]]} else {bnlearn::parents(x = DAG, node = w)}
+  parents_w = order_hash[[w]]
   if (v %in% parents_w){
     index_v_in_parents = which(parents_w == v)
     parents_up_to_v = if(index_v_in_parents == 1) { c() } else {
@@ -324,5 +316,75 @@ find_cond_copula_specified <- function(DAG, order_hash, v, cond)
   }
 
   return (list(w = w, cond_set_minus_w = cond_set_minus_w))
+}
+
+
+#' Complete an order and check whether these are valid orders on parents sets
+#'
+#' @param DAG the DAG
+#' @param order_hash the hashmaps of orders
+#'
+#' @returns \code{NULL}. This function has only side-effects,
+#' and modifies \code{order_hash}. It stops if the orders are not valid orders
+#' on the parents sets.
+#'
+#'
+#' @examples
+#'
+#' DAG = create_DAG(4)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#'
+#' order_hash = r2r::hashmap()
+#' try({complete_and_check_orders(DAG, order_hash)})
+#' # Error because the order of the parents on "U3" should be specified.
+#'
+#' order_hash[['U3']] = c("U1", "U2")
+#' complete_and_check_orders(DAG, order_hash)
+#' r2r::keys(order_hash)
+#' # We obtain "U3" and "U4" because they both have parents
+#'
+#' @export
+#'
+complete_and_check_orders <- function(DAG, order_hash)
+{
+  node.names = bnlearn::nodes(DAG)
+  for (i_node in 1:length(node.names)){
+    node = node.names[[i_node]]
+
+    parents = bnlearn::parents(x = DAG, node = node)
+
+    if (is.null(order_hash[[node]]))
+    {
+      if (length(parents) > 0){
+        if (length(parents) == 1){
+          # This is easy, there is only one parent so we add it to the hash
+          order_hash[[node]] <- parents
+        } else {
+          stop("Order missing for node '", node, "'.\n",
+               "You need to provide an order for the set of its parents, i.e. ",
+               dputCharacterVec(sort(parents)), ".\n",
+               "Remember that this order has to be compatible with all ",
+               "of the other orders in 'order_hash'.")
+        }
+      }
+    } else {
+      is_valid = identical( sort(parents), sort(order_hash[[node]]) )
+      if (! is_valid){
+        stop("Bad set of parents for node '", node, "'\n",
+             "Its parents are: ", dputCharacterVec(sort(parents)), "\n",
+             "But the order given by 'order_hash[[", node, "]] is", order_hash[[node]], ".")
+      }
+    }
+  }
+}
+
+
+# Nice printing of a character vector
+dputCharacterVec <- function (vec){
+  return (c("c(",
+            paste0(paste0("'", vec, "'"), collapse = ","),
+            ")"))
 }
 

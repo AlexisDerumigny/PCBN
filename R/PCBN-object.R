@@ -64,7 +64,8 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
          "where d is the number of nodes of DAG.")
   }
 
-  # FIXME: do some checks on order_hash
+  # Check 'order_hash' and complete if necessary
+  complete_and_check_orders(DAG, order_hash)
 
   # Checking the matching of colnames/rownames to the names of the nodes
   nodes_names = bnlearn::nodes(DAG)

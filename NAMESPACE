@@ -2,6 +2,7 @@
 
 S3method(plot,PCBN)
 S3method(print,PCBN)
+export(complete_and_check_orders)
 export(compute_sample_margin)
 export(create_DAG)
 export(find_cond_copula_specified)
