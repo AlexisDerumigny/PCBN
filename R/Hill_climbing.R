@@ -9,7 +9,7 @@
 #' @param start starting Directed Acyclic Graph
 #' @param familyset vector of copula families
 #' @param debug to print debug information
-#' @param margin_hash,copula_hash hashmaps containing already estimated objects
+#' @param e environment containing all the hashmaps
 #'
 #'
 #' @returns DAG which locally maximizes BIC based score function
@@ -46,11 +46,8 @@
 #'
 #' @export
 #'
-hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE,
-                               copula_hash = r2r::hashmap(),
-                               margin_hash = r2r::hashmap())
+hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE, e)
 {
-
   nodes = names(data)
   n.nodes = length(nodes)
   adj.mat = bnlearn::amat(start)
@@ -79,8 +76,7 @@ hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE,
 
     # Compute data frame with the score delta of each operation
     df = operation_score_deltas(data, DAG, familyset, reference, allowed.operations,
-                                copula_hash = copula_hash,
-                                margin_hash = margin_hash)
+                                e = e)
 
     ## Select best operation based on column order
     bestop = df[which.max(df$score.delta),]
@@ -120,7 +116,8 @@ hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE,
 
 # Computes the score delta for all allowed operations
 operation_score_deltas = function(data, DAG, familyset, reference, allowed.operations,
-                                  copula_hash, margin_hash){
+                                  e)
+{
   nodes = names(data)
   n.nodes = length(nodes)
   adj.mat = bnlearn::amat(DAG)
@@ -135,9 +132,7 @@ operation_score_deltas = function(data, DAG, familyset, reference, allowed.opera
     DAG_new = apply.operation(DAG, op)
 
     # Fit all possible orders
-    fitted = fit_all_orders(data, DAG_new, familyset,
-                            copula_hash = copula_hash,
-                            margin_hash = margin_hash)
+    fitted = fit_all_orders(data, DAG_new, familyset, e = e)
     score.delta = fitted$best_fit$metrics$BIC - reference
 
 

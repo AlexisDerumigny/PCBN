@@ -261,20 +261,17 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 #' @param data data frame
 #' @param DAG Directed Acyclic Graph
 #' @param familyset vector of copula families
-#' @param margin_hash,copula_hash hashmaps containing already estimated objects
+#' @param e environment containing all the hashmaps
 #'
 #' @returns list containing best fit and all fitted models
 #'
 fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
-                           copula_hash = r2r::hashmap(),
-                           margin_hash = r2r::hashmap())
+                           e)
 {
   all_orders = find_all_orders(DAG)
   fitted_list = list()
   for (order in all_orders) {
-    fitted_PCBN = fit_copulas(data, DAG, order, familyset,
-                              copula_hash = copula_hash,
-                              margin_hash = margin_hash)
+    fitted_PCBN = fit_copulas(data, DAG, order, familyset, e = e)
 
     fitted_list[[length(fitted_list) + 1]] = fitted_PCBN
   }
@@ -296,7 +293,7 @@ fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
 #' @param DAG Directed Acyclic Graph
 #' @param order_hash hashmap of parental orders
 #' @param familyset vector of copula families
-#' @param margin_hash,copula_hash hashmaps containing already estimated objects
+#' @param e environment containing all the hashmaps
 #'
 #' @returns all fitted copulas
 #'
@@ -306,7 +303,7 @@ fit_copulas <- function(data,
                         DAG,
                         order_hash,
                         familyset = c(1, 3, 4, 5, 6),
-                        margin_hash, copula_hash) {
+                        e) {
   tau = bnlearn::amat(DAG)
   fam = bnlearn::amat(DAG)
 
@@ -323,9 +320,7 @@ fit_copulas <- function(data,
         parents_up_to_w = if (i_parent == 1) {c()
         } else {parents[1:(i_parent - 1)]}
 
-        C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset, order_hash,
-                         copula_hash = copula_hash,
-                         margin_hash = margin_hash)
+        C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset, order_hash, e = e)
         from = i_parent
 
         # FIXME: we can get a small performance speedup by removing

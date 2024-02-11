@@ -4,14 +4,7 @@
 \alias{hill.climbing.PCBN}
 \title{Hill climbing algorithm for restricted PCBNs}
 \usage{
-hill.climbing.PCBN(
-  data,
-  start,
-  familyset,
-  debug = FALSE,
-  copula_hash = r2r::hashmap(),
-  margin_hash = r2r::hashmap()
-)
+hill.climbing.PCBN(data, start, familyset, debug = FALSE, e)
 }
 \arguments{
 \item{data}{data frame}
@@ -22,7 +15,7 @@ hill.climbing.PCBN(
 
 \item{debug}{to print debug information}
 
-\item{margin_hash, copula_hash}{hashmaps containing already estimated objects}
+\item{e}{environment containing all the hashmaps}
 }
 \value{
 DAG which locally maximizes BIC based score function
