@@ -157,7 +157,7 @@ test_that("BiCopCondFit completes the hashmaps as needed", {
 
 
 
-test_that("BiCopCondFit works", {
+test_that("ComputeCondMargin works", {
   DAG = create_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
@@ -186,7 +186,7 @@ test_that("BiCopCondFit works", {
 
   U1 = ComputeCondMargin(data = mydata, DAG = my_PCBN, v = "U1", cond_set = NULL,
                          familyset = 1, order_hash = order_hash,
-                         e = e)
+                         e = e, verbose = 0)
 
   expect_identical(U1, mydata[, "U1"])
 
