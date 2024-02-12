@@ -66,7 +66,7 @@ make_and_store_keyMargin <- function(v, cond, copula_key, e)
   margin_key = list(name = print_key_keychain(key_keychain),
                     margin = v, cond = cond, copula = copula_key)
 
-  e$keychain[[key_keychain]] = copula_key
+  e$keychain[[key_keychain]] = margin_key
   return (margin_key)
 }
 
