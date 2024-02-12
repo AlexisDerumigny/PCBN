@@ -2,7 +2,7 @@
 % Please edit documentation in R/Graph.R
 \name{remove_CondInd}
 \alias{remove_CondInd}
-\title{Remove all possible elements form conditioning set}
+\title{Remove elements from a conditioning set by using conditional independence}
 \usage{
 remove_CondInd(DAG, node, cond_set)
 }
@@ -17,7 +17,7 @@ remove_CondInd(DAG, node, cond_set)
 a vector containing the nodes not removable from the conditioning set
 }
 \description{
-Remove all possible elements form conditioning set
+Remove elements from a conditioning set by using conditional independence
 }
 \examples{
 

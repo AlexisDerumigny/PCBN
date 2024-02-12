@@ -1,4 +1,4 @@
-#' Remove all possible elements form conditioning set
+#' Remove elements from a conditioning set by using conditional independence
 #'
 #' @param DAG Directed Acyclic Graph
 #' @param node node

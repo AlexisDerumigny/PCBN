@@ -21,15 +21,27 @@ Development of the PCBN package
   order of the parents are not chosen in the correct way (even though
   the graph may not have any active cycle nor interfering v-structure).
 
+- File `tag_PCBN.R` : contains some utilities about the tag/hashmap
+  system for storing estimated copulas and estimated conditional
+  margins.
+
+  The functions are: `paste_margin()`, `unpaste_margin()`,
+  `print_key_keychain()`, `make_and_store_keyCopula()` and
+  `make_and_store_keyMargin()`.
+
 # Plan for future work
 
+- File `Estimation.R` : rewriting in progress.
+
+  - `BiCopCondFit()` and `ComputeCondMargin()` have been rewritten.
+
+  A vignette *“How to use the estimation procedures”* has been written
+  to explain how these functions work.
+
+  - **TODO:** `fit_copulas()` and `fit_all_orders()` will be checked
+    soon.
+
 ## Files to be checked soon
-
-- File `tag_PCBN.R`
-
-  The plan is to redo / document the tag system.
-
-- File `Estimation.R`
 
 - File `Hill_climbing.R`
 
@@ -37,8 +49,11 @@ Development of the PCBN package
 
 - File `CopulaAssignement.R`
 
-  - `is_cond_copula_specified()` and `find_cond_copula_specified()` are
-    already checked and working.
+  - `is_cond_copula_specified()`
+  - `find_cond_copula_specified()`
+  - `complete_and_check_orders()`
+
+  are already checked and working.
 
 - File `functions.R`
 

@@ -6,6 +6,7 @@ test_that("compute_sample_margin works", {
 
   order_hash = r2r::hashmap()
   order_hash[['U3']] = c("U1", "U2")
+  complete_and_check_orders(DAG, order_hash)
 
   fam = matrix(c(0, 1, 1,
                  0, 0, 1,

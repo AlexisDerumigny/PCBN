@@ -4,14 +4,7 @@
 \alias{fit_copulas}
 \title{Fit the copulas of a PCBN given data}
 \usage{
-fit_copulas(
-  data,
-  DAG,
-  order_hash,
-  familyset = c(1, 3, 4, 5, 6),
-  margin_hash,
-  copula_hash
-)
+fit_copulas(data, DAG, order_hash, familyset = c(1, 3, 4, 5, 6), e)
 }
 \arguments{
 \item{data}{data frame}
@@ -22,7 +15,7 @@ fit_copulas(
 
 \item{familyset}{vector of copula families}
 
-\item{margin_hash, copula_hash}{hashmaps containing already estimated objects}
+\item{e}{environment containing all the hashmaps}
 }
 \value{
 all fitted copulas
