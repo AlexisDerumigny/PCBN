@@ -54,7 +54,7 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
     # We look for the keys of the two conditional margins in the hash
     # We try to simplify the conditioning set first
 
-    cond_set_v = remove_CondInd(DAG, w, cond_set)
+    cond_set_v = remove_CondInd(DAG, v, cond_set)
     v_key = e$keychain[[list(margin = v, cond = cond_set_v)]]
 
     # We try to simplify the conditioning set for w
