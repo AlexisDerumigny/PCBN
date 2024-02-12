@@ -198,14 +198,17 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
   w = cop_specified$w
   cond_set_minus_w = cop_specified$cond_set_minus_w
 
+  # We try to simplify this new conditioning set
+  cond_set_minus_w_simpV = remove_CondInd(DAG, v, cond_set_minus_w)
+
 
   # 3- We find all necessary keys ==============================================
 
   # We look for the two conditional margins in the hash
-  v_key = e$keychain[[list(margin = v, cond = cond_set_minus_w)]]
+  v_key = e$keychain[[list(margin = v, cond = cond_set_minus_w_simpV)]]
   if (is.null(v_key)){
-    stop("The conditional margin ", v, " | ", cond_set_minus_w,
-         "is not available.")
+    stop("The conditional margin ", v, " | ", cond_set_minus_w_simpV,
+         " is not available.")
   }
 
   # We try to simplify the conditioning set for w
@@ -213,7 +216,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
   w_key = e$keychain[[list(margin = w, cond = cond_set_minus_w_simpW)]]
   if (is.null(w_key)){
     stop("The conditional margin ", w, " | ", cond_set_minus_w_simpW,
-         "is not available.")
+         " is not available.")
   }
 
   # We look for the copula in the hash.
