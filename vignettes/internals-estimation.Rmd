@@ -1,0 +1,243 @@
+---
+title: "How to use the estimation procedures"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to use the estimation procedures}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+collapse = TRUE,
+comment = "#>"
+)
+```
+
+```{r setup}
+library(PCBN)
+```
+
+# Data simulation
+
+```{r}
+DAG = create_DAG(7)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U4', 'U6')
+DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
+DAG = bnlearn::set.arc(DAG, 'U4', 'U7')
+DAG = bnlearn::set.arc(DAG, 'U6', 'U7')
+```
+
+
+```{r, fig.height=8, fig.width=8}
+DAG |> bnlearn::as.igraph() |>
+  igraph::plot.igraph(size = 20, label.cex = 2
+                      # , layout = igraph::layout_as_tree
+  )
+```
+
+
+```{r}
+order_hash = r2r::hashmap()
+order_hash[['U4']] = c("U2", "U1", "U3")
+order_hash[['U6']] = c("U4", "U5")
+order_hash[['U7']] = c("U4", "U6")
+complete_and_check_orders(DAG, order_hash)
+
+fam = matrix(c(0, 1, 1, 1, 1, 1, 1,
+               0, 0, 1, 1, 1, 1, 1,
+               0, 0, 0, 1, 1, 1, 1,
+               0, 0, 0, 0, 1, 1, 1,
+               0, 0, 0, 0, 0, 1, 1,
+               0, 0, 0, 0, 0, 0, 1,
+               0, 0, 0, 0, 0, 0, 0), 
+             byrow = TRUE, ncol = 7)
+tau = 0.2 * fam
+
+my_PCBN = new_PCBN(
+  DAG, order_hash,
+  copula_mat = list(tau = tau, fam = fam))
+
+N = 100
+mydata = sample_PCBN(my_PCBN, N = N)
+```
+
+
+# Estimation
+
+
+## Copula of U1 and U2
+
+We prepare the environment for storing the results.
+
+```{r}
+e = default_envir()
+```
+
+We start by fitting the copula of $(U_1, U_2)$.
+
+```{r}
+BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U2",
+             cond_set = c(), familyset = 1, order_hash = order_hash, e = e)
+```
+
+This is stored in `e$copula_hash`.
+To access it, we can do:
+
+```{r}
+copula_key = e$keychain[[list(margins = c("U1", "U2"), cond = character(0))]]
+
+e$copula_hash[[copula_key]]
+```
+
+There is a level of indirection, because the `copula_key` actually stores the
+whole computation tree. Therefore, if the statistician decides to use a
+different PCBN for the same structure, some estimated parts can be reused if
+the computation path is the same.
+
+Let's see what is actually the `copula_key`.
+```{r}
+print(data.tree::FromListSimple(copula_key))
+```
+
+
+## Copulas related to U3 and U4
+
+In the same way as before, we fit the copula of $(U_1, U_3)$.
+
+```{r}
+BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",
+             cond_set = c(), familyset = 1, order_hash = order_hash,
+             e = e)
+```
+
+Remember that the ordered parents of $U_4$ are $U_2$, $U_1$ and $U_3$.
+Therefore, we fit first the copula of $(U_2, U_4)$.
+
+```{r}
+BiCopCondFit(data = mydata, DAG = DAG, v = "U2", w = "U4",
+             cond_set = c(), familyset = 1, order_hash = order_hash,
+             e = e)
+```
+
+Then, we fit the copula of $(U_1, U_4) \, | \, U_2$.
+
+```{r}
+BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U4",
+             cond_set = c("U2"), familyset = 1, order_hash = order_hash,
+             e = e)
+```
+
+Finally, we fit the copula of $(U_3, U_4) \, | \, U_1, U_2$.
+
+```{r}
+BiCopCondFit(data = mydata, DAG = DAG, v = "U3", w = "U4",
+             cond_set = c("U1", "U2"), familyset = 1, order_hash = order_hash,
+             e = e)
+```
+
+## Corresponding computation trees of the copulas
+
+The computation trees of these copulas can be found as before.
+
+
+```{r}
+e$keychain[[list(margins = c("U2", "U4"), cond = character(0))]] |>
+  data.tree::FromListSimple() |>
+  print()
+```
+
+```{r}
+e$keychain[[list(margins = c("U1", "U4"), cond = c("U2"))]] |>
+  data.tree::FromListSimple() |>
+  print()
+```
+
+
+```{r}
+e$keychain[[list(margins = c("U3", "U4"), cond = c("U1", "U2"))]] |>
+  data.tree::FromListSimple() |>
+  print()
+```
+
+## Corresponding computation trees of the margins
+
+
+In the same way, we obtain the computation tree of the margin
+$U_4 \, | \, U_1, U_2$ by:
+
+```{r}
+e$keychain[[list(margin = c("U4"), cond = c("U1", "U2"))]] |>
+  data.tree::FromListSimple() |>
+  print()
+```
+
+You can remark that this is a sub-tree of the computation tree of the copula
+of $(U_3, U_4) \, | \, U_1, U_2$. This is coherent, because we needed the
+margin $U_4 \, | \, U_1, U_2$ to estimate this copula.
+Nevertheless, note that
+```{r}
+e$keychain[[list(margin = c("U3"), cond = c("U1", "U2"))]]
+```
+
+This is because the margin $U_3 \, | \, U_1, U_2$ is actually the same as
+$U_3 \, | \, U_1$ by conditional independence.
+This can be seen using this function:
+```{r}
+remove_CondInd(DAG = DAG, node = "U3", cond_set = c("U1", "U2"))
+```
+
+## Conditional marginal pseudo-observations
+
+The conditional marginal pseudo-observations can be found in `e$margin_hash`.
+For example, the conditional pseudo-observations $\hat U_{i, \, 3|1}$, 
+$i=1, \dots, n$, can be obtained by:
+
+```{r}
+e$margin_hash[[ e$keychain[[list(margin = c("U3"), cond = c("U1"))]] ]]  |>
+  head()
+```
+
+These conditional margins are internally computed by the
+function `ComputeCondMargin`.
+
+
+# Fitting the rest of the DAG
+
+## Copulas related to the node U6
+
+
+```{r}
+BiCopCondFit(data = mydata, DAG = DAG, v = "U4", w = "U6",
+             cond_set = c(), familyset = 1, order_hash = order_hash,
+             e = e)
+```
+
+```{r}
+BiCopCondFit(data = mydata, DAG = DAG, v = "U5", w = "U6",
+             cond_set = c("U4"), familyset = 1, order_hash = order_hash,
+             e = e)
+```
+
+
+## Copulas related to the node U7
+
+
+```{r}
+BiCopCondFit(data = mydata, DAG = DAG, v = "U4", w = "U7",
+             cond_set = c(), familyset = 1, order_hash = order_hash,
+             e = e)
+```
+
+```{r}
+BiCopCondFit(data = mydata, DAG = DAG, v = "U6", w = "U7",
+             cond_set = c("U4"), familyset = 1, order_hash = order_hash,
+             e = e)
+```
+
