@@ -53,17 +53,16 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
   } else {
     # We look for the keys of the two conditional margins in the hash
     # We try to simplify the conditioning set first
-
     cond_set_v = remove_CondInd(DAG, v, cond_set)
     v_key = e$keychain[[list(margin = v, cond = cond_set_v)]]
 
-    # We try to simplify the conditioning set for w
     cond_set_w = remove_CondInd(DAG, w, cond_set)
     w_key = e$keychain[[list(margin = w, cond = cond_set_w)]]
 
     if (!is.null(v_key) && !is.null(w_key)){
-      copula_key <- list(margin1 = v_key, margin2 = w_key)
-      e$keychain[[list(margins = c(v, w), cond = cond_set)]] <- copula_key
+      copula_key <- make_and_store_keyCopula(v = v, w = w, cond = cond_set,
+                                             v_key = v_key, w_key = w_key, e = e)
+
       C_wv = e$copula_hash[[copula_key]]
     } else {
       # key not available yet
@@ -97,11 +96,8 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
 
     # The key for this conditional copula is not present
     # so we rebuild it ourselves, from the two (conditional) marginal keys
-
-    # The copula key is just the (ordered) list of the two keys of the
-    # (conditional) margins.
-    e$keychain[[list(margins = c(v, w), cond = cond_set)]] <- copula_key <-
-      list(margin1 = v_key, margin2 = w_key)
+    copula_key <- make_and_store_keyCopula(v = v, w = w, cond = cond_set,
+                                           v_key = v_key, w_key = w_key, e = e)
   }
 
   # We finally store the copula in the hash
@@ -190,19 +186,13 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
   if (is.null(copula_key)){
     # The key for this conditional copula is not present
     # so we rebuild it ourselves, from the two (conditional) marginal keys
-
-    # The copula key is just the ordered list of the two ordered keys of the
-    # (conditional) margins.
     if (v < w){
-      e$keychain[[list(margins = c(v, w), cond = cond_set_minus_w)]] <-
-        copula_key <-
-        list(margin1 = v_key, margin2 = w_key)
+      copula_key <- make_and_store_keyCopula(v = v, w = w, cond = cond_set_minus_w,
+                                             v_key = v_key, w_key = w_key, e = e)
     } else {
-      e$keychain[[list(margins = c(w, v), cond = cond_set_minus_w)]] <-
-        copula_key <-
-        list(margin1 = w_key, margin2 = v_key)
+      copula_key <- make_and_store_keyCopula(v = w, w = v, cond = cond_set_minus_w,
+                                             v_key = w_key, w_key = v_key, e = e)
     }
-
   }
 
   # 4- We get the copula =======================================================
