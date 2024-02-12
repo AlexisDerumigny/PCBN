@@ -1,11 +1,10 @@
 
-#' Default starting environment
+# Default starting environment
 #'
-#' @examples
-#' e = default_envir()
-#' ls(e)
 #'
-#' @noRd
+#' @rdname BiCopCondFit
+#' @export
+#'
 default_envir <- function(){
   e = new.env()
   e$copula_hash = r2r::hashmap()
@@ -29,7 +28,50 @@ default_envir <- function(){
 #' @param verbose if \code{0}, don't print anything.
 #' If \code{verbose = 1}, print information about the fitting procedure.
 #'
-#' @returns copula object
+#' @return \code{default_envir} returns an environment to be passed
+#' to \code{BiCopCondFit} or to \code{ComputeCondMargin}. \code{BiCopCondFit}
+#' returns the fitted copula object of \code{v}, \code{w} given \code{cond_set}.
+#' \code{ComputeCondMargin} returns the fitted conditional margins of \code{v}
+#' given \code{cond_set}.
+#'
+#' Both functions store all intermediary results in \code{e} to save computation
+#' time.
+#'
+#' @examples
+#'
+#' DAG = create_DAG(3)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#'
+#' order_hash = r2r::hashmap()
+#' order_hash[['U3']] = c("U1", "U2")
+#'
+#' fam = matrix(c(0, 1, 1,
+#'                0, 0, 1,
+#'                0, 0, 0), byrow = TRUE, ncol = 3)
+#'
+#' tau = 0.2 * fam
+#'
+#' my_PCBN = new_PCBN(
+#'   DAG, order_hash,
+#'   copula_mat = list(tau = tau, fam = fam))
+#'
+#' mydata = sample_PCBN(my_PCBN, N = 5)
+#' e = default_envir()
+#' ls(e)
+#' C_13 = BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",
+#'                     cond_set = c(), familyset = 1, order_hash = order_hash,
+#'                     e = e)
+#'
+#' C_23_1 = BiCopCondFit(data = mydata, DAG = DAG, v = "U2", w = "U3",
+#'                       cond_set = "U1", familyset = 1, order_hash = order_hash,
+#'                       e = e)
+#'
+#' U_2_13 = ComputeCondMargin(data = mydata, DAG = DAG,
+#'                            v = "U2", cond_set = c("U1", "U3"),
+#'                            familyset = 1, order_hash = order_hash, e = e)
+#'
+#' @export
 #'
 BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
                          verbose = 1)
@@ -114,21 +156,13 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
 }
 
 
-#' Computes the margin v given cond_set abiding by the conditional independencies of the graph
+# Computation of conditional margins
+#' @rdname BiCopCondFit
 #'
-#' @param data data frame
-#' @param DAG Directed Ayclic Graph
-#' @param v node of the graph
-#' @param cond_set vector of nodes of DAG. They should all be parents of v.
-#' They should be ordered from the smallest to the biggest.
-#' @param familyset vector of copula families
-#' @param order_hash hashmap of parental orders
-#' @param e environment containing all the hashmaps
-#' @param verbose if \code{0}, don't print anything.
-#' If \code{verbose = 1}, print information about the fitting procedure.
+#' @export
 #'
 ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
-                              e, verbose)
+                              e, verbose = 1)
 {
   # Remove as much elements as possible by conditional independence
   cond_set = remove_CondInd(DAG, v, cond_set)
