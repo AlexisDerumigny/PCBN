@@ -104,11 +104,11 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
   e$copula_hash[[copula_key]] = C_wv
 
   # and we announce that two new conditional margins are available in the keychain
-  e$keychain[[list(margin = v, cond = sort(c(w, cond_set)))]] =
-    list(margin = v, copula = copula_key)
+  make_and_store_keyMargin(v = v, cond = sort(c(w, cond_set)),
+                           copula_key = copula_key, e = e)
 
-  e$keychain[[list(margin = w, cond = sort(c(v, cond_set)))]] =
-    list(margin = w, copula = copula_key)
+  make_and_store_keyMargin(v = w, cond = sort(c(v, cond_set)),
+                           copula_key = copula_key, e = e)
 
   return(C_wv)
 }
@@ -138,11 +138,12 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
   # If there are no more elements in cond_set
   # this means that we are in the case of an unconditional margin
   if (length(cond_set) == 0){
-    v_key_result = list(margin = v, cond = character(0))
+    v_key_result = make_and_store_keyMargin(v = v, cond = character(0),
+                                            copula_key = NULL, e = e)
     # We can just save this in the hashmap
     e$margin_hash[[v_key_result]] = data[, v]
     # and the margin information in the keychain
-    e$keychain[[v_key_result]] = v_key_result
+    e$keychain[[list(margin = v, cond = character(0))]] = v_key_result
 
     return (data[, v] )
   }
@@ -236,7 +237,8 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
   # 7- We save and return the result ===========================================
 
   # We can just save this in the hashmap
-  v_key_result = list(margin = v, copula = copula_key)
+  v_key_result = make_and_store_keyMargin(v = v, cond = cond_set,
+                                          copula_key = copula_key, e = e)
   e$margin_hash[[v_key_result]] = v_given_cond
 
   # and the key information in the keychain

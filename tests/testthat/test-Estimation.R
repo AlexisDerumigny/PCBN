@@ -115,7 +115,8 @@ test_that("BiCopCondFit completes the hashmaps as needed", {
   expect_identical(all_keys_keychain,
                    c("U1", "U1 | U2", "U1, U2", "U2", "U2 | U1") )
 
-  expect_equal(e$margin_hash[[ list(margin = c("U1"), cond = character(0)) ]] |>
+  expect_equal(e$margin_hash[[ list(name = "U1", margin = c("U1"),
+                                    cond = character(0), copula = NULL) ]] |>
                  length() ,
                N)
 
@@ -193,6 +194,8 @@ test_that("ComputeCondMargin works", {
   key_U1 = list(margin = "U1", cond = character(0))
   expect_true(r2r::has_key(x = e$keychain, key_U1))
 
-  expect_identical(key_U1, e$keychain[[key_U1]])
+  expect_identical(object = e$keychain[[key_U1]],
+                   expected = list(name = "U1", margin = "U1",
+                                   cond = character(0), copula = NULL) )
 })
 
