@@ -109,10 +109,10 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
 
   # and we announce that two new conditional margins are available in the keychain
   e$keychain[[list(margin = v, cond = sort(c(w, cond_set)))]] =
-    list(margin = v, cop = copula_key)
+    list(margin = v, copula = copula_key)
 
   e$keychain[[list(margin = w, cond = sort(c(v, cond_set)))]] =
-    list(margin = w, cop = copula_key)
+    list(margin = w, copula = copula_key)
 
   return(C_wv)
 }
