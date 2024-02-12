@@ -177,7 +177,7 @@ outgoing_arc <- function(DAG, w, v, order_v, order_hash){
       if (length(setdiff(order_v, union(o, pa_w_up_to_o)))==0){
         return(TRUE)
       } else if (sets::as.set(pa_w_up_to_o) < sets::as.set(order_w)){
-        if (dsep_set(DAG, w,setdiff(order_v, union(o, pa_w_up_to_o)), union(o, pa_w_up_to_o))){
+        if (dsep_set(DAG, w, setdiff(order_v, union(o, pa_w_up_to_o)), union(o, pa_w_up_to_o))){
           return(TRUE)
         }
       }

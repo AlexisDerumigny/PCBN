@@ -1,30 +1,3 @@
-#' D-separation of two nodes given a set in a DAG
-#'
-#' @param DAG Directed Acyclic Graph
-#' @param X node
-#' @param Y node
-#' @param Z set
-#'
-#' @return TRUE if the sets are d-separated and FALSE if not
-#'
-dsep_set <- function(DAG, X, Y, Z=c()){
-  dseparated = TRUE
-  for (x in X){
-    for (y in Y){
-      if (length(Z)==0){
-        if (!bnlearn::dsep(DAG,x,y)){
-          dseparated = FALSE
-        }
-      } else{
-        if (!bnlearn::dsep(DAG,x,y,Z)){
-          dseparated = FALSE
-        }
-      }
-    }
-  }
-  return(dseparated)
-}
-
 
 # Turns an order hash into a matrix
 order_hash_to_mat <- function(DAG, order_hash) {
