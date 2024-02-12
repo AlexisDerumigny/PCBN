@@ -49,11 +49,39 @@ create_DAG <- function(N_nodes){
     node.names[i] = paste("U",as.character(i),sep="")
   }
   DAG = bnlearn::empty.graph(node.names)
-  adj = matrix(0L, ncol = N_nodes, nrow = N_nodes, dimnames = list(node.names, node.names))
+  adj = matrix(0L, ncol = N_nodes, nrow = N_nodes,
+               dimnames = list(node.names, node.names))
   bnlearn::amat(DAG) = adj
   return(DAG)
 }
 
+
+#' D-separation of two nodes given a set in a DAG
+#'
+#' @param DAG Directed Acyclic Graph
+#' @param X node
+#' @param Y node
+#' @param Z set
+#'
+#' @return TRUE if the sets are d-separated and FALSE if not
+#'
+dsep_set <- function(DAG, X, Y, Z=c()){
+  dseparated = TRUE
+  for (x in X){
+    for (y in Y){
+      if (length(Z)==0){
+        if (!bnlearn::dsep(DAG,x,y)){
+          dseparated = FALSE
+        }
+      } else{
+        if (!bnlearn::dsep(DAG,x,y,Z)){
+          dseparated = FALSE
+        }
+      }
+    }
+  }
+  return(dseparated)
+}
 
 #' Checks if graph has interfering v-structures
 #'
@@ -69,8 +97,9 @@ interfering_vstrucs_check <- function(DAG){
 #'
 #' @param DAG A bnlearn graph object
 #'
-#' @returns A list of B-sets for each node, a boolean specifying if the graph contains interfering v-structures
-#' or not, and a list containing nodes forming the interfering v-structures.
+#' @returns A list of B-sets for each node, a boolean specifying
+#' if the graph contains interfering v-structures or not,
+#' and a list containing nodes forming the interfering v-structures.
 #'
 find_B_sets <- function(DAG) {
   interfering_vstrucs = FALSE
@@ -146,6 +175,7 @@ increasing_B_set_check <- function(B_set){
 #'
 #' @returns a list containing a boolean specifying if DAG contains active cycles,
 #' number of active cycles, and list of the active cycles.
+#'
 active_cycle_check <- function(DAG){
   node.names = bnlearn::nodes(DAG)
   adj.mat = bnlearn::amat(DAG)
@@ -165,7 +195,8 @@ active_cycle_check <- function(DAG){
           for (z in parents_up_to_w){
             # Parents must be non-adjacent
             if (adj.mat[w,z]==0 & adj.mat[z,w]==0){
-              # Parents in an active cycle are joined by a trail with no chords with no converging connection
+              # Parents in an active cycle are joined by a trail
+              # with no chords with no converging connection
               # consisting of nodes not adjacent to v (the undirected cycle has no chords)
 
               # This means that no node in pa(v) or ch(v) can be on the trail
@@ -173,7 +204,8 @@ active_cycle_check <- function(DAG){
               # 1: Turn DAG into undirected graph
               DAG_igraph = igraph::as.undirected(bnlearn::as.igraph(DAG))
               # 2: Remove all nodes in pa(v)\{w,z}, ch(v) and v
-              DAG_igraph = DAG_igraph - v - parents[which((parents != w) & (parents != z))] - children
+              DAG_igraph = DAG_igraph - v - parents[which((parents != w) &
+                                                            (parents != z))] - children
               # Find all undirected paths between w and z
               paths = igraph::all_simple_paths(DAG_igraph, w, z)
               # 3: Check for converging connections and chords
@@ -193,7 +225,9 @@ active_cycle_check <- function(DAG){
       }
     }
   }
-  res = list(active_cycles = active_cycles, N=length(active_cycle_list), active_cycle_list = active_cycle_list)
+  res = list(active_cycles = active_cycles,
+             N = length(active_cycle_list),
+             active_cycle_list = active_cycle_list)
   return(res)
 }
 
@@ -215,7 +249,8 @@ path_check <- function(DAG, path){
   for (i in 1:N){
     # Check vstrucs
     if (i > 1 & i < N-1){
-      if ((adj.mat[path.nodes[i-1], path.nodes[i]]==1) & (adj.mat[path.nodes[i+1], path.nodes[i]]==1)){
+      if ((adj.mat[path.nodes[i-1], path.nodes[i]]==1) &
+          (adj.mat[path.nodes[i+1], path.nodes[i]]==1)){
         no_chords_vstrucs = FALSE
       }
     }
@@ -223,7 +258,8 @@ path_check <- function(DAG, path){
     # Check chords
     if(i < length(path.nodes)-1){
       for(j in (i+2):N){ # Ensures that we don't check arcs twice
-        if (adj.mat[path.nodes[i],path.nodes[j]]+adj.mat[path.nodes[j],path.nodes[i]]>0){
+        if (adj.mat[path.nodes[i],path.nodes[j]] +
+            adj.mat[path.nodes[j],path.nodes[i]] > 0){
           no_chords_vstrucs = FALSE
         }
       }
@@ -266,7 +302,8 @@ DAG_to_restricted <- function(DAG) {
       for (i in 1:(length(B_sets) - 1)) {
         for (j in (i + 1):length(B_sets)) {
           # B_sets[i] not in B_sets[j]
-          if (!(sets::as.set(B_sets[[i]]) < sets::as.set(B_sets[[j]]))) {
+          if (!(sets::as.set(B_sets[[i]]) < sets::as.set(B_sets[[j]])))
+          {
             # Find all nodes b_q corresponding to B_sets[[j]]
             # A node b_q must be a child of all nodes in B_sets[[j]] and a child of node
             bqs = DAG$nodes[[node]]$children
