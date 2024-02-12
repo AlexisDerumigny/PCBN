@@ -1,33 +1,38 @@
-test_that("BiCopCondFit estimates the copulas well", {
 
-  # Setup code =============================================================
-  DAG = create_DAG(4)
-  DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+# Setup code ===================================================================
 
-  order_hash = r2r::hashmap()
-  order_hash[['U4']] = c("U2", "U1", "U3")
-  complete_and_check_orders(DAG, order_hash)
+DAG = create_DAG(4)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
 
-  fam = matrix(c(0, 1, 1, 1,
-                 0, 0, 1, 1,
-                 0, 0, 0, 1,
-                 0, 0, 0, 0), byrow = TRUE, ncol = 4)
+order_hash = r2r::hashmap()
+order_hash[['U4']] = c("U2", "U1", "U3")
+complete_and_check_orders(DAG, order_hash)
 
-  tau = 0.2 * fam
+fam = matrix(c(0, 1, 1, 1,
+               0, 0, 1, 1,
+               0, 0, 0, 1,
+               0, 0, 0, 0), byrow = TRUE, ncol = 4)
 
-  my_PCBN = new_PCBN(
-    DAG, order_hash,
-    copula_mat = list(tau = tau, fam = fam))
+tau = 0.2 * fam
 
-  mydata = sample_PCBN(my_PCBN, N = 100)
+my_PCBN = new_PCBN(
+  DAG, order_hash,
+  copula_mat = list(tau = tau, fam = fam))
+
+N = 100
+mydata = sample_PCBN(my_PCBN, N = N)
+
+
+# Tests ========================================================================
+
+
+test_that("BiCopCondFit estimates the copulas well",  {
 
   e = default_envir()
-
-  # Estimation code ===========================================================
 
   C_12 = BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U2",
                       cond_set = c(), familyset = 1, order_hash = order_hash,
@@ -67,32 +72,31 @@ test_that("BiCopCondFit estimates the copulas well", {
 })
 
 
-test_that("BiCopCondFit completes the hashmaps as needed", {
-  DAG = create_DAG(4)
-  DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+test_that("BiCopCondFit makes all the keys as specified",  {
+  e = default_envir()
 
-  order_hash = r2r::hashmap()
-  order_hash[['U4']] = c("U2", "U1", "U3")
-  complete_and_check_orders(DAG, order_hash)
+  BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U2",
+               cond_set = c(), familyset = 1, order_hash = order_hash,
+               e = e)
 
-  fam = matrix(c(0, 1, 1, 1,
-                 0, 0, 1, 1,
-                 0, 0, 0, 1,
-                 0, 0, 0, 0), byrow = TRUE, ncol = 4)
+  # We get all the keys in a textual form
+  all_keys_keychain = e$keychain |>
+    r2r::keys() |>
+    lapply(FUN = print_key_keychain) |>
+    unlist() |>
+    sort()
 
-  tau = 0.2 * fam
+  expect_identical(all_keys_keychain,
+                   c("U1", "U1 | U2", "U1, U2", "U2", "U2 | U1") )
 
-  my_PCBN = new_PCBN(
-    DAG, order_hash,
-    copula_mat = list(tau = tau, fam = fam))
+  expect_identical(e$keychain[[list(margin = "U1", cond = "U2")]]$name,
+                   "U1 | U2")
+  expect_identical(e$keychain[[list(margin = "U2", cond = "U1")]]$name,
+                   "U2 | U1")
+})
 
-  N = 100
-  mydata = sample_PCBN(my_PCBN, N = N)
 
+test_that("BiCopCondFit completes the hashmaps as needed",  {
   e = default_envir()
 
   BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U2",
@@ -105,15 +109,6 @@ test_that("BiCopCondFit completes the hashmaps as needed", {
   # r2r::keys(e$keychain)[[3]]
   # r2r::keys(e$keychain)[[4]]
   # r2r::keys(e$keychain)[[5]]
-
-  all_keys_keychain = e$keychain |>
-    r2r::keys() |>
-    lapply(FUN = print_key_keychain) |>
-    unlist() |>
-    sort()
-
-  expect_identical(all_keys_keychain,
-                   c("U1", "U1 | U2", "U1, U2", "U2", "U2 | U1") )
 
   expect_equal(e$margin_hash[[ list(name = "U1", margin = c("U1"),
                                     cond = character(0), copula = NULL) ]] |>
@@ -133,7 +128,10 @@ test_that("BiCopCondFit completes the hashmaps as needed", {
   expect_true(! identical(e$keychain[[list(margins = c("U1", "U2"), cond = character(0))]] ,
                           e$keychain[[list(margins = c("U1", "U3"), cond = character(0))]] ) )
 
-  e$margin_hash[[ e$keychain[[r2r::keys(e$keychain)[[3]]]] ]]
+  expect_equal(e$margin_hash[[ e$keychain[[ list(margin = c("U3"),
+                                                 cond = character(0)) ]] ]] |>
+                 length(),
+               N)
 
 
   BiCopCondFit(data = mydata, DAG = DAG, v = "U2", w = "U4",
@@ -159,30 +157,6 @@ test_that("BiCopCondFit completes the hashmaps as needed", {
 
 
 test_that("ComputeCondMargin works", {
-  DAG = create_DAG(4)
-  DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-
-  order_hash = r2r::hashmap()
-  order_hash[['U4']] = c("U2", "U1", "U3")
-  complete_and_check_orders(DAG, order_hash)
-
-  fam = matrix(c(0, 1, 1, 1,
-                 0, 0, 1, 1,
-                 0, 0, 0, 1,
-                 0, 0, 0, 0), byrow = TRUE, ncol = 4)
-
-  tau = 0.2 * fam
-
-  my_PCBN = new_PCBN(
-    DAG, order_hash,
-    copula_mat = list(tau = tau, fam = fam))
-
-  mydata = sample_PCBN(my_PCBN, N = 100)
-
   e = default_envir()
 
   U1 = ComputeCondMargin(data = mydata, DAG = my_PCBN, v = "U1", cond_set = NULL,
