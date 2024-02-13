@@ -1,6 +1,6 @@
 Package: PCBN
 Title: Create and sample pair-copula Bayesian networks not requiring integration
-Version: 0.0.1.0
+Version: 0.0.1.1
 Authors@R: 
     person("Niels", "Horsman", , "niels.horsman@hotmail.nl", role = c("aut", "cre"))
 Description: Is able to create and sample pair-copula Bayesian networks not requiring integration.
