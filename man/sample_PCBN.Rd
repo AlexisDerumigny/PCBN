@@ -7,7 +7,10 @@
 sample_PCBN(object, N)
 }
 \arguments{
-\item{object}{PCBN object}
+\item{object}{PCBN object to sample from.
+\bold{This does not work if the PCBN does not abide by the B-sets.
+And in general, it does not work if the PCBN is outside of
+the class of restricted PCBNs.}}
 
 \item{N}{sample size}
 }
@@ -29,12 +32,6 @@ fam = matrix(c(0, 1, 1,
                0, 0, 1,
                0, 0, 0), byrow = TRUE, ncol = 3)
 
-# FIXME
-# automatically put the dimnames
-# when creating PCBN objects
-
-rownames(fam) <- c("U1", "U2", "U3")
-colnames(fam) <- c("U1", "U2", "U3")
 tau = 0.2 * fam
 
 my_PCBN = new_PCBN(

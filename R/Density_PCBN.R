@@ -31,13 +31,15 @@ logLik_copulas_PCBN <- function(data_uniform, PCBN){
   for (v in well_ordering) {
     parents = order_hash[[v]]
     if (length(parents) > 0) {
-      for (w in parents) {
+      for (i_parent in 1:length(parents)) {
+        w = parents[i_parent]
         fam = copula_mat$fam[w, v]
         tau = copula_mat$tau[w, v]
         par = VineCopula::BiCopTau2Par(fam, tau)
 
         # Compute the required margins
-        lower = parents[1:(which(parents == w) - 1)]
+        lower = if (i_parent == 1) {c()
+        } else {parents[1:(i_parent - 1)]}
         v_given_lower = compute_sample_margin(PCBN, data_uniform, v, lower)
         w_given_lower = compute_sample_margin(PCBN, data_uniform, w, lower)
 

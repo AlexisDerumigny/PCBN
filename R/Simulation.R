@@ -1,7 +1,12 @@
 
 #' Samples from a specified PCBN
 #'
-#' @param object PCBN object
+#'
+#' @param object PCBN object to sample from.
+#' \bold{This does not work if the PCBN does not abide by the B-sets.
+#' And in general, it does not work if the PCBN is outside of
+#' the class of restricted PCBNs.}
+#'
 #' @param N sample size
 #'
 #' @return a data frame of N samples
@@ -18,12 +23,6 @@
 #'                0, 0, 1,
 #'                0, 0, 0), byrow = TRUE, ncol = 3)
 #'
-#' # FIXME
-#' # automatically put the dimnames
-#' # when creating PCBN objects
-#'
-#' rownames(fam) <- c("U1", "U2", "U3")
-#' colnames(fam) <- c("U1", "U2", "U3")
 #' tau = 0.2 * fam
 #'
 #' my_PCBN = new_PCBN(
@@ -45,25 +44,28 @@ sample_PCBN <- function(object, N) {
   well_ordering = bnlearn::node.ordering(object$DAG)
   for (node in well_ordering) {
     parents = object$order_hash[[node]]
+
     # Simulating is analogous to regular vine
     if (length(parents) > 0) {
-      for (parent in rev(parents)) {
-        fam = object$copula_mat$fam[parent, node]
-        tau = object$copula_mat$tau[parent, node]
+      for (i_parent in length(parents):1) {
+        fam = object$copula_mat$fam[parents[i_parent], node]
+        tau = object$copula_mat$tau[parents[i_parent], node]
         par = VineCopula::BiCopTau2Par(fam, tau)
 
         # We must compute the conditional margin parent|lower using a proper recursion
-        lower = parents[1:(which(parents == parent) - 1)]
-        parent_given_lower = compute_sample_margin(object, data, parent, lower)
-        V = VineCopula::BiCopHinv1(u1 = parent_given_lower,
-                                   u2 = runif(N, 0, 1),
-                                   family = fam,
-                                   par = par)
+        lower = if (i_parent == 1) {c()
+          } else {parents[1:(i_parent - 1)]}
+        parent_given_lower = compute_sample_margin(object = object, data = data,
+                                                   v = parents[i_parent],
+                                                   cond_set = lower)
+        data[, node] = VineCopula::BiCopHinv1(u1 = parent_given_lower,
+                                              u2 = stats::runif(N, 0, 1),
+                                              family = fam,
+                                              par = par)
       }
     } else { # if there are no parents
-      V = runif(N, 0, 1)
+      data[, node] = stats::runif(N, 0, 1)
     }
-    data[, node] = V
   }
   return(data)
 }
@@ -71,7 +73,11 @@ sample_PCBN <- function(object, N) {
 
 #' Computes a conditional margin during sampling
 #'
-#' @param object PCBN object
+#' @param object PCBN object to sample from.
+#' \bold{This does not work if the PCBN does not abide by the B-sets.
+#' And in general, it does not work if the PCBN is outside of
+#' the class of restricted PCBNs.}
+#'
 #' @param data data frame of observations of size \code{n}
 #' @param v name of the node
 #' @param cond_set conditioning set.
@@ -92,9 +98,6 @@ sample_PCBN <- function(object, N) {
 #' fam = matrix(c(0, 1, 1,
 #'                0, 0, 1,
 #'                0, 0, 0), byrow = TRUE, ncol = 3)
-#'
-#' rownames(fam) <- c("U1", "U2", "U3")
-#' colnames(fam) <- c("U1", "U2", "U3")
 #' tau = 0.2 * fam
 #'
 #' my_PCBN = new_PCBN(
@@ -107,15 +110,17 @@ sample_PCBN <- function(object, N) {
 #' data = data.frame(matrix(ncol = length(nodes), nrow = N))
 #' colnames(data) <- nodes
 #'
-#' data[, "U1"] = runif(N)
-#' data[, "U2"] = runif(N)
+#' data[, "U1"] = stats::runif(N)
+#' data[, "U2"] = stats::runif(N)
 #' u_1_given2 = compute_sample_margin(object = my_PCBN, data = data,
 #'                                    v = "U1", cond_set = c("U2"))
 #'
 #' identical(data[, "U1"], u_1_given2)
 #'
-compute_sample_margin <- function(object, data, v, cond_set) {
-
+#' @export
+#'
+compute_sample_margin <- function(object, data, v, cond_set)
+{
   # Unpack PCBN object
   DAG = object$DAG
   order_hash = object$order_hash
@@ -130,20 +135,10 @@ compute_sample_margin <- function(object, data, v, cond_set) {
   }
 
   # Find specified c_{wv|cond_set_minus_w}
-  w = NULL
-  for (i_w in 1:length(cond_set_dependent)) {
-    w_proposed = cond_set_dependent[i_w]
-    cond_set_minus_w = cond_set_dependent[-i_w]
-    if (is_cond_copula_specified(DAG = DAG, order_hash = order_hash,
-                                 w = w_proposed, v = v,
-                                 cond = cond_set_minus_w)) {
-      w = w_proposed
-      break
-    }
-  }
-  if (is.null(w)) {
-    stop("no specified conditional copula found in `compute_sample_margin`")
-  }
+  cop_specified = find_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+                                             v = v, cond = cond_set_dependent)
+  w = cop_specified$w
+  cond_set_minus_w = cop_specified$cond_set_minus_w
 
   # we must have w->v or v<-w
   if (copula_mat$fam[w, v] != 0) {

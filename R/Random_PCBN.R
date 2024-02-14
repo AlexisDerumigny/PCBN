@@ -16,8 +16,9 @@ pick_random_PCBN <- function(N.nodes, N.arcs, familyset=c(1,3,4,5,6)){
 }
 
 # Takes in a DAG and chooses a random order that will not require integration
-pick_random_ordering <- function(DAG){
-  assign("order_hash", r2r::hashmap(), envir = .GlobalEnv)
+pick_random_ordering <- function(DAG)
+{
+  order_hash = r2r::hashmap()
   node.names = bnlearn::node.ordering(DAG)
   B_sets = find_B_sets(DAG)$B_sets
 
@@ -89,7 +90,7 @@ pick_random_copulas <- function(adj_mat, familyset){
     for (j in 1:ncol(adj_mat)){
       if (adj_mat[i,j]==1){
         fam[i,j] = sample(familyset,1)
-        tau[i,j] = runif(1,0.3,0.9)
+        tau[i,j] = stats::runif(1,0.3,0.9)
       }
     }
   }

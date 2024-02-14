@@ -7,7 +7,10 @@
 compute_sample_margin(object, data, v, cond_set)
 }
 \arguments{
-\item{object}{PCBN object}
+\item{object}{PCBN object to sample from.
+\bold{This does not work if the PCBN does not abide by the B-sets.
+And in general, it does not work if the PCBN is outside of
+the class of restricted PCBNs.}}
 
 \item{data}{data frame of observations of size \code{n}}
 
@@ -35,9 +38,6 @@ order_hash[['U3']] = c("U1", "U2")
 fam = matrix(c(0, 1, 1,
                0, 0, 1,
                0, 0, 0), byrow = TRUE, ncol = 3)
-
-rownames(fam) <- c("U1", "U2", "U3")
-colnames(fam) <- c("U1", "U2", "U3")
 tau = 0.2 * fam
 
 my_PCBN = new_PCBN(
@@ -50,8 +50,8 @@ nodes = bnlearn::nodes(my_PCBN$DAG)
 data = data.frame(matrix(ncol = length(nodes), nrow = N))
 colnames(data) <- nodes
 
-data[, "U1"] = runif(N)
-data[, "U2"] = runif(N)
+data[, "U1"] = stats::runif(N)
+data[, "U2"] = stats::runif(N)
 u_1_given2 = compute_sample_margin(object = my_PCBN, data = data,
                                    v = "U1", cond_set = c("U2"))
 

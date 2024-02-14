@@ -6,6 +6,11 @@
 \usage{
 \method{plot}{PCBN}(x, ...)
 }
+\arguments{
+\item{x}{PCBN object}
+
+\item{...}{other arguments, unused}
+}
 \description{
 Plot function
 }

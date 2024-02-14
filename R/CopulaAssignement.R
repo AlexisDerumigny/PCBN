@@ -177,7 +177,7 @@ outgoing_arc <- function(DAG, w, v, order_v, order_hash){
       if (length(setdiff(order_v, union(o, pa_w_up_to_o)))==0){
         return(TRUE)
       } else if (sets::as.set(pa_w_up_to_o) < sets::as.set(order_w)){
-        if (dsep_set(DAG, w,setdiff(order_v, union(o, pa_w_up_to_o)), union(o, pa_w_up_to_o))){
+        if (dsep_set(DAG, w, setdiff(order_v, union(o, pa_w_up_to_o)), union(o, pa_w_up_to_o))){
           return(TRUE)
         }
       }
@@ -225,19 +225,166 @@ is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
   if (dsep_set(DAG, w, v, cond)){
     return(TRUE)
   }
+
   parents_v = order_hash[[v]]
   if (w %in% parents_v){
-    parents_up_to_w = parents_v[1:(which(parents_v == w)-1)]
+    index_w_in_parents = which(parents_v == w)
+    parents_up_to_w = if(index_w_in_parents == 1) { c() } else {
+      parents_v[1:(index_w_in_parents - 1)] }
+
     if (sets::as.set(parents_up_to_w) == sets::as.set(cond)){
       return(TRUE)
     }
   }
+
   parents_w = order_hash[[w]]
   if (v %in% parents_w){
-    parents_up_to_v = parents_w[1:(which(parents_w == v)-1)]
+    index_v_in_parents = which(parents_w == v)
+    parents_up_to_v = if(index_v_in_parents == 1) { c() } else {
+      parents_w[1:(index_v_in_parents - 1)] }
+
     if (sets::as.set(parents_up_to_v) == sets::as.set(cond)){
       return(TRUE)
     }
   }
   return(FALSE)
 }
+
+
+
+#' Find among parents of a node, the one that has a conditional copula specified
+#'
+#' @param DAG Directed Acyclic Graph object corresponding to the model
+#' @param order_hash hashmap of orders of the parental sets
+#' @param v node in DAG
+#' @param cond vector of nodes in DAG. This must not be empty.
+#' It is assumed that conditionally independent nodes have already been
+#' removed by the function \code{\link{remove_CondInd}}.
+#'
+#' @returns a list with \itemize{
+#'    \item a node \code{w} such that the conditional copula
+#'    \eqn{C_{w, v | cond[-v]}} has been specified in the model.
+#'
+#'    If no such node can be found, an error message is raised.
+#'
+#'    \item the set \code{cond[-v]}
+#' }
+#'
+#' @examples
+#'
+#' DAG = create_DAG(3)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#'
+#' order_hash = r2r::hashmap()
+#' order_hash[['U3']] = c("U1", "U2")
+#'
+#' find_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+#'                            v = "U3", cond = c("U1"))
+#' # returns "U1" because the copula c_{1,3} is known
+#'
+#' find_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+#'                            v = "U3", cond = c("U1", "U2"))
+#' # returns "U2" because the copula c_{2,3|1} is known
+#'
+#'
+#' @export
+#'
+find_cond_copula_specified <- function(DAG, order_hash, v, cond)
+{
+  # Find specified c_{wv|cond_set_minus_w}
+  w = NULL
+  for (i_w in 1:length(cond)) {
+    w_proposed = cond[i_w]
+    cond_set_minus_w = cond[-i_w]
+    if (is_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+                                 w = w_proposed, v = v,
+                                 cond = cond_set_minus_w)) {
+      w = w_proposed
+      break
+    }
+  }
+  if (is.null(w)) {
+    if (length(cond) == 0){
+      stop("'find_cond_copula_specified' should not be called ",
+           "with an empty conditioning set.")
+    }
+    stop("no specified conditional copula found.\n",
+         "We are at node: ", v, " and the conditioning set is: ", cond, "\n",
+         "Check that the PCBN satisfies the restrictions ",
+         "and that the orders of the parents are all compatible.")
+  }
+
+  return (list(w = w, cond_set_minus_w = cond_set_minus_w))
+}
+
+
+#' Complete an order and check whether these are valid orders on parents sets
+#'
+#' @param DAG the DAG
+#' @param order_hash the hashmaps of orders
+#'
+#' @returns \code{NULL}. This function has only side-effects,
+#' and modifies \code{order_hash}. It stops if the orders are not valid orders
+#' on the parents sets.
+#'
+#'
+#' @examples
+#'
+#' DAG = create_DAG(4)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#'
+#' order_hash = r2r::hashmap()
+#' try({complete_and_check_orders(DAG, order_hash)})
+#' # Error because the order of the parents on "U3" should be specified.
+#'
+#' order_hash[['U3']] = c("U1", "U2")
+#' complete_and_check_orders(DAG, order_hash)
+#' r2r::keys(order_hash)
+#' # We obtain "U3" and "U4" because they both have parents
+#'
+#' @export
+#'
+complete_and_check_orders <- function(DAG, order_hash)
+{
+  node.names = bnlearn::nodes(DAG)
+  for (i_node in 1:length(node.names)){
+    node = node.names[[i_node]]
+
+    parents = bnlearn::parents(x = DAG, node = node)
+
+    if (is.null(order_hash[[node]]))
+    {
+      if (length(parents) > 0){
+        if (length(parents) == 1){
+          # This is easy, there is only one parent so we add it to the hash
+          order_hash[[node]] <- parents
+        } else {
+          stop("Order missing for node '", node, "'.\n",
+               "You need to provide an order for the set of its parents, i.e. ",
+               dputCharacterVec(sort(parents)), ".\n",
+               "Remember that this order has to be compatible with all ",
+               "of the other orders in 'order_hash'.")
+        }
+      }
+    } else {
+      is_valid = identical( sort(parents), sort(order_hash[[node]]) )
+      if (! is_valid){
+        stop("Bad set of parents for node '", node, "'\n",
+             "Its parents are: ", dputCharacterVec(sort(parents)), "\n",
+             "But the order given by 'order_hash[[", node, "]] is", order_hash[[node]], ".")
+      }
+    }
+  }
+}
+
+
+# Nice printing of a character vector
+dputCharacterVec <- function (vec){
+  return (c("c(",
+            paste0(paste0("'", vec, "'"), collapse = ","),
+            ")"))
+}
+

@@ -8,9 +8,9 @@
 metrics_GBN <- function(data, PCBN, margins, GBN_fit, N_monte_carlo){
   metrics =list()
 
-  log_lik = logLik(GBN_fit, data)
-  AIC = -2*BIC(GBN_fit, data)
-  BIC = -2*AIC(GBN_fit, data)
+  log_lik = stats::logLik(GBN_fit, data)
+  AIC = -2*stats::BIC(GBN_fit, data)
+  BIC = -2*stats::AIC(GBN_fit, data)
 
 
   # Generate data for KL and CvM
@@ -38,7 +38,8 @@ metrics_PCBN <- function(data, PCBN, margins, PCBN_fit, margins_fit, N_monte_car
   for (v in nodes) {
     mean_v = margins[[v]]$mean
     sd_v = margins[[v]]$sd
-    log_lik_margins = log_lik_margins + sum( log( dnorm(data[[v]], mean = mean_v, sd = sd_v) ) )
+    log_lik_margins = log_lik_margins +
+      sum( log( stats::dnorm(data[[v]], mean = mean_v, sd = sd_v) ) )
   }
 
   log_lik = log_lik + log_lik_margins
@@ -125,7 +126,7 @@ KL_divergence_GBN <- function(data, PCBN, margins, GBN) {
   data_uniform = to_uniform_scale(data)
 
   log_lik_true = logLik_PCBN(data, PCBN, margins)
-  log_lik_est = logLik(GBN, data)
+  log_lik_est = stats::logLik(GBN, data)
   KL = (log_lik_true - log_lik_est)/L
   return(KL)
 }
@@ -133,19 +134,20 @@ KL_divergence_GBN <- function(data, PCBN, margins, GBN) {
 # Returns the distance between two graphs
 distance_DAGs = function(DAG1, DAG2){
   distance = 0
-  node_set =  nodes(DAG1)
+  node_set =  bnlearn::nodes(DAG1)
   amat1 = bnlearn::amat(DAG1)
   amat2 = bnlearn::amat(DAG2)
 
   ### Compute difference in the skeleton differences in the skeleton
 
   # Turn both into undirected graphs
-  g1 = as.undirected(as.igraph(DAG1))
-  g2 = as.undirected(as.igraph(DAG2))
+  g1 = igraph::as.undirected(bnlearn::as.igraph(DAG1))
+  g2 = igraph::as.undirected(bnlearn::as.igraph(DAG2))
 
   # Sum all arcs and substract the intersection
-  int <- graph.intersection(g1,g2)
-  distance = distance + ecount(g1)+ecount(g2)-2*ecount(int)
+  int <- igraph::graph.intersection(g1,g2)
+  distance = distance +
+    igraph::ecount(g1) + igraph::ecount(g2) - 2 * igraph::ecount(int)
 
 
   ### Compute correct v-structures

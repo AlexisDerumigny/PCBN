@@ -74,7 +74,6 @@ check_correct_order <- function(PCBN1, PCBN2) {
 plot_active_cycles = function(DAG, active_cycle_list){
   if (length(active_cycle_list)==0){
     stop("No active cycles")
-    break
   }
 
   no_list = c("N", "n", "No", "NO")
@@ -110,7 +109,7 @@ plot_active_cycles = function(DAG, active_cycle_list){
         df = rbind(df, data.frame(list(from=node2, to=node1)))
       }
     }
-    graphviz.plot(DAG , highlight = list(arcs = df, col = "red", lwd = 3))
+    bnlearn::graphviz.plot(DAG , highlight = list(arcs = df, col = "red", lwd = 3))
   }
 }
 

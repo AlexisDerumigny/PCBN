@@ -4,7 +4,7 @@
 \alias{new_PCBN}
 \title{Initializes PCBN class}
 \usage{
-new_PCBN(DAG, order_hash, copula_mat)
+new_PCBN(DAG, order_hash, copula_mat, verbose = 0)
 }
 \arguments{
 \item{DAG}{the corresponding DAG (a `bn` object)}
@@ -13,9 +13,16 @@ new_PCBN(DAG, order_hash, copula_mat)
 Each character vector corresponds
 to the order of the parents for the given node.}
 
-\item{copula_mat}{list with the matrix of families
-and the matrix of estimated parameters
-(assuming a 1-dimensional family)}
+\item{copula_mat}{a list with at least two components: \itemize{
+  \item \code{fam} the matrix of families
+  \item \code{tau} the matrix of Kendall's tau
+}
+They both should be matrices of size \code{d * d},
+where \code{d} is the number of nodes in the graph \code{DAG}.}
+
+\item{verbose}{If \code{0}, no message is printed.
+If \code{1} (recommended),
+information is printed during the checking of the PCBN.}
 }
 \value{
 the new PCBN
