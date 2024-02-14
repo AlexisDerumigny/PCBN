@@ -278,9 +278,6 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
                                           copula_key = copula_key, e = e)
   e$margin_hash[[v_key_result]] = v_given_cond
 
-  # and the key information in the keychain
-  e$keychain[[list(margin = v, cond = cond_set)]] = v_key_result
-
   return( v_given_cond )
 }
 
