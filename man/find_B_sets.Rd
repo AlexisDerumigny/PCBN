@@ -10,8 +10,9 @@ find_B_sets(DAG)
 \item{DAG}{A bnlearn graph object}
 }
 \value{
-A list of B-sets for each node, a boolean specifying if the graph contains interfering v-structures
-or not, and a list containing nodes forming the interfering v-structures.
+A list of B-sets for each node, a boolean specifying
+if the graph contains interfering v-structures or not,
+and a list containing nodes forming the interfering v-structures.
 }
 \description{
 loops over the nodes of the graph, finding all B-sets for each node
