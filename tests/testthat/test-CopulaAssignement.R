@@ -1,3 +1,25 @@
+
+test_that("extend_orders works for the edge cases: 0 parent, 1 parent", {
+
+  DAG = create_DAG(3)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+
+  all_orders_1 = extend_orders(DAG = DAG, all_orders = list(), node = "U1")
+
+  expect_equal(length(all_orders_1), 0)
+
+  all_orders_2 = extend_orders(DAG = DAG, all_orders = list(), node = "U2")
+
+  expect_equal(length(all_orders_2), 1)
+
+  all_orders_3 = extend_orders(DAG = DAG, all_orders = list(), node = "U3")
+
+  expect_equal(length(all_orders_3), 1)
+})
+
+
+
 test_that("is_cond_copula_specified works for 4 dimensional example", {
 
   DAG = create_DAG(4)

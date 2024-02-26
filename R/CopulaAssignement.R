@@ -24,7 +24,30 @@ find_all_orders <- function(DAG) {
 #'
 #' @returns list of order hashmaps
 #'
-extend_orders <- function(DAG, all_orders, node) {
+#' @export
+extend_orders <- function(DAG, all_orders, node)
+{
+  parents = DAG$nodes[[node]]$parents
+  # If the node has no parents then there is no order to be added.
+  if (length(parents) == 0) {
+    return (all_orders)
+  }
+  if (length(parents) == 1) {
+    # If there are no orders yet, create a default one
+    if (length(all_orders) == 0){
+      order = r2r::hashmap()
+      order[[node]] = parents
+      all_orders = list(order)
+      return (all_orders)
+    }
+    # Else, update directly all existing orders and return them
+    for (order in all_orders){
+      order[[node]] = parents
+    }
+    return (all_orders)
+  }
+  # We now know that `node` has at least 2 parents.
+
   extended = list()
   # For each order hashmap we add all possible orders for v
   for (order in all_orders) {
