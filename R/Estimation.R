@@ -385,7 +385,10 @@ fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
 {
   all_metrics = c("logLik", "BIC", "AIC")
   if (! (score_metric %in% all_metrics) ){
-    stop("Invalid 'score_metric'. Possible choices are: ", all_metrics)
+    stop("Invalid 'score_metric': ", score_metric,
+         "\nPossible choices are: ",
+         paste0(paste0("'", all_metrics, "'", sep = ""),
+                collapse = ", "), ".")
   }
   all_orders = find_all_orders(DAG)
   fitted_list = list()
