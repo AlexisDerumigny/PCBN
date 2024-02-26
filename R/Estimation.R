@@ -294,6 +294,8 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 #'
 #' @seealso [BiCopCondFit] which this function wraps.
 #'
+#' @export
+#'
 fit_copulas <- function(data,
                         DAG,
                         order_hash,
@@ -346,12 +348,8 @@ fit_copulas <- function(data,
 
 #' Fit all possible orders given a DAG
 #'
-#' @param data data frame
-#' @param DAG Directed Acyclic Graph
-#' @param familyset vector of copula families
-#' @param e environment containing all the hashmaps
-#'
-#' @returns list containing best fit and all fitted models
+#' @rdname fit_copulas
+#' @export
 #'
 fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
                            e)

@@ -2,9 +2,12 @@
 % Please edit documentation in R/Estimation.R
 \name{fit_copulas}
 \alias{fit_copulas}
+\alias{fit_all_orders}
 \title{Fit the copulas of a PCBN given data}
 \usage{
 fit_copulas(data, DAG, order_hash, familyset = c(1, 3, 4, 5, 6), e)
+
+fit_all_orders(data, DAG, familyset = c(1, 3, 4, 5, 6), e)
 }
 \arguments{
 \item{data}{data frame}
@@ -22,6 +25,34 @@ all fitted copulas
 }
 \description{
 Fit the copulas of a PCBN given data
+
+Fit all possible orders given a DAG
+}
+\examples{
+
+DAG = create_DAG(3)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+
+order_hash = r2r::hashmap()
+order_hash[['U3']] = c("U1", "U2")
+
+fam = matrix(c(0, 1, 1,
+               0, 0, 1,
+               0, 0, 0), byrow = TRUE, ncol = 3)
+
+tau = 0.2 * fam
+
+my_PCBN = new_PCBN(
+  DAG, order_hash,
+  copula_mat = list(tau = tau, fam = fam))
+
+mydata = sample_PCBN(my_PCBN, N = 5)
+e = default_envir()
+
+result = fit_copulas(data = mydata, DAG = DAG,
+                     order_hash = order_hash,
+                     familyset = 1, e = e)
 }
 \seealso{
 [BiCopCondFit] which this function wraps.
