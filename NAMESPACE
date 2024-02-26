@@ -2,6 +2,7 @@
 
 S3method(plot,PCBN)
 S3method(print,PCBN)
+export(B_sets_are_increasing)
 export(BiCopCondFit)
 export(ComputeCondMargin)
 export(complete_and_check_orders)

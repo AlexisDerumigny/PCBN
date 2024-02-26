@@ -63,6 +63,8 @@ Development of the PCBN package
 
 - File `Graph_B_sets.R`
 
+  - `B_sets_are_increasing()` is already checked and working.
+
 - File `Utilities.R`
 
 ## Other files to be checked later

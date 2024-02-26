@@ -44,7 +44,7 @@ find_B_sets <- function(DAG)
 
     parents = DAG$nodes[[v]]$parent
     if (length(parents) > 0) {
-      if (!increasing_B_set_check(B_set)) {
+      if (!B_sets_are_increasing(B_set)) {
         interfering_vstrucs = TRUE
         nodes_with_inter_vs = append(nodes_with_inter_vs, v)
       }
@@ -120,21 +120,48 @@ find_B_sets_v <- function(DAG, v)
 
 #' Checks if the B-sets for a particular node form an increasing sequence.
 #'
-#' @param B_set list containig nodes in a B-set.
+#' @param B_sets a boolean matrix with \code{(2 + length(children))}
+#' columns and \code{length(parents)} rows.
+#' They are assumed to be sorted in increasing order of row sums,
+#' i.e. by increasing order of set cardinality.
+#' Typically, this will be the output of \code{find_B_sets_v}.
 #'
 #' @returns TRUE if the list forms an ordered sequence, FALSE if not.
-increasing_B_set_check <- function(B_set){
-  increasing = TRUE
-  if (length(B_set)>1){
-    for (i in 1:(length(B_set)-1)){
-      for (j in (i+1):length(B_set)){
-        # B_set[i] not in B_set[j]
-        if (!(sets::as.set(B_set[[i]]) < sets::as.set(B_set[[j]]))){
-          increasing = FALSE
-        }
-      }
+#'
+#' @examples
+#' B_sets = matrix(c(FALSE, FALSE, FALSE, FALSE,
+#'                   TRUE , FALSE, FALSE, FALSE,
+#'                   TRUE , TRUE , FALSE, FALSE,
+#'                   TRUE , TRUE ,  TRUE,  TRUE),
+#'                 nrow = 4, byrow = TRUE)
+#'
+#' B_sets_are_increasing(B_sets)
+#'
+#' B_sets = matrix(c(FALSE, FALSE, FALSE, FALSE,
+#'                   TRUE , FALSE, TRUE, FALSE,
+#'                   TRUE , TRUE , FALSE, FALSE,
+#'                   TRUE , TRUE ,  TRUE,  TRUE),
+#'                 nrow = 4, byrow = TRUE)
+#'
+#' B_sets_are_increasing(B_sets)
+#'
+#' @export
+B_sets_are_increasing <- function(B_sets){
+  n_Bsets = nrow(B_sets)
+
+  if (n_Bsets <= 3 || ncol(B_sets) == 0){
+    return (TRUE)
+  }
+
+  for (i in 2:n_Bsets){
+    Bset_i_1 = B_sets[i - 1,]
+    Bset_i = B_sets[i,]
+    increasing = all(Bset_i_1 <= Bset_i)
+    if ( ! increasing ){
+      return (FALSE)
     }
   }
-  return(increasing)
+
+  return (TRUE)
 }
 
