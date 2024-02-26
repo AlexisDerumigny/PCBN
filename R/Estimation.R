@@ -294,6 +294,34 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 #'
 #' @seealso [BiCopCondFit] which this function wraps.
 #'
+#' @examples
+#'
+#' DAG = create_DAG(3)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#'
+#' order_hash = r2r::hashmap()
+#' order_hash[['U3']] = c("U1", "U2")
+#'
+#' fam = matrix(c(0, 1, 1,
+#'                0, 0, 1,
+#'                0, 0, 0), byrow = TRUE, ncol = 3)
+#'
+#' tau = 0.2 * fam
+#'
+#' my_PCBN = new_PCBN(
+#'   DAG, order_hash,
+#'   copula_mat = list(tau = tau, fam = fam))
+#'
+#' mydata = sample_PCBN(my_PCBN, N = 5)
+#' e = default_envir()
+#'
+#' result = fit_copulas(data = mydata, DAG = DAG,
+#'                      order_hash = order_hash,
+#'                      familyset = 1, e = e)
+#'
+#' result_all_orders = fit_all_orders(data = mydata, DAG = DAG,
+#'                                    familyset = 1, e = e)
 #' @export
 #'
 fit_copulas <- function(data,
