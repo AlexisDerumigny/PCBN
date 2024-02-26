@@ -307,8 +307,11 @@ fit_copulas <- function(data,
   AIC = 0
 
   node.names = bnlearn::node.ordering(DAG)
-  for (v in node.names) {
+  for (i_v in 1:length(node.names)) {
+    v = node.names[i_v]
     parents = order_hash[[v]]
+
+    # We only have a copula to estimate if `v` has any parent(s).
     if (length(parents) > 0) {
       for (i_parent in 1:length(parents)) {
         w = parents[i_parent]
@@ -316,13 +319,9 @@ fit_copulas <- function(data,
         } else {parents[1:(i_parent - 1)]}
 
         C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset, order_hash, e = e)
-        from = i_parent
 
-        # FIXME: we can get a small performance speedup by removing
-        # this `which` command, and changing the loop in v above.
-        to = which(bnlearn::nodes(DAG) == v)
-        tau[from, to] = C$tau
-        fam[from, to] = C$family
+        tau[i_parent, i_v] = C$tau
+        fam[i_parent, i_v] = C$family
 
         logLik = logLik + C$logLik
         BIC = BIC - C$BIC
@@ -331,11 +330,9 @@ fit_copulas <- function(data,
     }
   }
   copula_mat = list(tau = tau, fam = fam)
-  metrics = as.data.frame(list(
-    logLik = logLik,
-    BIC = BIC,
-    AIC = AIC
-  ))
+  metrics = list(logLik = logLik,
+                 BIC = BIC,
+                 AIC = AIC)
   PCBN = new_PCBN(
     DAG = DAG,
     order_hash = order_hash,
