@@ -324,8 +324,8 @@ fit_copulas <- function(data,
         fam[i_parent, i_v] = C$family
 
         logLik = logLik + C$logLik
-        BIC = BIC - C$BIC
-        AIC = AIC - C$AIC
+        BIC = BIC + C$BIC
+        AIC = AIC + C$AIC
       }
     }
   }
@@ -367,7 +367,7 @@ fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
   best_fit = fitted_list[[1]]
   for (i in 1:length(fitted_list)) {
     fit = fitted_list[[i]]
-    if (fit$metrics$BIC > best_fit$metrics$BIC) {
+    if (fit$metrics$BIC < best_fit$metrics$BIC) {
       best_fit = fit
     }
   }
