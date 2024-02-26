@@ -2,18 +2,33 @@
 % Please edit documentation in R/Graph.R
 \name{find_B_sets}
 \alias{find_B_sets}
-\title{loops over the nodes of the graph, finding all B-sets for each node}
+\alias{find_B_sets_v}
+\title{Find all the B-sets of a given DAG}
 \usage{
 find_B_sets(DAG)
+
+find_B_sets_v(DAG, v)
 }
 \arguments{
 \item{DAG}{A bnlearn graph object}
+
+\item{v}{node at which we want to find the B-sets}
 }
 \value{
-A list of B-sets for each node, a boolean specifying
-if the graph contains interfering v-structures or not,
-and a list containing nodes forming the interfering v-structures.
+\code{find_B_sets} list with three elements \itemize{
+   \item \code{B_sets} list of B-sets for each node
+
+   \item \code{interfering_vstrucs} a boolean specifying if the graph
+   contains interfering v-structures or not
+
+   \item \code{nodes_with_inter_vs} a list containing nodes forming the
+   interfering v-structures.
+}
+\code{find_B_sets_v} returns a boolean matrix with \code{(2 + length(children))}
+columns and \code{length(parents)} rows.
 }
 \description{
-loops over the nodes of the graph, finding all B-sets for each node
+Find all the B-sets of a given DAG
+
+Find the B sets for a given node v
 }
