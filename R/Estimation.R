@@ -289,6 +289,8 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 #' @param order_hash hashmap of parental orders
 #' @param familyset vector of copula families
 #' @param e environment containing all the hashmaps
+#' @param score_metric name of the metric used to choose the best order.
+#' Possible choices are \code{logLik}, \code{AIC} and \code{BIC}.
 #'
 #' @returns all fitted copulas
 #'
@@ -379,9 +381,12 @@ fit_copulas <- function(data,
 #' @export
 #'
 fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
-                           e)
+                           e, score_metric = "BIC")
 {
   all_metrics = c("logLik", "BIC", "AIC")
+  if (! (score_metric %in% all_metrics) ){
+    stop("Invalid 'score_metric'. Possible choices are: ", all_metrics)
+  }
   all_orders = find_all_orders(DAG)
   fitted_list = list()
 
@@ -396,7 +401,12 @@ fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
     metrics[i_order, ] = fitted_PCBN$metrics
   }
 
-  i_best_fit = which.min(metrics[, "BIC"])
+  if (score_metric == "logLik"){
+    i_best_fit = which.max(metrics[, score_metric])[1]
+  } else {
+    i_best_fit = which.min(metrics[, score_metric])[1]
+  }
+
   best_fit = fitted_list[[i_best_fit]]
 
   return(list(best_fit = best_fit, fitted_list = fitted_list))
