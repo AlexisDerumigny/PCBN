@@ -282,37 +282,6 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 }
 
 
-#' Fit all possible orders given a DAG
-#'
-#' @param data data frame
-#' @param DAG Directed Acyclic Graph
-#' @param familyset vector of copula families
-#' @param e environment containing all the hashmaps
-#'
-#' @returns list containing best fit and all fitted models
-#'
-fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
-                           e)
-{
-  all_orders = find_all_orders(DAG)
-  fitted_list = list()
-  for (order in all_orders) {
-    fitted_PCBN = fit_copulas(data, DAG, order, familyset, e = e)
-
-    fitted_list[[length(fitted_list) + 1]] = fitted_PCBN
-  }
-
-  best_fit = fitted_list[[1]]
-  for (i in 1:length(fitted_list)) {
-    fit = fitted_list[[i]]
-    if (fit$metrics$BIC > best_fit$metrics$BIC) {
-      best_fit = fit
-    }
-  }
-
-  return(list(best_fit = best_fit, fitted_list = fitted_list))
-}
-
 #' Fit the copulas of a PCBN given data
 #'
 #' @param data data frame
@@ -375,3 +344,37 @@ fit_copulas <- function(data,
   PCBN$metrics = metrics
   return(PCBN)
 }
+
+
+
+#' Fit all possible orders given a DAG
+#'
+#' @param data data frame
+#' @param DAG Directed Acyclic Graph
+#' @param familyset vector of copula families
+#' @param e environment containing all the hashmaps
+#'
+#' @returns list containing best fit and all fitted models
+#'
+fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
+                           e)
+{
+  all_orders = find_all_orders(DAG)
+  fitted_list = list()
+  for (order in all_orders) {
+    fitted_PCBN = fit_copulas(data, DAG, order, familyset, e = e)
+
+    fitted_list[[length(fitted_list) + 1]] = fitted_PCBN
+  }
+
+  best_fit = fitted_list[[1]]
+  for (i in 1:length(fitted_list)) {
+    fit = fitted_list[[i]]
+    if (fit$metrics$BIC > best_fit$metrics$BIC) {
+      best_fit = fit
+    }
+  }
+
+  return(list(best_fit = best_fit, fitted_list = fitted_list))
+}
+
