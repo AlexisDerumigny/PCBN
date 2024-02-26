@@ -292,7 +292,16 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 #' @param score_metric name of the metric used to choose the best order.
 #' Possible choices are \code{logLik}, \code{AIC} and \code{BIC}.
 #'
-#' @returns all fitted copulas
+#' @returns \code{fit_copulas} returns the fitted PCBN, with an additional
+#' element called \code{metrics} which is a named vector of length 3 with names
+#' \code{c("logLik", "BIC", "AIC")}.
+#'
+#' \code{fit_all_orders} returns a list containing: \itemize{
+#'   \item \code{best_fit} the PCBN which is the best according to the metric
+#'   \code{score_metric}.
+#'
+#'   \item \code{fitted_list} the list of all fitted PCBNs.
+#' }
 #'
 #' @seealso [BiCopCondFit] which this function wraps.
 #'

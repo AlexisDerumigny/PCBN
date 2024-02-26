@@ -7,7 +7,13 @@
 \usage{
 fit_copulas(data, DAG, order_hash, familyset = c(1, 3, 4, 5, 6), e)
 
-fit_all_orders(data, DAG, familyset = c(1, 3, 4, 5, 6), e)
+fit_all_orders(
+  data,
+  DAG,
+  familyset = c(1, 3, 4, 5, 6),
+  e,
+  score_metric = "BIC"
+)
 }
 \arguments{
 \item{data}{data frame}
@@ -19,9 +25,21 @@ fit_all_orders(data, DAG, familyset = c(1, 3, 4, 5, 6), e)
 \item{familyset}{vector of copula families}
 
 \item{e}{environment containing all the hashmaps}
+
+\item{score_metric}{name of the metric used to choose the best order.
+Possible choices are \code{logLik}, \code{AIC} and \code{BIC}.}
 }
 \value{
-all fitted copulas
+\code{fit_copulas} returns the fitted PCBN, with an additional
+element called \code{metrics} which is a named vector of length 3 with names
+\code{c("logLik", "BIC", "AIC")}.
+
+\code{fit_all_orders} returns a list containing: \itemize{
+  \item \code{best_fit} the PCBN which is the best according to the metric
+  \code{score_metric}.
+
+  \item \code{fitted_list} the list of all fitted PCBNs.
+}
 }
 \description{
 Fit the copulas of a PCBN given data
@@ -53,6 +71,9 @@ e = default_envir()
 result = fit_copulas(data = mydata, DAG = DAG,
                      order_hash = order_hash,
                      familyset = 1, e = e)
+
+result_all_orders = fit_all_orders(data = mydata, DAG = DAG,
+                                   familyset = 1, e = e)
 }
 \seealso{
 [BiCopCondFit] which this function wraps.
