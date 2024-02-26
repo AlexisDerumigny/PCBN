@@ -360,9 +360,8 @@ fit_copulas <- function(data,
     }
   }
   copula_mat = list(tau = tau, fam = fam)
-  metrics = list(logLik = logLik,
-                 BIC = BIC,
-                 AIC = AIC)
+  metrics = c(logLik = logLik, BIC = BIC, AIC = AIC)
+
   PCBN = new_PCBN(
     DAG = DAG,
     order_hash = order_hash,
@@ -382,21 +381,23 @@ fit_copulas <- function(data,
 fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
                            e)
 {
+  all_metrics = c("logLik", "BIC", "AIC")
   all_orders = find_all_orders(DAG)
   fitted_list = list()
-  for (order in all_orders) {
+
+  metrics = matrix(nrow = length(all_orders), ncol = 3)
+  colnames(metrics) <- all_metrics
+
+  for (i_order in 1:length(all_orders)) {
+    order = all_orders[i_order]
     fitted_PCBN = fit_copulas(data, DAG, order, familyset, e = e)
 
-    fitted_list[[length(fitted_list) + 1]] = fitted_PCBN
+    fitted_list[[i_order]] = fitted_PCBN
+    metrics[i_order, ] = fitted_PCBN$metrics
   }
 
-  best_fit = fitted_list[[1]]
-  for (i in 1:length(fitted_list)) {
-    fit = fitted_list[[i]]
-    if (fit$metrics$BIC < best_fit$metrics$BIC) {
-      best_fit = fit
-    }
-  }
+  i_best_fit = which.min(metrics[, "BIC"])
+  best_fit = fitted_list[[i_best_fit]]
 
   return(list(best_fit = best_fit, fitted_list = fitted_list))
 }
