@@ -61,6 +61,8 @@ Development of the PCBN package
 
   - `remove_CondInd()` is already checked and working.
 
+- File `Graph_B_sets.R`
+
 - File `Utilities.R`
 
 ## Other files to be checked later

@@ -71,6 +71,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
    + `remove_CondInd()` is already checked and working.
 
+- File `Graph_B_sets.R`
+
 - File `Utilities.R`
 
 
