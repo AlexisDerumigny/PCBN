@@ -5,7 +5,7 @@
 #' @returns TRUE if graph contains interfering vs and FALSE if not
 #'
 interfering_vstrucs_check <- function(DAG){
-  return(find_B_sets(DAG)$interfering_vstrucs)
+  return(find_B_sets(DAG)$has_interfering_vstrucs)
 }
 
 
@@ -17,7 +17,7 @@ interfering_vstrucs_check <- function(DAG){
 #' @returns \code{find_B_sets} list with three elements \itemize{
 #'    \item \code{B_sets} list of B-sets for each node
 #'
-#'    \item \code{interfering_vstrucs} a boolean specifying if the graph
+#'    \item \code{has_interfering_vstrucs} a boolean specifying if the graph
 #'    contains interfering v-structures or not
 #'
 #'    \item \code{nodes_with_inter_vs} a list containing nodes forming the
@@ -30,7 +30,7 @@ interfering_vstrucs_check <- function(DAG){
 #'
 find_B_sets <- function(DAG)
 {
-  interfering_vstrucs = FALSE
+  has_interfering_vstrucs = FALSE
   nodes_with_inter_vs = list()
   node.names = bnlearn::nodes(DAG)
   adj.mat = bnlearn::amat(DAG)
@@ -45,13 +45,13 @@ find_B_sets <- function(DAG)
     parents = DAG$nodes[[v]]$parent
     if (length(parents) > 0) {
       if (!B_sets_are_increasing(B_set)) {
-        interfering_vstrucs = TRUE
+        has_interfering_vstrucs = TRUE
         nodes_with_inter_vs = append(nodes_with_inter_vs, v)
       }
     }
   }
   return( list( B_sets = B_set_list,
-                interfering_vstrucs = interfering_vstrucs,
+                has_interfering_vstrucs = has_interfering_vstrucs,
                 nodes_with_inter_vs = nodes_with_inter_vs
   ) )
 }

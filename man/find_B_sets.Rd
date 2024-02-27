@@ -18,7 +18,7 @@ find_B_sets_v(DAG, v)
 \code{find_B_sets} list with three elements \itemize{
    \item \code{B_sets} list of B-sets for each node
 
-   \item \code{interfering_vstrucs} a boolean specifying if the graph
+   \item \code{has_interfering_vstrucs} a boolean specifying if the graph
    contains interfering v-structures or not
 
    \item \code{nodes_with_inter_vs} a list containing nodes forming the

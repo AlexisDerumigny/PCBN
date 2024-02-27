@@ -211,7 +211,7 @@ DAG_to_restricted <- function(DAG) {
 
   # Remove interfering v-structures
   res = find_B_sets(DAG)
-  if (res$interfering_vstrucs) {
+  if (res$has_interfering_vstrucs) {
     for (node in res$nodes_with_inter_vs) {
       B_sets = res$B_sets[[node]]
       for (i in 1:(length(B_sets) - 1)) {
