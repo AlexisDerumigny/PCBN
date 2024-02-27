@@ -386,7 +386,7 @@ complete_and_check_orders <- function(DAG, order_hash)
           order_hash[[node]] <- parents
         } else {
           stop("Order missing for node '", node, "'.\n",
-               "You need to provide an order for the set of its parents, i.e. ",
+               "You need to provide an order for the set of its parents, for example ",
                dputCharacterVec(sort(parents)), ".\n",
                "Remember that this order has to be compatible with all ",
                "of the other orders in 'order_hash'.")
