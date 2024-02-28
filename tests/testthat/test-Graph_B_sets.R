@@ -80,3 +80,23 @@ test_that("B_sets_are_increasing", {
   expect_false(B_sets_are_increasing(B_sets))
 })
 
+test_that("find_interfering_v works", {
+
+  DAG = create_DAG(7)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U6')
+  DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U7')
+  DAG = bnlearn::set.arc(DAG, 'U5', 'U7')
+
+  B_sets = find_B_sets_v(DAG, v = 'U5')
+  interf_v = find_interfering_v(B_sets)
+
+  # There is one interfering v-structure
+  expect_equal(nrow(interf_v), 1)
+})
+

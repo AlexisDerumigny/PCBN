@@ -186,3 +186,117 @@ B_sets_are_increasing <- function(B_sets){
   return (TRUE)
 }
 
+
+#' Find all interfering v-structures for a given collection of B-sets
+#'
+#' @param B_sets a boolean matrix with \code{(2 + length(children))}
+#' columns and \code{length(parents)} rows.
+#' They are assumed to be sorted in increasing order of row sums,
+#' i.e. by increasing order of set cardinality.
+#' Typically, this will be the output of \code{find_B_sets_v}
+#' for some node \code{v}.
+#'
+#' @returns \code{NULL} if there is no interfering v-structures.
+#' Else, it returns a dataset with 4 columns \itemize{
+#'   \item \code{A}: a set of children of \code{v}
+#'   \item \code{B}: a set of children of \code{v}, disjoint from \code{A}
+#'   \item \code{`parents(A) but not parents(B)`}: a set of common parents of
+#'   nodes of \code{A}, that are not parents of nodes of \code{B}
+#'   \item \code{`parents(B) but not parents(A)`}: a set of common parents of
+#'   nodes of \code{B}, that are not parents of nodes of \code{A}
+#' }
+#' Each line correspond to 1 interfering v-structure.
+#'
+#' @examples
+#' DAG = create_DAG(7)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+#' DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+#'
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U6')
+#' DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U7')
+#' DAG = bnlearn::set.arc(DAG, 'U5', 'U7')
+#'
+#' B_sets = find_B_sets_v(DAG, v = 'U5')
+#' find_interfering_v(B_sets)
+#'
+#' @export
+find_interfering_v <- function(B_sets){
+  n_Bsets = nrow(B_sets)
+
+  if (n_Bsets <= 3 || ncol(B_sets) <= 0){
+    return (NULL)
+  }
+  unique_B_sets = B_sets_make_unique(B_sets)
+  list_v_struct = list()
+
+  counter = 1
+  for (i in 1:(n_Bsets-1)){
+    for (j in (i+1):n_Bsets){
+      Bset_i = unique_B_sets[i, - 1]
+      Bset_j = unique_B_sets[j, - 1]
+      increasing = all(Bset_i <= Bset_j)
+      if ( ! increasing ){
+        list_v_struct[[counter]] = list(
+          A = rownames(B_sets)[i],
+          B = rownames(B_sets)[j],
+          `parents(A) but not parents(B)` = which(Bset_i & !Bset_j),
+          `parents(B) but not parents(A)` = which(Bset_j & !Bset_i)
+        )
+        counter = counter + 1
+      }
+    }
+  }
+  output = do.call(what = rbind, args = list_v_struct)
+
+  return (output)
+}
+
+
+#' Compress a given collection of B-sets
+#'
+#' @param B_sets a boolean matrix with \code{(2 + length(children))}
+#' columns and \code{length(parents)} rows.
+#' They are assumed to be sorted in increasing order of row sums,
+#' i.e. by increasing order of set cardinality.
+#' Typically, this will be the output of \code{find_B_sets_v}
+#' for some node \code{v}.
+#'
+#' @returns a `data.frame` made of the unique rows of `B_sets`.
+#' An additional column `nodes` is added at the start. It contains all the children
+#' of \code{v} corresponding to this B-set.
+#'
+#' @examples
+#' DAG = create_DAG(5)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+#' B_sets = find_B_sets_v(DAG, v = 'U4')
+#'
+#' B_sets_make_unique(B_sets)
+#'
+#' @export
+B_sets_make_unique <- function(B_sets)
+{
+  unique_B_sets = unique(B_sets)
+  df_unique_B_sets = data.frame(
+    nodes = I(rep(
+      list(c()),
+      times = nrow(unique_B_sets) ) ),
+    unique_B_sets
+  )
+  all_row_names = rownames(B_sets)
+
+  for (i in 1:nrow(unique_B_sets)){
+    B_set = unique_B_sets[i, ]
+    matching_indices = apply(X = B_sets, MARGIN = 1,
+                             FUN = function(x){all(x == B_set)})
+    df_unique_B_sets$nodes[[i]] = all_row_names[which(matching_indices)]
+  }
+
+  return (df_unique_B_sets)
+}
+
