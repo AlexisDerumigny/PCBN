@@ -4,8 +4,40 @@
 #'
 #' @returns TRUE if graph contains interfering vs and FALSE if not
 #'
-interfering_vstrucs_check <- function(DAG){
-  return(find_B_sets(DAG)$has_interfering_vstrucs)
+#' @examples
+#'
+#' DAG = create_DAG(5)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#'
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+#'
+#' # There is one interfering v-structure
+#' has_interfering_vstrucs(DAG)
+#'
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+#' # Now no interfering v-structure
+#' has_interfering_vstrucs(DAG)
+#'
+#' @export
+#'
+has_interfering_vstrucs <- function(DAG)
+{
+  for (v in node.names) {
+    parents = DAG$nodes[[v]]$parent
+    if (length(parents) > 0) {
+      B_set = find_B_sets_v(DAG = DAG, v = v)
+      if (!B_sets_are_increasing(B_set)) {
+        # Early returning because we already know at this point where is the
+        # first interfering v-structure.
+        return (TRUE)
+      }
+    }
+  }
+  return (FALSE)
 }
 
 
@@ -54,8 +86,6 @@ find_B_sets <- function(DAG)
   for (v in node.names) {
     B_set = find_B_sets_v(DAG = DAG, v = v)
     B_set_list[[v]] = B_set
-
-    # TODO: check code for interfering v-structures
 
     parents = DAG$nodes[[v]]$parent
     if (length(parents) > 0) {

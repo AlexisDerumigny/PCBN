@@ -1,3 +1,23 @@
+test_that("has_interfering_vstrucs works", {
+
+  DAG = create_DAG(7)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U6')
+  DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U7')
+  DAG = bnlearn::set.arc(DAG, 'U5', 'U7')
+
+  # There is one interfering v-structure
+  expect_true(has_interfering_vstrucs(DAG))
+
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U7')
+  # Now no interfering v-structure
+  expect_false(has_interfering_vstrucs(DAG))
+})
 
 test_that("B_sets_are_increasing works", {
 
