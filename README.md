@@ -29,6 +29,15 @@ Development of the PCBN package
   `print_key_keychain()`, `make_and_store_keyCopula()` and
   `make_and_store_keyMargin()`.
 
+- File `Graph_B_sets.R`
+
+  - `has_interfering_vstrucs()`
+  - `find_B_sets()`, `find_B_sets_v()`
+  - `find_interfering_v()`
+  - `B_sets_make_unique()`
+
+  are already checked and working.
+
 # Plan for future work
 
 - File `Estimation.R` : rewriting in progress.
@@ -60,10 +69,6 @@ Development of the PCBN package
 - File `Graph.R`
 
   - `remove_CondInd()` is already checked and working.
-
-- File `Graph_B_sets.R`
-
-  - `B_sets_are_increasing()` is already checked and working.
 
 - File `Utilities.R`
 
