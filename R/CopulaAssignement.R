@@ -77,10 +77,10 @@ extend_orders <- function(DAG, all_orders, node)
 #'
 #' @returns list of vectors containing all possible orders for v
 #'
-find_all_orders_v <- function(DAG, v, order_hash) {
+find_all_orders_v <- function(DAG, v, order_hash)
+{
   parents = DAG$nodes[[v]]$parents
-  B_sets = find_B_sets(DAG)$B_sets
-  B_sets_v = B_sets[[v]]
+  B_sets_v = find_B_sets_v(DAG = DAG, v = v)
 
   # Order_list contains the partial orders (starting with empty)
   order_list = list(NULL)
