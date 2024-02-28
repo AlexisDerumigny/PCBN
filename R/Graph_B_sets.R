@@ -26,6 +26,21 @@ interfering_vstrucs_check <- function(DAG){
 #' \code{find_B_sets_v} returns a boolean matrix with \code{(2 + length(children))}
 #' columns and \code{length(parents)} rows.
 #'
+#' @examples
+#' DAG = create_DAG(6)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+#' DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+#'
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U6')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U6')
+#' DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
+#'
+#' find_B_sets_v(DAG, v = 'U5')
+#' B_sets = find_B_sets(DAG)
+#' B_sets$B_sets
+#'
 #' @export
 #'
 find_B_sets <- function(DAG)
@@ -83,14 +98,19 @@ find_B_sets_v <- function(DAG, v)
       parents %in% DAG$nodes[[children]]$parents,
       rep(TRUE, nparents)
     )
-    return (all_B_sets)
   } else { # We know now that length(children) > 1
 
     # We put all the B-sets in a matrix
-    all_B_sets = apply(X = children, MARGIN = 1, FUN = function(w){
+    all_B_sets = vapply(X = 1:length(children),
+                        FUN.VALUE = rep(TRUE, nparents),
+                        FUN = function(i){
       # This returns a vector of booleans of the same size as `parents`
-      parents %in% DAG$nodes[[w]]$parents
+      parents %in% DAG$nodes[[children[i]]]$parents
     })
+
+    # We transpose this because `vapply` makes it a column for each child
+    # instead of the desired 1 row for each child
+    all_B_sets = t(all_B_sets)
 
     # We add the trivial B-sets
     all_B_sets = rbind(
@@ -104,6 +124,7 @@ find_B_sets_v <- function(DAG, v)
   # all_B_sets = unique(all_B_sets)
 
   rownames(all_B_sets) <- c("Empty B-set", children, "Full B-set")
+  colnames(all_B_sets) <- parents
 
   if (length(children) <= 1){
     return (all_B_sets)

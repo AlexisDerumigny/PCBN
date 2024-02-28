@@ -32,3 +32,19 @@ Find all the B-sets of a given DAG
 
 Find the B sets for a given node v
 }
+\examples{
+DAG = create_DAG(6)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+
+DAG = bnlearn::set.arc(DAG, 'U1', 'U6')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U6')
+DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
+
+find_B_sets_v(DAG, v = 'U5')
+B_sets = find_B_sets(DAG)
+B_sets$B_sets
+
+}
