@@ -26,6 +26,7 @@
 #'
 has_interfering_vstrucs <- function(DAG)
 {
+  node.names = bnlearn::nodes(DAG)
   for (v in node.names) {
     parents = DAG$nodes[[v]]$parent
     if (length(parents) > 0) {
