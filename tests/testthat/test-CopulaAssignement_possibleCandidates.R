@@ -70,7 +70,7 @@ test_that("incoming_arc works", {
   expect_identical(result, "U3")
 
   # We add U4 by outgoing arc, and can add U2 by U4
-  # we cannot add U2 by U3 anymore due to the d-separation contraint.
+  # we cannot add U2 by U3 anymore due to the d-separation constraint.
   result = incoming_arc(DAG = DAG, w = "U2", v = v, order_v = c("U1", "U3", "U4"),
                         order_hash = order_hash)
   expect_identical(result, "U4")
@@ -105,4 +105,64 @@ test_that("incoming_arc works", {
                         order_hash = order_hash)
   expect_identical(result, NULL)
 })
+
+
+test_that("possible_candidates works", {
+
+  DAG = create_DAG(5)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+
+  order_hash = r2r::hashmap()
+  order_hash[['U3']] = c("U1", "U2")
+  order_hash[['U4']] = c("U1", "U3", "U2")
+
+  # Node of interest
+  v = "U5"
+  # We can always add all parents because there U5 has no children,
+  # and therefore no B-set
+  all_parents = c("U1", "U2", "U3", "U4")
+
+  # We can start by adding any parent
+  result = possible_candidates(DAG = DAG, v = v, order_v = c(),
+                               order_hash = order_hash, B_minus_O = all_parents)
+
+  expect_identical(result, all_parents)
+
+  # If we add U3, we can then only add U1
+  result = possible_candidates(DAG = DAG, v = v, order_v = c("U3"),
+                               order_hash = order_hash,
+                               B_minus_O = c("U1", "U2", "U4"))
+
+  expect_identical(result, "U1")
+
+  # If we add U1, we can then add U2 and U4
+  result = possible_candidates(DAG = DAG, v = v, order_v = c("U3", "U1"),
+                               order_hash = order_hash,
+                               B_minus_O = c("U2", "U4"))
+
+  # They both can be added by U3:
+
+  # incoming_arc(DAG = DAG, w = "U2", v = v, order_v = c("U3", "U1"),
+  #                       order_hash = order_hash)
+  # outgoing_arc(DAG = DAG, w = "U4", v = v, order_v = c("U3", "U1"),
+  #                       order_hash = order_hash)
+
+  expect_identical(result, c("U2", "U4"))
+
+  # If we add U2, we can then add the last U4
+  result = possible_candidates(DAG = DAG, v = v, order_v = c("U3", "U1", "U2"),
+                               order_hash = order_hash,
+                               B_minus_O = c("U4"))
+
+  expect_identical(result, "U4")
+})
+
 

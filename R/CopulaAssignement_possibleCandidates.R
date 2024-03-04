@@ -9,6 +9,7 @@
 #'
 #' @returns vector of possible candidates
 #'
+#' @export
 possible_candidates <- function(DAG, v, order_v, order_hash, B_minus_O){
   Poss.Cand = c()
 
@@ -18,7 +19,7 @@ possible_candidates <- function(DAG, v, order_v, order_hash, B_minus_O){
       Poss.Cand = append(Poss.Cand, w)
     } else if (!is.null(incoming_arc(DAG, w, v, order_v, order_hash))){
       Poss.Cand = append(Poss.Cand, w)
-    } else if (outgoing_arc(DAG, w, v, order_v, order_hash)){
+    } else if (!is.null(outgoing_arc(DAG, w, v, order_v, order_hash))){
       Poss.Cand = append(Poss.Cand, w)
     }
   }
@@ -51,7 +52,8 @@ incoming_arc <- function(DAG, w, v, order_v, order_hash)
   for (o in order_v){
     # We must have w -> o for w to be an incoming arc
     if (adj.mat[w, o] == 1){
-      # We look at the order of parents of o (assumed to have been already ordered)
+      # We look at the order of parents of o
+      # (assumed to have been already ordered)
       order_o = order_hash[[o]]
       index_w_in_parents_o = which(order_o == w)
       if (index_w_in_parents_o == 1){
@@ -70,7 +72,8 @@ incoming_arc <- function(DAG, w, v, order_v, order_hash)
       if (identical(order_v_sorted, pa_o_up_to_w_and_o) ) {
         # If Ovk is the same set as o union pa_o_up_to_w
         # then we can compute the margin u_{w | Ovk}
-        # using the known copula C_{w, o | pa_o_up_to_w} (already estimated at node o)
+        # using the known copula C_{w, o | pa_o_up_to_w}
+        # (already estimated at node o)
 
         return(o)
       } else if ( all(pa_o_up_to_w_and_o %in% order_v) )
@@ -119,7 +122,7 @@ outgoing_arc <- function(DAG, w, v, order_v, order_hash){
       pa_w_up_to_o_and_o = sort(union(o, pa_w_up_to_o))
       if (identical(order_v_sorted, pa_w_up_to_o_and_o)){
         return(o)
-      } else if (setdiff(pa_w_up_to_o, order_w) ){
+      } else if ( all(pa_w_up_to_o %in% order_v) ){
         if (dsep_set(DAG = DAG, X = w, Y = setdiff(order_v, pa_w_up_to_o_and_o),
                      Z = pa_w_up_to_o_and_o)) {
           return(o)
