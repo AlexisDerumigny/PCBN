@@ -21,7 +21,7 @@ Development of the PCBN package
   order of the parents are not chosen in the correct way (even though
   the graph may not have any active cycle nor interfering v-structure).
 
-- File `tag_PCBN.R` : contains some utilities about the tag/hashmap
+- File `PCBN-tag.R` : contains some utilities about the tag/hashmap
   system for storing estimated copulas and estimated conditional
   margins.
 
@@ -35,6 +35,15 @@ Development of the PCBN package
   - `find_B_sets()`, `find_B_sets_v()`
   - `find_interfering_v()`
   - `B_sets_make_unique()`
+  - `B_sets_cut_increments()`
+
+  are already checked and working.
+
+- File `CopulaAssignement_possibleCandidates.R`
+
+  - `possible_candidates()`
+  - `possible_candidate_incoming_arc()`
+  - `possible_candidate_outgoing_arc()`
 
   are already checked and working.
 
@@ -63,8 +72,6 @@ Development of the PCBN package
   - `complete_and_check_orders()`
 
   are already checked and working.
-
-- File `functions.R`
 
 - File `Graph.R`
 

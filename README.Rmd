@@ -31,7 +31,7 @@ knitr::opts_chunk$set(echo = TRUE)
    have any active cycle nor interfering v-structure).
 
 
-- File `tag_PCBN.R` : contains some utilities about the tag/hashmap system
+- File `PCBN-tag.R` : contains some utilities about the tag/hashmap system
   for storing estimated copulas and estimated conditional margins.
   
   The functions are: `paste_margin()`, `unpaste_margin()`, `print_key_keychain()`,
@@ -43,9 +43,17 @@ knitr::opts_chunk$set(echo = TRUE)
    + `find_B_sets()`, `find_B_sets_v()`
    + `find_interfering_v()`
    + `B_sets_make_unique()`
+   + `B_sets_cut_increments()`
    
    are already checked and working.
 
+
+- File `CopulaAssignement_possibleCandidates.R`
+   + `possible_candidates()`
+   + `possible_candidate_incoming_arc()`
+   + `possible_candidate_outgoing_arc()`
+   
+   are already checked and working.
 
 # Plan for future work
 
@@ -73,8 +81,6 @@ knitr::opts_chunk$set(echo = TRUE)
    + `complete_and_check_orders()`
    
    are already checked and working.
-
-- File `functions.R`
 
 - File `Graph.R`
 
