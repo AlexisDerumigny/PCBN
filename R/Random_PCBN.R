@@ -50,6 +50,24 @@ pick_random_ordering <- function(DAG)
   return(order_hash)
 }
 
+
+# TODO: rewrite the function above using B_sets_cut_increments instead
+
+#' #' Finds the smallest B-set of v larger than the current partial order
+#' #'
+#' #' @param B_sets list of B-sets for a particular node
+#' #' @param partial_order order list of parents for particular node
+#' #'
+#' #' @returns Smallest B-set strictly larger than the partial order
+#' #'
+#' find_B_minus_O <- function(B_sets, partial_order){
+#'   for (q in 1:length(B_sets)){
+#'     if (sets::as.set(partial_order)<sets::as.set(B_sets[[q]])){
+#'       return(setdiff(B_sets[[q]], partial_order))
+#'     }
+#'   }
+#' }
+
 # Creates a graph with no active cycles or interfering vstrucs
 random_good_graph <- function(N.nodes, N.arcs){
   DAG = create_DAG(N.nodes)
