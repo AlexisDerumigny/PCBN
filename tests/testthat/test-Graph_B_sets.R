@@ -122,15 +122,10 @@ test_that("find_interfering_v works", {
   # There is one interfering v-structure
   expect_equal(nrow(interf_v), 1)
 
-  expect_equal(object = interf_v[1,] |> names(),
-               expected = c("A", "B", "parents(A) but not parents(B)",
-                            "parents(B) but not parents(A)")
-  )
-
   expect_equal(object = interf_v[1,] |> unlist(),
                expected = c(A = "U6", B = "U7",
-                            parents.A..but.not.parents.B. = "U1",
-                            parents.B..but.not.parents.A. = "U2"
+                            parents.A.but.not.parents.B = "U1",
+                            parents.B.but.not.parents.A = "U2"
                )
   )
 

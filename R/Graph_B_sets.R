@@ -231,9 +231,9 @@ B_sets_are_increasing <- function(B_sets){
 #' Else, it returns a \code{data.frame} with 4 columns \itemize{
 #'   \item \code{A}: a list of children of \code{v}
 #'   \item \code{B}: a list of children of \code{v}, disjoint from \code{A}
-#'   \item \code{`parents(A) but not parents(B)`}: a list of common parents of
+#'   \item \code{parents.A.but.not.parents.B}: a list of common parents of
 #'   nodes of \code{A}, that are not parents of nodes of \code{B}
-#'   \item \code{`parents(B) but not parents(A)`}: a list of common parents of
+#'   \item \code{parents.B.but.not.parents.A}: a list of common parents of
 #'   nodes of \code{B}, that are not parents of nodes of \code{A}
 #' }
 #' Each line correspond to 1 interfering v-structure.
@@ -277,8 +277,8 @@ find_interfering_v <- function(B_sets)
         list_v_struct[[counter]] = data.frame(
           A = I(unique_B_sets[i, 1]),
           B = I(unique_B_sets[j, 1]),
-          `parents(A) but not parents(B)` = I(parents_A_not_B),
-          `parents(B) but not parents(A)` = I(parents_B_not_A)
+          parents.A.but.not.parents.B = I(parents_A_not_B),
+          parents.B.but.not.parents.A = I(parents_B_not_A)
         )
         counter = counter + 1
       }
