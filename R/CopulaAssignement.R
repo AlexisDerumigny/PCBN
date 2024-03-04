@@ -151,22 +151,43 @@ possible_candidates <- function(DAG, v, order_v, order_hash, B_minus_O){
 #'
 #' @returns TRUE if w is a possible candidate, FALSE if not
 #'
-incoming_arc <- function(DAG, w, v, order_v, order_hash){
+incoming_arc <- function(DAG, w, v, order_v, order_hash)
+{
   adj.mat = bnlearn::amat(DAG)
 
+  order_v_sorted = sort(order_v)
+  # We inspect each node in the order
   for (o in order_v){
-    if (adj.mat[w,o]==1){
+    # We must have w -> o for w to be an incoming arc
+    if (adj.mat[w, o] == 1){
+      # We look at the order of parents of o (assumed to have been already ordered)
       order_o = order_hash[[o]]
-      if ((which(order_o == w)-1)>0){
-        pa_o_up_to_w = order_o[1:which(order_o == w)-1]
-      } else{
+      index_w_in_parents_o = which(order_o == w)
+      if (index_w_in_parents_o == 1){
+        # If w is the first parent of o,
+        # then there is no other conditioning to be added
         pa_o_up_to_w = c()
+      } else{
+        # Else we take all the parents of o that are before w in the order
+        pa_o_up_to_w = order_o[1:index_w_in_parents_o - 1]
       }
 
-      if (length(setdiff(order_v, union(o, pa_o_up_to_w)))==0){
+      # This vector is the vector of nodes containing
+      # o, and its parents up to w (not including w)
+      pa_o_up_to_w_and_o = sort(union(o, pa_o_up_to_w))
+
+      if (identical(order_v_sorted, pa_o_up_to_w_and_o) ) {
+        # If Ovk is the same set as o union pa_o_up_to_w
+        # then we can compute the margin u_{w | Ovk}
+        # using the known copula C_{w, o | pa_o_up_to_w} (already estimated at node o)
+
         return(TRUE)
-      } else if (sets::as.set(pa_o_up_to_w) < sets::as.set(order_o)){
-        if (dsep_set(DAG, w, setdiff(order_v, union(o, pa_o_up_to_w)), union(o, pa_o_up_to_w))){
+      } else if ( all(pa_o_up_to_w_and_o %in% order_v) ){
+        # If all the pa_o_up_to_w are in order_v
+        # we check whether the d-separation holds:
+        if (dsep_set(DAG = DAG, X = w,
+                     Y = setdiff(order_v, pa_o_up_to_w_and_o),
+                     Z = pa_o_up_to_w_and_o) ) {
           return(TRUE)
         }
       }
