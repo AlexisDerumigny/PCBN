@@ -217,8 +217,14 @@ DAG_to_restricted <- function(DAG) {
       for (i in 1:(length(B_sets) - 1)) {
         for (j in (i + 1):length(B_sets)) {
           # B_sets[i] not in B_sets[j]
-          if (!(sets::as.set(B_sets[[i]]) < sets::as.set(B_sets[[j]])))
+          Bset_i = B_sets[i, ]
+          Bset_j = B_sets[j, ]
+          increasing = all(Bset_i <= Bset_j)
+
+          if (! increasing)
           {
+            # To be fixed: these are the rownames of Bsets
+
             # Find all nodes b_q corresponding to B_sets[[j]]
             # A node b_q must be a child of all nodes in B_sets[[j]] and a child of node
             bqs = DAG$nodes[[node]]$children
