@@ -1,25 +1,38 @@
 
-#' Gives possible candidates to be added to a partial order
+#' Possible candidates to be added to a partial order
 #'
 #' @param DAG Directed Acyclic Graph.
-#' @param v node in DAG
+#' @param w,v nodes in DAG. \code{w} is assumed to be a parent of \code{v}.
 #' @param order_v partial order for node v.
 #' @param order_hash hashmap of parental orders
 #' @param B_minus_O B-set setminus partial order
 #'
-#' @returns vector of possible candidates
+#' @returns \code{possible_candidates} returns a vector of possible candidates.
+#'
+#' \code{possible_candidate_incoming_arc} returns a node \code{o} such \code{w}
+#' is a parent of \code{o}, and \code{w} can be used as an incoming arc to
+#' \code{v} by the node \code{o}. If no such \code{o} can be found, \code{w}
+#' cannot be used as a potential candidate for the order of \code{v} by incoming
+#' arc. Then, the function \code{possible_candidate_incoming_arc} returns
+#' \code{NULL}.
+#'
+#' In the same way, \code{possible_candidate_outgoing_arc} returns a node
+#' \code{o} such \code{o} is a parent of \code{w}, and \code{w} can be used as
+#' an outgoing arc to \code{v} by the node \code{o}.
 #'
 #' @export
-possible_candidates <- function(DAG, v, order_v, order_hash, B_minus_O){
+possible_candidates <- function(DAG, v, order_v, order_hash, B_minus_O)
+{
   Poss.Cand = c()
-
   for (w in B_minus_O){
     # Independence
     if (dsep_set(DAG, w, order_v)){
       Poss.Cand = append(Poss.Cand, w)
-    } else if (!is.null(incoming_arc(DAG, w, v, order_v, order_hash))){
+    } else if (!is.null(possible_candidate_incoming_arc(DAG, w, v,
+                                                        order_v, order_hash))){
       Poss.Cand = append(Poss.Cand, w)
-    } else if (!is.null(outgoing_arc(DAG, w, v, order_v, order_hash))){
+    } else if (!is.null(possible_candidate_outgoing_arc(DAG, w, v,
+                                                        order_v, order_hash))){
       Poss.Cand = append(Poss.Cand, w)
     }
   }
@@ -27,23 +40,9 @@ possible_candidates <- function(DAG, v, order_v, order_hash, B_minus_O){
 }
 
 
-#' Checks if w can be added by an incoming arc
-#'
-#' @param DAG Directed Acyclic Graph.
-#' @param w,v nodes in DAG. \code{w} is assumed to be a parent of \code{v}.
-#'
-#' @param order_v partial order for node v
-#' @param order_hash hashmap of parental orders
-#'
-#' @returns a node \code{o} such \code{w} is a parent of \code{o},
-#' and \code{w} can be used as an incoming arc to \code{v} by the node \code{o}.
-#' If no such \code{o} can be found, \code{w} cannot be used as a potential
-#' candidate for the order of \code{v} by incoming arc.
-#' This function returns then \code{NULL}.
-#'
+#' @rdname possible_candidates
 #' @export
-#'
-incoming_arc <- function(DAG, w, v, order_v, order_hash)
+possible_candidate_incoming_arc <- function(DAG, w, v, order_v, order_hash)
 {
   adj.mat = bnlearn::amat(DAG)
 
@@ -92,18 +91,10 @@ incoming_arc <- function(DAG, w, v, order_v, order_hash)
   return(NULL)
 }
 
-#' Checks if w can be added by an outgoing arc
-#'
-#' @param DAG Directed Acyclic Graph.
-#' @param w node in DAG
-#' @param v node in DAG
-#' @param order_v partial order for node v
-#' @param order_hash hashmap of parental orders
-#'
-#' @returns TRUE if w is a possible candidate, FALSE if not
-#'
+#' @rdname possible_candidates
 #' @export
-outgoing_arc <- function(DAG, w, v, order_v, order_hash){
+#'
+possible_candidate_outgoing_arc <- function(DAG, w, v, order_v, order_hash){
   adj.mat = bnlearn::amat(DAG)
 
   order_v_sorted = sort(order_v)

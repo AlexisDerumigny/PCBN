@@ -2,24 +2,41 @@
 % Please edit documentation in R/CopulaAssignement_possibleCandidates.R
 \name{possible_candidates}
 \alias{possible_candidates}
-\title{Gives possible candidates to be added to a partial order}
+\alias{possible_candidate_incoming_arc}
+\alias{possible_candidate_outgoing_arc}
+\title{Possible candidates to be added to a partial order}
 \usage{
 possible_candidates(DAG, v, order_v, order_hash, B_minus_O)
+
+possible_candidate_incoming_arc(DAG, w, v, order_v, order_hash)
+
+possible_candidate_outgoing_arc(DAG, w, v, order_v, order_hash)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph.}
-
-\item{v}{node in DAG}
 
 \item{order_v}{partial order for node v.}
 
 \item{order_hash}{hashmap of parental orders}
 
 \item{B_minus_O}{B-set setminus partial order}
+
+\item{w, v}{nodes in DAG. \code{w} is assumed to be a parent of \code{v}.}
 }
 \value{
-vector of possible candidates
+\code{possible_candidates} returns a vector of possible candidates.
+
+\code{possible_candidate_incoming_arc} returns a node \code{o} such \code{w}
+is a parent of \code{o}, and \code{w} can be used as an incoming arc to
+\code{v} by the node \code{o}. If no such \code{o} can be found, \code{w}
+cannot be used as a potential candidate for the order of \code{v} by incoming
+arc. Then, the function \code{possible_candidate_incoming_arc} returns
+\code{NULL}.
+
+In the same way, \code{possible_candidate_outgoing_arc} returns a node
+\code{o} such \code{o} is a parent of \code{w}, and \code{w} can be used as
+an outgoing arc to \code{v} by the node \code{o}.
 }
 \description{
-Gives possible candidates to be added to a partial order
+Possible candidates to be added to a partial order
 }
