@@ -15,58 +15,43 @@ pick_random_PCBN <- function(N.nodes, N.arcs, familyset=c(1,3,4,5,6)){
   return(new_PCBN(list(DAG = DAG, order_hash = order_hash, copula_mat = copula_mat)))
 }
 
+
 # Takes in a DAG and chooses a random order that will not require integration
 pick_random_ordering <- function(DAG)
 {
   order_hash = r2r::hashmap()
   node.names = bnlearn::node.ordering(DAG)
-  B_sets = find_B_sets(DAG)$B_sets
 
   for (v in node.names){
     parents = DAG$nodes[[v]]$parents
-    if (length(parents)==0){
+    if (length(parents) == 0){
       order_hash[[v]] = c()
-    } else if (length(parents)==1){
-      order_hash[[v]] = c(parents[1])
+    } else if (length(parents) == 1){
+      order_hash[[v]] = parents
     } else{
       order_v = c()
-      B_sets_v = B_sets[[v]]
-      n.parents = length(parents)
+      B_sets_v = find_B_sets_v(DAG = DAG, v = v)
+      B_sets_v = unique(B_sets_v)
+      delta_B_sets = B_sets_cut_increments(B_sets_v)
 
-      while (length(order_v)< n.parents){
-        B_minus_O = find_B_minus_O(B_sets_v, order_v)
-
-        if (length(order_v) == 0){
-          Poss.Cand = B_minus_O
-        } else{
+      for (i_delta_B_sets in 1:length(delta_B_sets))
+      {
+        delta_B_set = delta_B_sets[[i_delta_B_sets]]
+        for (i in 1:length(delta_B_set))
+        {
+          B_minus_O = setdiff(delta_B_set, order_v)
           Poss.Cand = possible_candidates(DAG, v, order_v, order_hash, B_minus_O)
+
+          addition = sample(Poss.Cand, 1)
+          order_v = append(order_v, addition)
         }
-        addition = sample(Poss.Cand, 1)
-        order_v = append(order_v, addition)
+        order_hash[[v]] = order_v
       }
-      order_hash[[v]] = order_v
     }
   }
   return(order_hash)
 }
 
-
-# TODO: rewrite the function above using B_sets_cut_increments instead
-
-#' #' Finds the smallest B-set of v larger than the current partial order
-#' #'
-#' #' @param B_sets list of B-sets for a particular node
-#' #' @param partial_order order list of parents for particular node
-#' #'
-#' #' @returns Smallest B-set strictly larger than the partial order
-#' #'
-#' find_B_minus_O <- function(B_sets, partial_order){
-#'   for (q in 1:length(B_sets)){
-#'     if (sets::as.set(partial_order)<sets::as.set(B_sets[[q]])){
-#'       return(setdiff(B_sets[[q]], partial_order))
-#'     }
-#'   }
-#' }
 
 # Creates a graph with no active cycles or interfering vstrucs
 random_good_graph <- function(N.nodes, N.arcs){
