@@ -14,7 +14,6 @@ Imports:
     igraph,
     MASS,
     r2r,
-    sets,
     VineCopula
 LinkingTo: Rcpp
 RoxygenNote: 7.3.1
