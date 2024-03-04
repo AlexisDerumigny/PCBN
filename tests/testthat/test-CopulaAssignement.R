@@ -18,6 +18,28 @@ test_that("extend_orders works for the edge cases: 0 parent, 1 parent", {
   expect_equal(length(all_orders_3), 1)
 })
 
+test_that("find_all_orders_v works", {
+
+  DAG = create_DAG(5)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+
+  order_hash = r2r::hashmap()
+  order_hash[['U3']] = c("U1", "U2")
+  order_hash[['U4']] = c("U1", "U3", "U2")
+
+  all_orders_5 = find_all_orders_v(DAG, v = "U5", order_hash = order_hash)
+
+  # There are 8 possible orders for U5
+  expect_equal(length(all_orders_5), 8)
+})
 
 
 test_that("is_cond_copula_specified works for 4 dimensional example", {

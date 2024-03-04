@@ -3,6 +3,8 @@
 #' @param DAG Directed Acyclic Graph
 #'
 #' @returns a list of hashmaps containing the possible orders
+#'
+#' @export
 find_all_orders <- function(DAG) {
   # Start with empty order
   order_hash = r2r::hashmap()
@@ -77,41 +79,34 @@ extend_orders <- function(DAG, all_orders, node)
 #'
 #' @returns list of vectors containing all possible orders for v
 #'
+#' @export
 find_all_orders_v <- function(DAG, v, order_hash)
 {
   parents = DAG$nodes[[v]]$parents
   B_sets_v = find_B_sets_v(DAG = DAG, v = v)
+  B_sets_v = unique(B_sets_v)
+  delta_B_sets = B_sets_cut_increments(B_sets_v)
 
   # Order_list contains the partial orders (starting with empty)
   order_list = list(NULL)
-  for (i in 1:length(parents)) {
-    new_order_list = list()
-    for (order in order_list) {
-      B_minus_O = find_B_minus_O(B_sets_v, order)
-      # Each possible candidate results in a different order
-      for (w in possible_candidates(DAG, v, order, order_hash, B_minus_O)) {
-        new_order = append(order, w)
-        new_order_list[[length(new_order_list) + 1]] = new_order
+  for (i_delta_B_sets in 1:length(delta_B_sets)){
+    delta_B_set = delta_B_sets[[i_delta_B_sets]]
+    for (i in 1:length(delta_B_set)) {
+      new_order_list = list()
+      for (order in order_list)
+      {
+        B_minus_O = setdiff(delta_B_set, order)
+
+        # Each possible candidate results in a different order
+        for (w in possible_candidates(DAG, v, order, order_hash, B_minus_O)) {
+          new_order = append(order, w)
+          new_order_list[[length(new_order_list) + 1]] = new_order
+        }
       }
+      order_list = new_order_list
     }
-    order_list = new_order_list
   }
   return(order_list)
-}
-
-#' Finds the smallest B-set of v larger than the current partial order
-#'
-#' @param B_sets list of B-sets for a particular node
-#' @param partial_order order list of parents for particular node
-#'
-#' @returns Smallest B-set strictly larger than the partial order
-#'
-find_B_minus_O <- function(B_sets, partial_order){
-  for (q in 1:length(B_sets)){
-    if (sets::as.set(partial_order)<sets::as.set(B_sets[[q]])){
-      return(setdiff(B_sets[[q]], partial_order))
-    }
-  }
 }
 
 

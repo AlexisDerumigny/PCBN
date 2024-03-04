@@ -135,9 +135,9 @@ find_B_sets_v <- function(DAG, v)
     all_B_sets = vapply(X = 1:length(children),
                         FUN.VALUE = rep(TRUE, nparents),
                         FUN = function(i){
-      # This returns a vector of booleans of the same size as `parents`
-      parents %in% DAG$nodes[[children[i]]]$parents
-    })
+                          # This returns a vector of booleans of the same size as `parents`
+                          parents %in% DAG$nodes[[children[i]]]$parents
+                        })
 
     # We transpose this because `vapply` makes it a column for each child
     # instead of the desired 1 row for each child
@@ -333,5 +333,42 @@ B_sets_make_unique <- function(B_sets)
   }
 
   return (df_unique_B_sets)
+}
+
+
+#' Find the decomposition of B-sets
+#'
+#' @param B_sets matrix of B-sets, assumed to be increasing.
+#' This means \code{\link{find_interfering_v}} should return \code{NULL}
+#' on this matrix.
+#'
+#' @returns a list of vectors of characters. Each element of the list
+#' corresponds to one \eqn{DeltaBset = Bset[i] \ Bset[i-1]}.
+#'
+#' @examples
+#'
+#' B_sets = matrix(c(FALSE, FALSE, FALSE, FALSE,
+#'                   TRUE , FALSE, FALSE, FALSE,
+#'                   TRUE , TRUE , FALSE, FALSE,
+#'                   TRUE , TRUE , TRUE ,  TRUE),
+#'                 nrow = 4, byrow = TRUE)
+#'
+#' colnames(B_sets) <- c("U1", "U2", "U3", "U4")
+#'
+#' B_sets_cut_increments(B_sets)
+#'
+#' @export
+B_sets_cut_increments <- function(B_sets)
+{
+  result = list()
+  parents_name = colnames(B_sets)
+
+  for (i in 2:nrow(B_sets)){
+    Bset_i_1 = B_sets[i - 1, ]
+    Bset_i = B_sets[i, ]
+    delta_B_set = parents_name[Bset_i & !Bset_i_1]
+    result[[i - 1]] = delta_B_set
+  }
+  return (result)
 }
 
