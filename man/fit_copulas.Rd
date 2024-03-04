@@ -32,13 +32,21 @@ Possible choices are \code{logLik}, \code{AIC} and \code{BIC}.}
 \value{
 \code{fit_copulas} returns the fitted PCBN, with an additional
 element called \code{metrics} which is a named vector of length 3 with names
-\code{c("logLik", "BIC", "AIC")}.
+\code{c("logLik", "BIC", "AIC")}, where
+\eqn{AIC = - 2 * logLik + 2 * nparameters}
+and \eqn{BIC = - 2 * logLik + log(n) * nparameters},
+for a sample size \code{n} and \code{nparameters} is the number of parameters.
 
 \code{fit_all_orders} returns a list containing: \itemize{
   \item \code{best_fit} the PCBN which is the best according to the metric
   \code{score_metric}.
 
   \item \code{fitted_list} the list of all fitted PCBNs.
+
+  \item \code{metrics} the matrix of metrics (logLik, BIC, AIC).
+  Each row \code{i} of this matrix corresponds to a PCBN with a different set
+  of parents' orderings, and corresponds to element \code{i} of
+  \code{fitted_list}.
 }
 }
 \description{
