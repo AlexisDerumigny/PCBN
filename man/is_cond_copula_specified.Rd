@@ -15,7 +15,8 @@ is_cond_copula_specified(DAG, order_hash, w, v, cond)
 
 \item{v}{node in DAG}
 
-\item{cond}{vector of nodes in DAG}
+\item{cond}{vector of nodes in DAG.
+It is assumed to have been already sorted.}
 }
 \value{
 \code{TRUE} if the conditional copula \eqn{C_{w, v | cond}}

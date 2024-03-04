@@ -116,7 +116,8 @@ find_all_orders_v <- function(DAG, v, order_hash)
 #' @param order_hash hashmap of orders of the parental sets
 #' @param w node in DAG
 #' @param v node in DAG
-#' @param cond vector of nodes in DAG
+#' @param cond vector of nodes in DAG.
+#' It is assumed to have been already sorted.
 #'
 #' @returns \code{TRUE} if the conditional copula \eqn{C_{w, v | cond}}
 #' has been specified in the model
@@ -147,15 +148,19 @@ find_all_orders_v <- function(DAG, v, order_hash)
 is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
   if (dsep_set(DAG, w, v, cond)){
     return(TRUE)
+  } else {
+    if(length(cond) == 0){ # We transform NULL to character(0)
+      cond = character(0)
+    }
   }
 
   parents_v = order_hash[[v]]
   if (w %in% parents_v){
     index_w_in_parents = which(parents_v == w)
-    parents_up_to_w = if(index_w_in_parents == 1) { c() } else {
+    parents_up_to_w = if(index_w_in_parents == 1) { character(0) } else {
       parents_v[1:(index_w_in_parents - 1)] }
 
-    if (sets::as.set(parents_up_to_w) == sets::as.set(cond)){
+    if (identical(sort(parents_up_to_w), cond) ){
       return(TRUE)
     }
   }
@@ -163,10 +168,10 @@ is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
   parents_w = order_hash[[w]]
   if (v %in% parents_w){
     index_v_in_parents = which(parents_w == v)
-    parents_up_to_v = if(index_v_in_parents == 1) { c() } else {
+    parents_up_to_v = if(index_v_in_parents == 1) { character(0) } else {
       parents_w[1:(index_v_in_parents - 1)] }
 
-    if (sets::as.set(parents_up_to_v) == sets::as.set(cond)){
+    if (identical(sort(parents_up_to_v), cond)){
       return(TRUE)
     }
   }
@@ -183,6 +188,7 @@ is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
 #' @param cond vector of nodes in DAG. This must not be empty.
 #' It is assumed that conditionally independent nodes have already been
 #' removed by the function \code{\link{remove_CondInd}}.
+#' It is assumed to have been already sorted.
 #'
 #' @returns a list with \itemize{
 #'    \item a node \code{w} such that the conditional copula
