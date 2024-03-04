@@ -406,7 +406,7 @@ fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
   colnames(metrics) <- all_metrics
 
   for (i_order in 1:length(all_orders)) {
-    order = all_orders[i_order]
+    order = all_orders[[i_order]]
     fitted_PCBN = fit_copulas(data, DAG, order, familyset, e = e)
 
     fitted_list[[i_order]] = fitted_PCBN
