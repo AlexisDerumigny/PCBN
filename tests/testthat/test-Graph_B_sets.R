@@ -116,7 +116,51 @@ test_that("find_interfering_v works", {
   B_sets = find_B_sets_v(DAG, v = 'U5')
   interf_v = find_interfering_v(B_sets)
 
+  # `interf_v` is a data.frame
+  expect_s3_class(interf_v, "data.frame")
+
   # There is one interfering v-structure
   expect_equal(nrow(interf_v), 1)
+
+  expect_equal(object = interf_v[1,] |> names(),
+               expected = c("A", "B", "parents(A) but not parents(B)",
+                            "parents(B) but not parents(A)")
+  )
+
+  expect_equal(object = interf_v[1,] |> unlist(),
+               expected = c(A = "U6", B = "U7",
+                            parents.A..but.not.parents.B. = "U1",
+                            parents.B..but.not.parents.A. = "U2"
+               )
+  )
+
 })
+
+
+test_that("find_interfering_v works with 3 interfering v-structures", {
+
+  DAG = create_DAG(8)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U6')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U6')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U7')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U8')
+  DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
+  DAG = bnlearn::set.arc(DAG, 'U5', 'U7')
+  DAG = bnlearn::set.arc(DAG, 'U5', 'U8')
+
+  B_sets = find_B_sets_v(DAG, v = 'U5')
+  unique_B_sets = B_sets_make_unique(B_sets)
+  interf_v = find_interfering_v(B_sets)
+
+  # There is 3 interfering v-structures
+  expect_equal(nrow(interf_v), 3)
+
+})
+
+
 

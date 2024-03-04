@@ -16,12 +16,12 @@ for some node \code{v}.}
 }
 \value{
 \code{NULL} if there is no interfering v-structures.
-Else, it returns a dataset with 4 columns \itemize{
-  \item \code{A}: a set of children of \code{v}
-  \item \code{B}: a set of children of \code{v}, disjoint from \code{A}
-  \item \code{`parents(A) but not parents(B)`}: a set of common parents of
+Else, it returns a \code{data.frame} with 4 columns \itemize{
+  \item \code{A}: a list of children of \code{v}
+  \item \code{B}: a list of children of \code{v}, disjoint from \code{A}
+  \item \code{`parents(A) but not parents(B)`}: a list of common parents of
   nodes of \code{A}, that are not parents of nodes of \code{B}
-  \item \code{`parents(B) but not parents(A)`}: a set of common parents of
+  \item \code{`parents(B) but not parents(A)`}: a list of common parents of
   nodes of \code{B}, that are not parents of nodes of \code{A}
 }
 Each line correspond to 1 interfering v-structure.

@@ -228,12 +228,12 @@ B_sets_are_increasing <- function(B_sets){
 #' for some node \code{v}.
 #'
 #' @returns \code{NULL} if there is no interfering v-structures.
-#' Else, it returns a dataset with 4 columns \itemize{
-#'   \item \code{A}: a set of children of \code{v}
-#'   \item \code{B}: a set of children of \code{v}, disjoint from \code{A}
-#'   \item \code{`parents(A) but not parents(B)`}: a set of common parents of
+#' Else, it returns a \code{data.frame} with 4 columns \itemize{
+#'   \item \code{A}: a list of children of \code{v}
+#'   \item \code{B}: a list of children of \code{v}, disjoint from \code{A}
+#'   \item \code{`parents(A) but not parents(B)`}: a list of common parents of
 #'   nodes of \code{A}, that are not parents of nodes of \code{B}
-#'   \item \code{`parents(B) but not parents(A)`}: a set of common parents of
+#'   \item \code{`parents(B) but not parents(A)`}: a list of common parents of
 #'   nodes of \code{B}, that are not parents of nodes of \code{A}
 #' }
 #' Each line correspond to 1 interfering v-structure.
@@ -262,6 +262,7 @@ find_interfering_v <- function(B_sets){
   }
   unique_B_sets = B_sets_make_unique(B_sets)
   list_v_struct = list()
+  parents_name = colnames(B_sets)
 
   counter = 1
   for (i in 1:(n_Bsets-1)){
@@ -270,11 +271,14 @@ find_interfering_v <- function(B_sets){
       Bset_j = unique_B_sets[j, - 1]
       increasing = all(Bset_i <= Bset_j)
       if ( ! increasing ){
-        list_v_struct[[counter]] = list(
-          A = rownames(B_sets)[i],
-          B = rownames(B_sets)[j],
-          `parents(A) but not parents(B)` = which(Bset_i & !Bset_j),
-          `parents(B) but not parents(A)` = which(Bset_j & !Bset_i)
+        parents_A_not_B = list(parents_name[which(Bset_i & !Bset_j)])
+        parents_B_not_A = list(parents_name[which(Bset_j & !Bset_i)])
+
+        list_v_struct[[counter]] = data.frame(
+          A = I(unique_B_sets[i, 1]),
+          B = I(unique_B_sets[j, 1]),
+          `parents(A) but not parents(B)` = I(parents_A_not_B),
+          `parents(B) but not parents(A)` = I(parents_B_not_A)
         )
         counter = counter + 1
       }
