@@ -164,3 +164,29 @@ test_that("find_interfering_v works with 3 interfering v-structures", {
 
 
 
+
+test_that("find_interfering_v works with 3 interfering v-structures", {
+
+  DAG = create_DAG(8)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U6')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U6')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U7')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U7')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U8')
+  DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
+  DAG = bnlearn::set.arc(DAG, 'U5', 'U7')
+  DAG = bnlearn::set.arc(DAG, 'U5', 'U8')
+
+  B_sets = find_B_sets_v(DAG, v = 'U5')
+  unique_B_sets = B_sets_make_unique(B_sets)
+  interf_v = find_interfering_v(B_sets)
+
+  # There is 3 interfering v-structures
+  expect_equal(nrow(interf_v), 1)
+
+})

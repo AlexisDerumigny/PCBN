@@ -254,13 +254,13 @@ B_sets_are_increasing <- function(B_sets){
 #' find_interfering_v(B_sets)
 #'
 #' @export
-find_interfering_v <- function(B_sets){
-  n_Bsets = nrow(B_sets)
-
-  if (n_Bsets <= 3 || ncol(B_sets) <= 0){
+find_interfering_v <- function(B_sets)
+{
+  if (nrow(B_sets) <= 3 || ncol(B_sets) <= 0){
     return (NULL)
   }
   unique_B_sets = B_sets_make_unique(B_sets)
+  n_Bsets = nrow(unique_B_sets)
   list_v_struct = list()
   parents_name = colnames(B_sets)
 
