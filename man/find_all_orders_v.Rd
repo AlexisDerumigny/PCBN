@@ -19,3 +19,38 @@ list of vectors containing all possible orders for v
 \description{
 Finds all possible orders of node v given previous copula assignments
 }
+\examples{
+DAG = create_DAG(5)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+
+# Start with empty order
+order_hash = r2r::hashmap()
+
+all_orders_3 = find_all_orders_v(DAG, v = "U3", order_hash = order_hash)
+print(all_orders_3)
+
+# Two possible choices for node 3, let's use the first
+order_hash[['U3']] = all_orders_4[[1]]
+
+all_orders_4 = find_all_orders_v(DAG, v = "U4", order_hash = order_hash)
+print(all_orders_4)
+
+# Four possible choices for node 4, let's use the third
+order_hash[['U4']] = all_orders_4[[3]]
+
+all_orders_5 = find_all_orders_v(DAG, v = "U5", order_hash = order_hash)
+print(all_orders_5)
+
+# Eight possible orders for node 5; let's use the fourth
+order_hash[['U5']] = all_orders_5[[4]]
+
+
+}

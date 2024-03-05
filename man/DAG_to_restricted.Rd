@@ -15,3 +15,16 @@ Restricted DAG.
 \description{
 Turns a general graph into a restricted graph.
 }
+\examples{
+# DAG with an active cycle
+
+DAG = create_DAG(5)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+
+DAG_to_restricted(DAG)
+
+}
