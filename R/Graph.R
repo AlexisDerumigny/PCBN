@@ -220,6 +220,9 @@ path_check <- function(DAG, path){
 DAG_to_restricted <- function(DAG) {
   DAG_copy = DAG
 
+  # TODO: This should be a while loop, since fixing active cycles and int_vs can
+  # create more of them
+
   # Remove active cycles
   res = active_cycle_check(DAG)
   if (res$active_cycles) {
@@ -240,8 +243,13 @@ DAG_to_restricted <- function(DAG) {
   if (res$has_interfering_vstrucs) {
     for (node in res$nodes_with_inter_vs) {
       B_sets = res$B_sets[[node]]
-      for (i in 1:(length(B_sets) - 1)) {
-        for (j in (i + 1):length(B_sets)) {
+
+      # B_sets consists of empty B-set, full B-set, at least two interfering
+      # B-sets
+      # Empty and full B-set never provide problems, it remains to check the others
+      N_rows_B_sets = dim(B_sets)[1]
+      for (i in 2:(N_rows_B_sets - 1)) {
+        for (j in (i + 1):(N_rows_B_sets - 1)) {
           # B_sets[i] not in B_sets[j]
           Bset_i = B_sets[i, ]
           Bset_j = B_sets[j, ]
@@ -249,20 +257,11 @@ DAG_to_restricted <- function(DAG) {
 
           if (! increasing)
           {
-            # To be fixed: these are the rownames of Bsets
-
-            # Find all nodes b_q corresponding to B_sets[[j]]
-            # A node b_q must be a child of all nodes in B_sets[[j]] and a child of node
-            bqs = DAG$nodes[[node]]$children
-            for (parent in B_sets[[j]]){
-              bqs = intersect(DAG$nodes[[parent]]$children, bqs)
-            }
-
-            # Point arcs from each node in B_sets[[i]] to bqs
-            for (a in B_sets[[i]]){
-              for (b in bqs){
-                DAG_copy = bnlearn::set.arc(DAG_copy, a, b)
-              }
+            # Add arcs from all nodes in Bset_i not in Bset_j to the bq of Bset_j
+            nodes_in_i_not_in_j = names(which(Bset_i > Bset_j))
+            bq_j = rownames(B_sets)[j]
+            for (node in nodes_in_i_not_in_j){
+              DAG_copy = bnlearn::set.arc(DAG_copy, node, bq_j)
             }
           }
         }
