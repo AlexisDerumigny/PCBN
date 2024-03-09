@@ -77,7 +77,7 @@ test_that("remove_CondInd works on a complicated example", {
 })
 
 
-test_that("DAG_to_restricted works"){
+test_that("DAG_to_restricted works", {
 
   # DAG with active cycle
   DAG = create_DAG(5)
@@ -120,10 +120,10 @@ test_that("DAG_to_restricted works"){
   false_negatives = bnlearn::compare(expected_DAG, fixed_DAG)$fn
 
   expect_identical(false_positives + false_negatives, 0)
-}
+})
 
 
-test_that("DAG_to_restricted works with complicated graph"){
+test_that("DAG_to_restricted works with complicated graph", {
 
   DAG = create_DAG(8)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
@@ -151,7 +151,7 @@ test_that("DAG_to_restricted works with complicated graph"){
   # TODO: currently test is failed since fixing the inter-v's at node
   # U3 introduces new inter-v's at node 6
   expect_identical(find_B_sets(fixed_DAG)$has_interfering_vstrucs, FALSE)
-}
+} )
 
 
 
