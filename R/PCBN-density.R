@@ -1,24 +1,39 @@
 
 
-####################################################
-########## Computes density/CDF/log-lik of PCBN ####
-####################################################
+#' Log-likelihood of a PCBN object
+#'
+#' @param PCBN the PCBN object
+#' @param data_uniform the dataset for which the log-likelihood is computed.
+#' It must have already been standardized to uniform margins.
+#' @param ... other arguments, ignored for the moment
+#'
+#' @return the log-likelihood of the PCBN model for the given dataset
+#'
+#' @examples
+#' DAG = create_DAG(3)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#'
+#' order_hash = r2r::hashmap()
+#' order_hash[['U3']] = c("U1", "U2")
+#'
+#' fam = matrix(c(0, 1, 1,
+#'                0, 0, 1,
+#'                0, 0, 0), byrow = TRUE, ncol = 3)
+#' tau = 0.2 * fam
+#'
+#' my_PCBN = new_PCBN(
+#'   DAG, order_hash,
+#'   copula_mat = list(tau = tau, fam = fam))
+#'
+#' mydata = sample_PCBN(my_PCBN, N = 10)
+#'
+#' logLik(my_PCBN, mydata)
+#'
+#' @export
+#'
+logLik.PCBN <- function(PCBN, data_uniform, ...){
 
-# Computes the marginal part of the log-likelihood
-logLik_margins_PCBN <- function(data_normal, margins){
-  log_lik = 0
-  nodes = colnames(data_normal)
-
-  for (v in nodes) {
-    mean_v = margins[[v]]$mean
-    sd_v = margins[[v]]$sd
-    log_lik = log_lik + sum(log(stats::dnorm(data_normal[[v]], mean = mean_v, sd = sd_v)))
-  }
-  return(log_lik)
-}
-
-# Computes the copula part of the log-likelihood
-logLik_copulas_PCBN <- function(data_uniform, PCBN){
   # Unpack PCBN object
   DAG = PCBN$DAG
   order_hash = PCBN$order_hash
@@ -27,7 +42,8 @@ logLik_copulas_PCBN <- function(data_uniform, PCBN){
   log_lik = 0
 
   well_ordering = bnlearn::node.ordering(DAG)
-  # For every node v for every parent w, we need to compute the density of arc c_{ wv|pa(v; w)\{w} }
+  # For every node v, and for every parent w,
+  # we need to compute the density of arc c_{ wv | pa(v; w)\{w} }
   for (v in well_ordering) {
     parents = order_hash[[v]]
     if (length(parents) > 0) {
@@ -43,19 +59,13 @@ logLik_copulas_PCBN <- function(data_uniform, PCBN){
         v_given_lower = compute_sample_margin(PCBN, data_uniform, v, lower)
         w_given_lower = compute_sample_margin(PCBN, data_uniform, w, lower)
 
-        log_lik_arc_w_to_v = sum(log(VineCopula::BiCopPDF(w_given_lower, v_given_lower, family = fam, par = par)))
+        log_lik_arc_w_to_v = sum(log(
+          VineCopula::BiCopPDF(w_given_lower, v_given_lower, family = fam, par = par)))
 
         log_lik = log_lik + log_lik_arc_w_to_v
       }
     }
   }
-  return(log_lik)
-}
-
-# Compute full log-likelihood of PCBN with margins
-logLik_PCBN <- function(data, PCBN, margins){
-  data_uniform = to_uniform_scale(data)
-  log_lik = logLik_margins_PCBN(data, margins) + logLik_copulas_PCBN(data_uniform, PCBN)
   return(log_lik)
 }
 

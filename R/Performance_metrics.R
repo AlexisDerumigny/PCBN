@@ -1,4 +1,26 @@
 
+# Log-likelihood assuming normal margins
+#
+# Computes the marginal part of the log-likelihood
+logLik_margins_PCBN <- function(data_normal, margins){
+  log_lik = 0
+  nodes = colnames(data_normal)
+
+  for (v in nodes) {
+    mean_v = margins[[v]]$mean
+    sd_v = margins[[v]]$sd
+    log_lik = log_lik + sum(log(stats::dnorm(data_normal[[v]], mean = mean_v, sd = sd_v)))
+  }
+  return(log_lik)
+}
+
+# Compute full log-likelihood of PCBN with normal margins
+logLik_PCBN <- function(data, PCBN, margins){
+  data_uniform = to_uniform_scale(data)
+  log_lik = logLik_margins_PCBN(data, margins) + stats::logLik(PCBN, data_uniform)
+  return(log_lik)
+}
+
 ###################################################
 ########  Performance metrics #####################
 ##################################################
