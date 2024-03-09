@@ -98,7 +98,7 @@ extend_orders <- function(DAG, all_orders, node)
 #' print(all_orders_3)
 #'
 #' # Two possible choices for node 3, let's use the first
-#' order_hash[['U3']] = all_orders_4[[1]]
+#' order_hash[['U3']] = all_orders_3[[1]]
 #'
 #' all_orders_4 = find_all_orders_v(DAG, v = "U4", order_hash = order_hash)
 #' print(all_orders_4)
