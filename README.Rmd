@@ -91,7 +91,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Other files to be checked later
 
-- File `Density_PCBN.R`
+- File `PCBN-density.R`
    
 - File `Performance_metrics.R`
 

@@ -81,7 +81,7 @@ Development of the PCBN package
 
 ## Other files to be checked later
 
-- File `Density_PCBN.R`
+- File `PCBN-density.R`
 
 - File `Performance_metrics.R`
 
