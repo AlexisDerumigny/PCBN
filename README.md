@@ -11,6 +11,10 @@ Development of the PCBN package
   - `plot.PCBN()` and `print.PCBN()` are working but are somehow basic
     and can be improved.
 
+- File `PCBN-logLik.R`
+
+  - `logLik.PCBN()` is working. TODO: add methods `AIC` and `BIC`.
+
 - File `Simulation.R`
 
   - `sample_PCBN()`
@@ -80,8 +84,6 @@ Development of the PCBN package
 - File `Utilities.R`
 
 ## Other files to be checked later
-
-- File `PCBN-density.R`
 
 - File `Performance_metrics.R`
 

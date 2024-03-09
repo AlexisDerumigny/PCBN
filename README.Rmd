@@ -20,6 +20,12 @@ knitr::opts_chunk$set(echo = TRUE)
    can be improved.
 
 
+- File `PCBN-logLik.R`
+   
+   + `logLik.PCBN()` is working. 
+   TODO: add methods `AIC` and `BIC`.
+
+
 - File `Simulation.R`
 
    + `sample_PCBN()`
@@ -54,6 +60,7 @@ knitr::opts_chunk$set(echo = TRUE)
    + `possible_candidate_outgoing_arc()`
    
    are already checked and working.
+
 
 # Plan for future work
 
@@ -90,8 +97,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ## Other files to be checked later
-
-- File `PCBN-density.R`
    
 - File `Performance_metrics.R`
 
