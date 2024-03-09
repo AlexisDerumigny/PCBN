@@ -22,11 +22,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - File `PCBN-logLik.R`
    
-   + `logLik.PCBN()` and `PCBN_PDF` are working. 
-   TODO: add methods `AIC` and `BIC`.
+   + `logLik.PCBN()` and `PCBN_PDF()` are working. 
+   
+   **TODO:** add methods `AIC` and `BIC`.
 
 
-- File `Simulation.R`
+- File `PCBN-simulation.R`
 
    + `PCBN_sim()`
    + `compute_sample_margin()`

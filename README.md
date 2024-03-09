@@ -13,10 +13,11 @@ Development of the PCBN package
 
 - File `PCBN-logLik.R`
 
-  - `logLik.PCBN()` and `PCBN_PDF` are working. TODO: add methods `AIC`
-    and `BIC`.
+  - `logLik.PCBN()` and `PCBN_PDF()` are working.
 
-- File `Simulation.R`
+  **TODO:** add methods `AIC` and `BIC`.
+
+- File `PCBN-simulation.R`
 
   - `PCBN_sim()`
   - `compute_sample_margin()`
