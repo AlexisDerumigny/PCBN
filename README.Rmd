@@ -20,6 +20,14 @@ knitr::opts_chunk$set(echo = TRUE)
    can be improved.
 
 
+- File `PCBN-find-copula-specified.R`
+
+   + `is_cond_copula_specified()`
+   + `find_cond_copula_specified()`
+   
+   are already checked and working.
+
+
 - File `PCBN-logLik.R`
    
    + `logLik.PCBN()` and `PCBN_PDF()` are working. 
@@ -84,15 +92,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - File `CopulaAssignement.R`
 
-   + `is_cond_copula_specified()`
-   + `find_cond_copula_specified()`
    + `complete_and_check_orders()`
    
-   are already checked and working.
+   is already checked and working.
+
 
 - File `Graph.R`
 
    + `remove_CondInd()` is already checked and working.
+
 
 - File `Utilities.R`
 

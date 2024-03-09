@@ -11,6 +11,13 @@ Development of the PCBN package
   - `plot.PCBN()` and `print.PCBN()` are working but are somehow basic
     and can be improved.
 
+- File `PCBN-find-copula-specified.R`
+
+  - `is_cond_copula_specified()`
+  - `find_cond_copula_specified()`
+
+  are already checked and working.
+
 - File `PCBN-logLik.R`
 
   - `logLik.PCBN()` and `PCBN_PDF()` are working.
@@ -73,11 +80,9 @@ Development of the PCBN package
 
 - File `CopulaAssignement.R`
 
-  - `is_cond_copula_specified()`
-  - `find_cond_copula_specified()`
   - `complete_and_check_orders()`
 
-  are already checked and working.
+  is already checked and working.
 
 - File `Graph.R`
 
