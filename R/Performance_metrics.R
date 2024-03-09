@@ -92,40 +92,6 @@ PDF_margins_PCBN <- function(data_normal, margins){
   return(likelihood)
 }
 
-### Computing the copula part of the PDF of a PCBN given uniform data
-PDF_copulas_PCBN <- function(data_uniform, PCBN){
-  # Unpack PCBN object
-  DAG = PCBN$DAG
-  order_hash = PCBN$order_hash
-  copula_mat = PCBN$copula_mat
-
-  density = 1
-
-  well_ordering = bnlearn::node.ordering(DAG)
-  # For every node v for every parent w, we need to compute the density of arc c_{ wv|pa(v; w)\{w} }
-  for (v in well_ordering) {
-    parents = order_hash[[v]]
-    if (length(parents) > 0) {
-      for (w in parents) {
-        fam = copula_mat$fam[w, v]
-        tau = copula_mat$tau[w, v]
-        par = VineCopula::BiCopTau2Par(fam, tau)
-
-        # Compute the required margins
-        lower = parents[1:(which(parents == w) - 1)]
-        v_given_lower = compute_sample_margin(PCBN, data_uniform, v, lower)
-        w_given_lower = compute_sample_margin(PCBN, data_uniform, w, lower)
-
-        density_arc_w_to_v = prod(VineCopula::BiCopPDF(w_given_lower, v_given_lower, family = fam, par = par))
-
-        density = density * density_arc_w_to_v
-      }
-    }
-  }
-  return(density)
-}
-
-
 ### Computes the Kullback-Leibler divergence of a estimated PCBN to the true PCBN
 KL_divergence_PCBN <-
   function(data, PCBN, margins, PCBN_fit, margins_fit) {
