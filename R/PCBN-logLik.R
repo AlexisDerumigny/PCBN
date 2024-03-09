@@ -79,6 +79,8 @@ logLik.PCBN <- function(PCBN, data_uniform, ...){
 #'
 #' This function computes the Probability Density Function of a PCBN model.
 #'
+#' This is a wrapper to \code{\link{logLik.PCBN}}.
+#'
 #' @param PCBN PCBN object
 #' @param newdata new data on which the PDF should be computed
 #'
@@ -105,8 +107,10 @@ logLik.PCBN <- function(PCBN, data_uniform, ...){
 #'
 #' PCBN_PDF(my_PCBN, mydata)
 #'
+#' @export
+#'
 PCBN_PDF <- function(PCBN, newdata)
 {
-  return (exp(logLik(PCBN, data_uniform = newdata)))
+  return (exp(stats::logLik(PCBN, data_uniform = newdata)))
 }
 

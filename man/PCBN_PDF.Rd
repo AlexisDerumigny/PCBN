@@ -17,6 +17,9 @@ the probability density at newdata.
 \description{
 This function computes the Probability Density Function of a PCBN model.
 }
+\details{
+This is a wrapper to \code{\link{logLik.PCBN}}.
+}
 \examples{
 DAG = create_DAG(3)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
