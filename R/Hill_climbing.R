@@ -36,7 +36,7 @@
 #'   DAG, order_hash,
 #'   copula_mat = list(tau = tau, fam = fam))
 #'
-#' mydata = sample_PCBN(my_PCBN, N = 5)
+#' mydata = PCBN_sim(my_PCBN, N = 5)
 #'
 #' # Does not work yet
 #' # TODO: fix storing of the trees in the hash thing

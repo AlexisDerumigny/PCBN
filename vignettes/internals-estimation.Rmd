@@ -65,7 +65,7 @@ my_PCBN = new_PCBN(
   copula_mat = list(tau = tau, fam = fam))
 
 N = 100
-mydata = sample_PCBN(my_PCBN, N = N)
+mydata = PCBN_sim(my_PCBN, N = N)
 ```
 
 

@@ -36,7 +36,7 @@ metrics_GBN <- function(data, PCBN, margins, GBN_fit, N_monte_carlo){
 
 
   # Generate data for KL and CvM
-  data_help_uniform = sample_PCBN(PCBN, N_monte_carlo)
+  data_help_uniform = PCBN_sim(PCBN, N_monte_carlo)
   data_help = to_normal_scale(data_help_uniform)
 
   KL = KL_divergence_GBN(data_help, PCBN, margins, GBN_fit)
@@ -70,7 +70,7 @@ metrics_PCBN <- function(data, PCBN, margins, PCBN_fit, margins_fit, N_monte_car
 
 
   # Generate data for KL and CvM
-  data_help_uniform = sample_PCBN(PCBN, N_monte_carlo)
+  data_help_uniform = PCBN_sim(PCBN, N_monte_carlo)
   data_help = to_normal_scale(data_help_uniform)
 
   KL = KL_divergence_PCBN(data_help, PCBN, margins, PCBN_fit, margins_fit)

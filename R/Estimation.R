@@ -56,7 +56,7 @@ default_envir <- function(){
 #'   DAG, order_hash,
 #'   copula_mat = list(tau = tau, fam = fam))
 #'
-#' mydata = sample_PCBN(my_PCBN, N = 5)
+#' mydata = PCBN_sim(my_PCBN, N = 5)
 #' e = default_envir()
 #' ls(e)
 #' C_13 = BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",
@@ -332,7 +332,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 #'   DAG, order_hash,
 #'   copula_mat = list(tau = tau, fam = fam))
 #'
-#' mydata = sample_PCBN(my_PCBN, N = 5)
+#' mydata = PCBN_sim(my_PCBN, N = 5)
 #' e = default_envir()
 #'
 #' result = fit_copulas(data = mydata, DAG = DAG,

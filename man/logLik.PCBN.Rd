@@ -40,7 +40,7 @@ my_PCBN = new_PCBN(
   DAG, order_hash,
   copula_mat = list(tau = tau, fam = fam))
 
-mydata = sample_PCBN(my_PCBN, N = 10)
+mydata = PCBN_sim(my_PCBN, N = 10)
 
 logLik(my_PCBN, mydata)
 

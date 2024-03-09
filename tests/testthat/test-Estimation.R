@@ -24,7 +24,7 @@ my_PCBN = new_PCBN(
   copula_mat = list(tau = tau, fam = fam))
 
 N = 100
-mydata = sample_PCBN(my_PCBN, N = N)
+mydata = PCBN_sim(my_PCBN, N = N)
 
 # Silent the output by default
 verbose = 0
@@ -194,7 +194,7 @@ test_that("fit_all_orders works", {
     DAG, order_hash,
     copula_mat = list(tau = tau, fam = fam))
 
-  mydata = sample_PCBN(my_PCBN, N = 5)
+  mydata = PCBN_sim(my_PCBN, N = 5)
   e = default_envir()
 
   expect_error(

@@ -74,7 +74,7 @@ my_PCBN = new_PCBN(
   DAG, order_hash,
   copula_mat = list(tau = tau, fam = fam))
 
-mydata = sample_PCBN(my_PCBN, N = 5)
+mydata = PCBN_sim(my_PCBN, N = 5)
 e = default_envir()
 ls(e)
 C_13 = BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",

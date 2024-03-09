@@ -18,7 +18,7 @@ Development of the PCBN package
 
 - File `Simulation.R`
 
-  - `sample_PCBN()`
+  - `PCBN_sim()`
   - `compute_sample_margin()`
 
   Both functions are finished, but will return an error if the PCBN does

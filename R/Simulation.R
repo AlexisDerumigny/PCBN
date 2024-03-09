@@ -1,8 +1,8 @@
 
-#' Samples from a specified PCBN
+#' Simulate data from a specified PCBN
 #'
 #'
-#' @param object PCBN object to sample from.
+#' @param object PCBN object to simulate from.
 #' \bold{This does not work if the PCBN does not abide by the B-sets.
 #' And in general, it does not work if the PCBN is outside of
 #' the class of restricted PCBNs.}
@@ -29,12 +29,12 @@
 #'   DAG, order_hash,
 #'   copula_mat = list(tau = tau, fam = fam))
 #'
-#' mydata = sample_PCBN(my_PCBN, N = 5)
+#' mydata = PCBN_sim(my_PCBN, N = 5)
 #'
 #'
 #' @export
 #'
-sample_PCBN <- function(object, N) {
+PCBN_sim <- function(object, N) {
 
   # Initialize data frame
   nodes = bnlearn::nodes(object$DAG)
