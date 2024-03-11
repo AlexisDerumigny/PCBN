@@ -16,16 +16,17 @@ find_B_sets_v(DAG, v)
 }
 \value{
 \code{find_B_sets} list with three elements \itemize{
-   \item \code{B_sets} list of B-sets for each node
+   \item \code{B_sets} list of B-sets matrices for each node;
 
    \item \code{has_interfering_vstrucs} a boolean specifying if the graph
-   contains interfering v-structures or not
+   contains interfering v-structures or not;
 
    \item \code{nodes_with_inter_vs} a list containing nodes forming the
    interfering v-structures.
 }
 \code{find_B_sets_v} returns a boolean matrix with \code{(2 + length(children))}
 columns and \code{length(parents)} rows.
+This is also true if \code{length(parents) == 0} and \code{length(parents) == 1}.
 }
 \description{
 Find all the B-sets of a given DAG

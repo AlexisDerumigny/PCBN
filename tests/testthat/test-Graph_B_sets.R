@@ -91,6 +91,9 @@ test_that("find_B_sets_v works in an example with 1 parent and 2 children", {
 
   B_sets = find_B_sets_v(DAG, v = 'U2')
 
+  # We test that B_sets does not drop, i.e. that it stays an object of the class
+  # "matrix", even if it has only 1 column.
+  expect_identical(class(B_sets), c("matrix", "array"))
   expect_equal(nrow(B_sets), 4)
   expect_equal(ncol(B_sets), 1)
 })
