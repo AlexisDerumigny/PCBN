@@ -82,6 +82,20 @@ test_that("find_B_sets works on a more complicated example", {
 })
 
 
+test_that("find_B_sets_v works in an example with 1 parent and 2 children", {
+
+  DAG = create_DAG(4)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+
+  B_sets = find_B_sets_v(DAG, v = 'U2')
+
+  expect_equal(nrow(B_sets), 4)
+  expect_equal(ncol(B_sets), 1)
+})
+
+
 test_that("B_sets_are_increasing", {
   B_sets = matrix(c(FALSE, FALSE, FALSE, FALSE,
                     TRUE , FALSE, FALSE, FALSE,

@@ -139,9 +139,15 @@ find_B_sets_v <- function(DAG, v)
                           parents %in% DAG$nodes[[children[i]]]$parents
                         })
 
-    # We transpose this because `vapply` makes it a column for each child
-    # instead of the desired 1 row for each child
-    all_B_sets = t(all_B_sets)
+    if (nparents > 1){
+      # We transpose this because `vapply` makes it a column for each child
+      # instead of the desired 1 row for each child
+      all_B_sets = t(all_B_sets)
+    } else {
+      # unless there is only 1 parent (because then vapply returns a vector)
+      # then we make it a column vector
+      all_B_sets = matrix(all_B_sets, ncol = 1)
+    }
 
     # We add the trivial B-sets
     all_B_sets = rbind(
@@ -164,7 +170,9 @@ find_B_sets_v <- function(DAG, v)
   # We sort the B-sets by size
   B_sets_sizes = rowSums(all_B_sets)
   order_B_sets_sizes = order(B_sets_sizes, decreasing = FALSE)
-  all_B_sets = all_B_sets[order_B_sets_sizes , ]
+  all_B_sets = all_B_sets[order_B_sets_sizes , , drop = FALSE]
+  # drop = FALSE because we want it to always return a matrix
+  # even if there is only 1 parent.
 
   return (all_B_sets)
 }
