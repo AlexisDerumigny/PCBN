@@ -62,6 +62,9 @@ knitr::opts_chunk$set(echo = TRUE)
    
    are already checked and working.
 
+  A vignette _"B-sets and interfering v-structures"_ has been written to
+  explain how these functions work.
+
 
 - File `CopulaAssignement_possibleCandidates.R`
    + `possible_candidates()`

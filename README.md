@@ -52,6 +52,9 @@ Development of the PCBN package
 
   are already checked and working.
 
+  A vignette *“B-sets and interfering v-structures”* has been written to
+  explain how these functions work.
+
 - File `CopulaAssignement_possibleCandidates.R`
 
   - `possible_candidates()`
