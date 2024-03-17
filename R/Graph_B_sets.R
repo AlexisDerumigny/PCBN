@@ -262,6 +262,12 @@ B_sets_are_increasing <- function(B_sets){
 #' B_sets = find_B_sets_v(DAG, v = 'U5')
 #' find_interfering_v(B_sets)
 #'
+#' # Adding the missing arc
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U7')
+#' # Now no interfering v-structure
+#' B_sets = find_B_sets_v(DAG, v = 'U5')
+#' find_interfering_v(B_sets)
+#'
 #' @export
 find_interfering_v <- function(B_sets)
 {
