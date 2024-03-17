@@ -1,0 +1,143 @@
+---
+title: "B-sets and interfering v-structures"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{B-sets and interfering v-structures}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r setup}
+library(PCBN)
+```
+
+
+# What are B-sets?
+
+For a node $v$ that has children, the B-sets are the intersections of the parents
+sets of the children of $v$ with $v$'s own parents sets.
+
+They can be obtained using the function
+```{r}
+DAG = create_DAG(6)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+
+DAG = bnlearn::set.arc(DAG, 'U1', 'U6')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U6')
+DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
+```
+
+```{r, fig.height=8, fig.width=8}
+DAG |> bnlearn::as.igraph() |>
+  igraph::plot.igraph(size = 10, label.cex = 1, layout = igraph::layout_as_tree
+  )
+```
+
+
+```{r}
+find_B_sets_v(DAG, v = 'U5')
+```
+
+This means that for `v = U5`, the B-sets corresponding to `U6` is made up
+of `U1` and `U2`.
+By convention, the empty set and the full set of parents of `v` are always added.
+To obtain all the B-sets of the nodes of the graph, the following code can be
+used:
+
+```{r}
+B_sets = find_B_sets(DAG)
+B_sets$B_sets
+```
+
+
+# Interfering v-structures
+
+An interfering v-structure is by definition a case when two B-sets of the same
+node are not comparable
+(for the inclusion order, i.e. neither of them is included in the other one).
+
+Here is an example of a graph with interfering v-structures.
+
+```{r}
+DAG = create_DAG(5)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+
+DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+```
+
+```{r, fig.height=6, fig.width=6}
+DAG |> bnlearn::as.igraph() |> igraph::plot.igraph()
+```
+
+```{r}
+find_B_sets_v(DAG, v = 'U3')
+```
+
+To check automatically that the B-sets are not comparable (i.e. the existence of a v-structure),
+we can do:
+```{r}
+find_B_sets_v(DAG, v = 'U3') |>
+  B_sets_are_increasing()
+```
+
+More generally, the presence of v-structures can be automatically checked using
+the following function:
+```{r}
+has_interfering_vstrucs(DAG)
+```
+
+To find the interfering v-structures at a given node, we can use:
+```{r, results = "kable"}
+find_B_sets_v(DAG, v = 'U3') |>
+  find_interfering_v() |>
+  print()
+```
+
+To fix this, we can add one of the missing arcs.
+This makes the interfering v-structure disappear.
+
+```{r}
+DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+has_interfering_vstrucs(DAG)
+```
+
+In this case, the B-sets are:
+```{r}
+find_B_sets_v(DAG, v = 'U3')
+```
+
+
+# B-sets cuts
+
+If there are no interfering v-structures, the B-sets are sorted.
+We can then get their increments as follows:
+
+```{r}
+find_B_sets_v(DAG, v = 'U3') |>
+  B_sets_cut_increments()
+```
+In this case, the B-sets of `U5` and the full B-set are identical. Therefore,
+the last increment is the empty character vector.
+It can be nice sometimes to make the B-sets unique so as to avoid this.
+```{r}
+find_B_sets_v(DAG, v = 'U3') |>
+  B_sets_make_unique() |>
+  B_sets_cut_increments()
+```
+
+
