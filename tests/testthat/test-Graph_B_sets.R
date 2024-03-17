@@ -175,8 +175,6 @@ test_that("find_interfering_v works with 3 interfering v-structures", {
 })
 
 
-
-
 test_that("find_interfering_v works with 3 interfering v-structures", {
 
   DAG = create_DAG(8)
@@ -202,3 +200,25 @@ test_that("find_interfering_v works with 3 interfering v-structures", {
   expect_equal(nrow(interf_v), 1)
 
 })
+
+test_that("B_sets_cut_increments works with the output of B_sets_make_unique", {
+
+  DAG = create_DAG(5)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+
+  B_sets = find_B_sets_v(DAG, v = 'U3') |>
+    B_sets_make_unique()
+
+  B_sets_incr = B_sets_cut_increments(B_sets = B_sets)
+
+  # There are 2 B-sets increments: first "U1" and then "U2"
+  expect_identical(B_sets_incr, list("U1", "U2"))
+})
+

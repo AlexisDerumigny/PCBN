@@ -356,6 +356,8 @@ B_sets_make_unique <- function(B_sets)
 #' @param B_sets matrix of B-sets, assumed to be increasing.
 #' This means \code{\link{find_interfering_v}} should return \code{NULL}
 #' on this matrix.
+#' This can be the output of \code{\link{find_B_sets_v}}
+#' or of \code{\link{B_sets_make_unique}}.
 #'
 #' @returns a list of vectors of characters. Each element of the list
 #' corresponds to one \eqn{DeltaBset = Bset[i] \ Bset[i-1]}.
@@ -376,14 +378,27 @@ B_sets_make_unique <- function(B_sets)
 B_sets_cut_increments <- function(B_sets)
 {
   result = list()
-  parents_name = colnames(B_sets)
+  if (colnames(B_sets)[1] == "nodes"){
+    # Then B_sets is the output of `B_sets_make_unique`
+    parents_name = colnames(B_sets)[-1]
+    for (i in 2:nrow(B_sets)){
+      Bset_i_1 = B_sets[i - 1, -1]
+      Bset_i = B_sets[i, -1]
+      delta_B_set = parents_name[Bset_i & !Bset_i_1]
+      result[[i - 1]] = delta_B_set
+    }
+  } else {
+    parents_name = colnames(B_sets)
 
-  for (i in 2:nrow(B_sets)){
-    Bset_i_1 = B_sets[i - 1, ]
-    Bset_i = B_sets[i, ]
-    delta_B_set = parents_name[Bset_i & !Bset_i_1]
-    result[[i - 1]] = delta_B_set
+    for (i in 2:nrow(B_sets)){
+      Bset_i_1 = B_sets[i - 1, ]
+      Bset_i = B_sets[i, ]
+      delta_B_set = parents_name[Bset_i & !Bset_i_1]
+      result[[i - 1]] = delta_B_set
+    }
   }
+
+
   return (result)
 }
 
