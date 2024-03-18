@@ -12,6 +12,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+# Adjusting options to display wide R output
+options(width = 120)
 ```
 
 
@@ -135,9 +138,14 @@ In this case, the B-sets of `U5` and the full B-set are identical. Therefore,
 the last increment is the empty character vector.
 It can be nice sometimes to make the B-sets unique so as to avoid this.
 ```{r}
-find_B_sets_v(DAG, v = 'U3') |>
-  B_sets_make_unique() |>
-  B_sets_cut_increments()
+B_sets_unique = find_B_sets_v(DAG, v = 'U3') |>
+  B_sets_make_unique()
+
+print(B_sets_unique)
+```
+
+```{r}
+B_sets_cut_increments(B_sets_unique)
 ```
 
 
