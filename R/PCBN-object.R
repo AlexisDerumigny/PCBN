@@ -123,10 +123,25 @@ plot.PCBN <- function(x, ...){
 #' Print function
 #'
 #' @param x PCBN object
+#'
+#' @param print.orders if \code{all}, print all orders.
+#' If \code{non-empty}, this only prints the non-empty ones.
+#'
 #' @param ... other arguments, unused
 #'
 #' @export
-print.PCBN <- function(x, ...){
-  x$copula_mat
+print.PCBN <- function(x, print.orders = "non-empty", ...){
+  cat("Copula matrix:\n")
+  print(x$copula_mat)
+
+  cat("Parental orderings:\n")
+  well_ordering = bnlearn::node.ordering(DAG)
+  # Show the ordering for each node
+  for (node in well_ordering) {
+    if (length(order_hash[[node]]) > 0 || print.orders == "all")
+    cat(paste0(node, ":", sep = ""),
+        paste0(order_hash[[node]], collapse = " < "),
+        "\n")
+  }
 }
 
