@@ -72,8 +72,6 @@ Development of the PCBN package
 
   are already checked and working.
 
-# Plan for future work
-
 - File `Estimation.R` : rewriting in progress.
 
   - `BiCopCondFit()` and `ComputeCondMargin()` have been rewritten.
@@ -81,8 +79,9 @@ Development of the PCBN package
   A vignette *“How to use the estimation procedures”* has been written
   to explain how these functions work.
 
-  - **TODO:** `fit_copulas()` and `fit_all_orders()` will be checked
-    soon.
+  - `fit_copulas()` and `fit_all_orders()` are working.
+
+# Plan for future work
 
 ## Files to be checked soon
 
