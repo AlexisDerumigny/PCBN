@@ -72,7 +72,7 @@ random_good_graph <- function(N.nodes, N.arcs){
 
     if (bnlearn::acyclic(DAG_help)){
       if (!(has_interfering_vstrucs(DAG_help))){
-        if (length(active_cycle_check(DAG_help, early.stopping = TRUE)) == 0){
+        if (length(active_cycles(DAG_help, early.stopping = TRUE)) == 0){
           DAG = DAG_help
         }
       }

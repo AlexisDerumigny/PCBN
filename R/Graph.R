@@ -101,7 +101,7 @@ dsep_set <- function(DAG, X, Y, Z = NULL){
 #'
 #' @returns a list containing the active cycles.
 #'
-active_cycle_check <- function(DAG, early.stopping = TRUE)
+active_cycles <- function(DAG, early.stopping = TRUE)
 {
   node.names = bnlearn::nodes(DAG)
   adj.mat = bnlearn::amat(DAG)
@@ -245,7 +245,7 @@ DAG_to_restricted <- function(DAG) {
   # create more of them
 
   # Remove active cycles
-  active_cycles = active_cycle_check(DAG)
+  active_cycles = active_cycles(DAG)
   if (length(active_cycles) > 0) {
     # Point arcs from all nodes to the v-structure
     for (ac in active_cycles) {
