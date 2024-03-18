@@ -4,6 +4,22 @@
 #'
 #' @returns a list of hashmaps containing the possible orders
 #'
+#' @examples
+#' DAG = create_DAG(4)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' all_orders = find_all_orders(DAG)\
+#' length(all_orders)
+#' # 8 orders
+#' for (i in 1:length(all_orders)){
+#'   cat("Order ", i, ": \n")
+#'   cat("U3:", all_orders[[i]][['U3']])
+#'   cat(" ; U4:", all_orders[[i]][['U4']], "\n")
+#' }
+#'
 #' @export
 find_all_orders <- function(DAG) {
   # Start with empty order
@@ -17,6 +33,7 @@ find_all_orders <- function(DAG) {
   }
   return(all_orders)
 }
+
 
 #' Fills in all possible orders for the next node for each possible order
 #'
