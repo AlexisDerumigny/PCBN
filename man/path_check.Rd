@@ -9,11 +9,29 @@ path_check(DAG, path)
 \arguments{
 \item{DAG}{Directed Acyclic Graph.}
 
-\item{path}{list of nodes in DAG forming a trail.}
+\item{path}{character vector of nodes in the DAG forming a trail.}
 }
 \value{
-TRUE if the path contains no converging connections and chords.
+\code{TRUE} if the path contains no converging connections nor chords.
 }
 \description{
 Checks a path for converging connections and chords.
+}
+\examples{
+
+DAG = create_DAG(4)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+path_check(DAG, c('U1', 'U2', 'U3', 'U4')) # TRUE
+
+DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+path_check(DAG, c('U1', 'U2', 'U3', 'U4')) # has a chord
+
+DAG = create_DAG(4)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U4', 'U3')
+path_check(DAG, c('U1', 'U2', 'U3', 'U4')) # has a converging connection
+
 }

@@ -100,8 +100,42 @@ dsep_set <- function(DAG, X, Y, Z = NULL){
 #' found.
 #'
 #' @returns a list containing the active cycles.
+#' Each active cycle is a character vector of the name of the nodes involved in
+#' the active cycle. The first element of this vector is the converging node of
+#' the active cycle.
 #'
-active_cycles <- function(DAG, early.stopping = TRUE)
+#' @examples
+#'
+#' DAG = create_DAG(4)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#'
+#' active_cycles(DAG)  # no active cycle
+#'
+#' DAG = create_DAG(4)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#'
+#' active_cycles(DAG)  # 1 active cycle
+#'
+#' DAG = create_DAG(5)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+#'
+#' active_cycles(DAG)  # 2 active cycles
+#' active_cycles(DAG, early.stopping = TRUE)  # The first active cycle
+#'
+#' @export
+active_cycles <- function(DAG, early.stopping = FALSE)
 {
   node.names = bnlearn::nodes(DAG)
   adj.mat = bnlearn::amat(DAG)
@@ -148,9 +182,10 @@ active_cycles <- function(DAG, early.stopping = TRUE)
             # 2: Check for converging connections and chords
             if (length(paths) > 0){
               for (i in 1:length(paths)){
-                if (path_check(DAG,paths[i])){ # Checks for v-strucs and chords
+                names_path_nodes = names(paths[[i]])
+                if (path_check(DAG, names_path_nodes)){ # Checks for v-strucs and chords
                   L = length(active_cycle_list)
-                  path_vec = c(v, names(paths[[i]])) # v + path = active cycle
+                  path_vec = c(v, names_path_nodes) # v + path = active cycle
                   active_cycle_list[[L + 1]] = path_vec
 
                   if (early.stopping){
@@ -171,38 +206,52 @@ active_cycles <- function(DAG, early.stopping = TRUE)
 #' Checks a path for converging connections and chords.
 #'
 #' @param DAG Directed Acyclic Graph.
-#' @param path list of nodes in DAG forming a trail.
+#' @param path character vector of nodes in the DAG forming a trail.
 #'
-#' @returns TRUE if the path contains no converging connections and chords.
+#' @returns \code{TRUE} if the path contains no converging connections nor chords.
 #'
+#' @examples
+#'
+#' DAG = create_DAG(4)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' path_check(DAG, c('U1', 'U2', 'U3', 'U4')) # TRUE
+#'
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+#' path_check(DAG, c('U1', 'U2', 'U3', 'U4')) # has a chord
+#'
+#' DAG = create_DAG(4)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U4', 'U3')
+#' path_check(DAG, c('U1', 'U2', 'U3', 'U4')) # has a converging connection
+#'
+#' @export
 path_check <- function(DAG, path){
   node.names = bnlearn::nodes(DAG)
   adj.mat = bnlearn::amat(DAG)
-  no_chords_vstrucs = TRUE
+  N = length(path)
 
-  path.nodes = names(unlist(path))
-  N = length(path.nodes)
-
-  for (i in 1:N){
+  for (i in 1:(N - 1)){
     # Check vstrucs
-    if (i > 1 & i < N-1){
-      if ((adj.mat[path.nodes[i-1], path.nodes[i]]==1) &
-          (adj.mat[path.nodes[i+1], path.nodes[i]]==1)){
-        no_chords_vstrucs = FALSE
+    if (i >= 2){
+      if ((adj.mat[path[i-1], path[i]] == 1) &
+          (adj.mat[path[i+1], path[i]] == 1)){
+        return(FALSE)
       }
     }
-
     # Check chords
-    if(i < length(path.nodes)-1){
+    if(i <= N - 2){
       for(j in (i+2):N){ # Ensures that we don't check arcs twice
-        if (adj.mat[path.nodes[i],path.nodes[j]] +
-            adj.mat[path.nodes[j],path.nodes[i]] > 0){
-          no_chords_vstrucs = FALSE
+        if (adj.mat[path[i], path[j]] +
+            adj.mat[path[j], path[i]] > 0){
+          return(FALSE)
         }
       }
     }
   }
-  return(no_chords_vstrucs)
+  return(TRUE)
 }
 
 
