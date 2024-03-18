@@ -63,24 +63,33 @@ create_DAG <- function(N_nodes){
 #' @param Y node
 #' @param Z set
 #'
-#' @return TRUE if the sets are d-separated and FALSE if not
+#' @return \code{TRUE} if the sets are d-separated and \code{FALSE} if not
 #'
-dsep_set <- function(DAG, X, Y, Z=c()){
-  dseparated = TRUE
+#' @examples
+#'
+#' DAG = create_DAG(5)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#'
+#' dsep_set(DAG, 'U1', 'U5')
+#'
+#' @export
+#'
+dsep_set <- function(DAG, X, Y, Z = NULL){
+  if (length(Z) == 0){
+    Z = character(0)
+  }
   for (x in X){
     for (y in Y){
-      if (length(Z)==0){
-        if (!bnlearn::dsep(DAG,x,y)){
-          dseparated = FALSE
-        }
-      } else{
-        if (!bnlearn::dsep(DAG,x,y,Z)){
-          dseparated = FALSE
-        }
+      if (!bnlearn::dsep(DAG, x, y, Z)){
+        return(FALSE)
       }
     }
   }
-  return(dseparated)
+  return(TRUE)
 }
 
 
