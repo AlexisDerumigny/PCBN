@@ -63,6 +63,15 @@ Development of the PCBN package
 
   are already checked and working.
 
+- File `Parents_ordering.R`
+
+  - `find_all_orders()`
+  - `extend_orders()`
+  - `find_all_orders_v()`
+  - `complete_and_check_orders()`
+
+  are already checked and working.
+
 # Plan for future work
 
 - File `Estimation.R` : rewriting in progress.
@@ -80,12 +89,6 @@ Development of the PCBN package
 - File `Hill_climbing.R`
 
 ## Files to be checked and rearranged
-
-- File `CopulaAssignement.R`
-
-  - `complete_and_check_orders()`
-
-  is already checked and working.
 
 - File `Graph.R`
 
