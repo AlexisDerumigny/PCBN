@@ -1,4 +1,35 @@
 
+test_that("extend_orders works for a simple case", {
+
+  DAG = create_DAG(4)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+
+  # Start with empty order
+  order_hash = r2r::hashmap()
+
+  all_orders_3 = find_all_orders_v(DAG, v = "U3", order_hash = order_hash)
+  # print(all_orders_3)
+
+  # Two possible choices for node 3, let's use the first
+  order_hash[['U3']] = all_orders_3[[1]]
+
+  extended_orders = extend_orders(DAG, list(order_hash), node = 'U4')
+  expect_equal(length(extended_orders), 4)
+
+  # We can extend this order in 4 ways:
+  for (i in 1:length(extended_orders)){
+    order_chosen_4 = extended_orders[[i]][['U4']]
+    first_two_elements_of_the_order = sort(order_chosen_4[1:2])
+    expect_true( any(first_two_elements_of_the_order != c("U2", "U3")) )
+  }
+  # We never pick U2 and U3 first, because their copula is not specified
+})
+
+
 test_that("extend_orders works for the edge cases: 0 parent, 1 parent", {
 
   DAG = create_DAG(3)

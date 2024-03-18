@@ -19,3 +19,29 @@ list of order hashmaps
 \description{
 Fills in all possible orders for the next node for each possible order
 }
+\examples{
+DAG = create_DAG(4)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+
+# Start with empty order
+order_hash = r2r::hashmap()
+
+all_orders_3 = find_all_orders_v(DAG, v = "U3", order_hash = order_hash)
+print(all_orders_3)
+
+# Two possible choices for node 3, let's use the first
+order_hash[['U3']] = all_orders_3[[1]]
+
+extended_orders = extend_orders(DAG, list(order_hash), node = 'U4')
+length(extended_orders)
+# We can extend this order in 4 ways:
+for (i in 1:length(extended_orders)){
+  print(extended_orders[[i]][['U4']])
+}
+# We never pick U2 and U3 first, because their copula is not specified
+
+}
