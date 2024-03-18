@@ -82,6 +82,17 @@ result = fit_copulas(data = mydata, DAG = DAG,
 
 result_all_orders = fit_all_orders(data = mydata, DAG = DAG,
                                    familyset = 1, e = e)
+
+# The two fitted PCBNs are:
+print(result_all_orders$fitted_list[[1]])
+print(result_all_orders$fitted_list[[2]])
+# and the metrics matrix is:
+print(result_all_orders$metrics)
+
+# The PCBN corresponding to the true order U1 < U2 is usually better
+# than the second one. This Will be more clear with a bigger sample size.
+
+
 }
 \seealso{
 [BiCopCondFit] which this function wraps.
