@@ -181,7 +181,7 @@ allowed.operations.general <- function(DAG){
           DAG_new = bnlearn::set.arc(DAG, from, to, check.cycles = FALSE)
           if (bnlearn::acyclic(DAG_new)){
             if (!(has_interfering_vstrucs(DAG_new))){
-              if (!(active_cycle_check(DAG_new)$active_cycles)){
+              if (length(active_cycle_check(DAG_new, early.stopping = TRUE)) == 0){
                 df = rbind(df, list(from = from, to = to, operation = "set"))
               }
             }
@@ -192,7 +192,7 @@ allowed.operations.general <- function(DAG){
           DAG_new = bnlearn::drop.arc(DAG, from, to)
           if (bnlearn::acyclic(DAG_new)){
             if (!(has_interfering_vstrucs(DAG_new))){
-              if (!(active_cycle_check(DAG_new)$active_cycles)){
+              if (length(active_cycle_check(DAG_new, early.stopping = TRUE)) == 0){
                 df = rbind(df, list(from = from, to = to, operation = "drop"))
               }
             }
@@ -203,7 +203,7 @@ allowed.operations.general <- function(DAG){
           DAG_new = bnlearn::reverse.arc(DAG, from, to, check.cycles = FALSE)
           if (bnlearn::acyclic(DAG_new)){
             if (!(has_interfering_vstrucs(DAG_new))){
-              if (!(active_cycle_check(DAG_new)$active_cycles)){
+              if (length(active_cycle_check(DAG_new, early.stopping = TRUE)) == 0){
                 df = rbind(df, list(from = from, to = to, operation = "reverse"))
               }
             }

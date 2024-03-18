@@ -95,51 +95,66 @@ dsep_set <- function(DAG, X, Y, Z = NULL){
 
 #' Checks if a graph contains active cycles
 #'
-#' @param DAG Directed Acyclic Graph
+#' @param DAG Directed Acyclic
+#' @param early.stopping if \code{TRUE}, stop at the first active cycle that is
+#' found.
 #'
-#' @returns a list containing a boolean specifying if DAG contains active cycles,
-#' number of active cycles, and list of the active cycles.
+#' @returns a list containing the active cycles.
 #'
-active_cycle_check <- function(DAG){
+active_cycle_check <- function(DAG, early.stopping = TRUE)
+{
   node.names = bnlearn::nodes(DAG)
   adj.mat = bnlearn::amat(DAG)
-  active_cycles = FALSE
   active_cycle_list = list()
+
+  # Turn DAG into undirected graph
+  DAG_igraph = igraph::as.undirected(bnlearn::as.igraph(DAG))
 
   for (v in node.names){
     parents = DAG$nodes[[v]]$parent
     children = DAG$nodes[[v]]$children
-    if (length(parents)>1){
-      for (i_parent in 1:length(parents)) {
-        w = parents[i_parent]
-        parents_up_to_w = if (i_parent == 1) {c()
-        } else {parents[1:(i_parent - 1)]}
+    # We look for active cycles of the form w -> v <- z
+    # where there is a trail between w and z that does not involve v
+    # such that this trail has no converging connection and no chords
 
-        if (length(parents_up_to_w)>0){
-          for (z in parents_up_to_w){
-            # Parents must be non-adjacent
-            if (adj.mat[w,z]==0 & adj.mat[z,w]==0){
-              # Parents in an active cycle are joined by a trail
-              # with no chords with no converging connection
-              # consisting of nodes not adjacent to v (the undirected cycle has no chords)
+    if (length(parents) > 1)
+    {
+      # We can only restrict ourselves to the parents up to w
+      # so that we do not count the couples (w,z) and (z,w) twice.
+      for (i_w in 2:length(parents))
+      {
+        w = parents[i_w]
+        for (i_z in 1:(i_w - 1))
+        {
+          z = parents[i_z]
 
-              # This means that no node in pa(v) or ch(v) can be on the trail
+          # Parents must be non-adjacent, otherwise there is a chord directly
+          if (adj.mat[w,z] == 0 & adj.mat[z,w] == 0){
 
-              # 1: Turn DAG into undirected graph
-              DAG_igraph = igraph::as.undirected(bnlearn::as.igraph(DAG))
-              # 2: Remove all nodes in pa(v)\{w,z}, ch(v) and v
-              DAG_igraph = DAG_igraph - v - parents[which((parents != w) &
-                                                            (parents != z))] - children
-              # Find all undirected paths between w and z
-              paths = igraph::all_simple_paths(DAG_igraph, w, z)
-              # 3: Check for converging connections and chords
-              if (length(paths)>0){
-                for (i in 1:length(paths)){
-                  if (path_check(DAG,paths[i])){ # Checks for v-strucs and chords
-                    L = length(active_cycle_list)
-                    path_vec = c(v,names(paths[[i]])) # v + path = active cycle
-                    active_cycle_list[[L+1]] = path_vec
-                    active_cycles = TRUE
+            # Parents in an active cycle are joined by a trail
+            # with no chords and with no converging connection
+            # consisting of nodes not adjacent to v
+            # (the undirected cycle has no chords)
+
+            # This means that no node in pa(v) or ch(v) can be on the trail
+
+            # 1: Remove all nodes in pa(v)\{w,z}, ch(v) and v
+            toRemove = c(v, parents[-c(i_z, i_w)], children)
+            DAG_igraph_rem = DAG_igraph - toRemove
+
+            # Find all undirected paths between w and z
+            paths = igraph::all_simple_paths(DAG_igraph_rem, w, z)
+
+            # 2: Check for converging connections and chords
+            if (length(paths) > 0){
+              for (i in 1:length(paths)){
+                if (path_check(DAG,paths[i])){ # Checks for v-strucs and chords
+                  L = length(active_cycle_list)
+                  path_vec = c(v, names(paths[[i]])) # v + path = active cycle
+                  active_cycle_list[[L + 1]] = path_vec
+
+                  if (early.stopping){
+                    return (active_cycle_list = active_cycle_list)
                   }
                 }
               }
@@ -149,11 +164,9 @@ active_cycle_check <- function(DAG){
       }
     }
   }
-  res = list(active_cycles = active_cycles,
-             N = length(active_cycle_list),
-             active_cycle_list = active_cycle_list)
-  return(res)
+  return(active_cycle_list)
 }
+
 
 #' Checks a path for converging connections and chords.
 #'
@@ -191,7 +204,6 @@ path_check <- function(DAG, path){
   }
   return(no_chords_vstrucs)
 }
-
 
 
 #' Turns a general graph into a restricted graph.
@@ -233,12 +245,10 @@ DAG_to_restricted <- function(DAG) {
   # create more of them
 
   # Remove active cycles
-  res = active_cycle_check(DAG)
-  if (res$active_cycles) {
-    acs = res$active_cycle_list
-    N_ac = res$N
+  active_cycles = active_cycle_check(DAG)
+  if (length(active_cycles) > 0) {
     # Point arcs from all nodes to the v-structure
-    for (ac in acs) {
+    for (ac in active_cycles) {
       vstruc = ac[[1]]
       rest = ac[which(ac != vstruc)]
       for (node in rest) {
