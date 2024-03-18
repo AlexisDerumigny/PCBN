@@ -4,13 +4,35 @@
 \alias{print.PCBN}
 \title{Print function}
 \usage{
-\method{print}{PCBN}(x, ...)
+\method{print}{PCBN}(x, print.orders = "non-empty", ...)
 }
 \arguments{
 \item{x}{PCBN object}
+
+\item{print.orders}{if \code{all}, print all orders.
+If \code{non-empty}, this only prints the non-empty ones.}
 
 \item{...}{other arguments, unused}
 }
 \description{
 Print function
+}
+\examples{
+DAG = create_DAG(3)
+DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+
+order_hash = r2r::hashmap()
+order_hash[['U3']] = c("U1", "U2")
+
+fam = matrix(c(0, 1, 1,
+               0, 0, 1,
+               0, 0, 0), byrow = TRUE, ncol = 3)
+tau = 0.2 * fam
+
+my_PCBN = new_PCBN(
+  DAG, order_hash,
+  copula_mat = list(tau = tau, fam = fam))
+print(my_PCBN)
+
 }

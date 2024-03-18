@@ -129,18 +129,37 @@ plot.PCBN <- function(x, ...){
 #'
 #' @param ... other arguments, unused
 #'
+#' @examples
+#' DAG = create_DAG(3)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#'
+#' order_hash = r2r::hashmap()
+#' order_hash[['U3']] = c("U1", "U2")
+#'
+#' fam = matrix(c(0, 1, 1,
+#'                0, 0, 1,
+#'                0, 0, 0), byrow = TRUE, ncol = 3)
+#' tau = 0.2 * fam
+#'
+#' my_PCBN = new_PCBN(
+#'   DAG, order_hash,
+#'   copula_mat = list(tau = tau, fam = fam))
+#' print(my_PCBN)
+#'
 #' @export
 print.PCBN <- function(x, print.orders = "non-empty", ...){
   cat("Copula matrix:\n")
   print(x$copula_mat)
 
   cat("Parental orderings:\n")
-  well_ordering = bnlearn::node.ordering(DAG)
+  well_ordering = bnlearn::node.ordering(x$DAG)
+
   # Show the ordering for each node
   for (node in well_ordering) {
-    if (length(order_hash[[node]]) > 0 || print.orders == "all")
+    if (length(x$order_hash[[node]]) > 0 || print.orders == "all")
     cat(paste0(node, ":", sep = ""),
-        paste0(order_hash[[node]], collapse = " < "),
+        paste0(x$order_hash[[node]], collapse = " < "),
         "\n")
   }
 }
