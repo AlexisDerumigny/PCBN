@@ -3,7 +3,7 @@ Development of the PCBN package
 
 # Files that have been checked and are fully working
 
-## Graphical models
+## 1. PCBN object and structure
 
 - File `PCBN-object.R`
 
@@ -13,11 +13,6 @@ Development of the PCBN package
   - `plot.PCBN()` and `print.PCBN()` are working but are somehow basic
     and can be improved.
 
-- File `PCBN-find-copula-specified.R`
-
-  - `is_cond_copula_specified()`, `find_cond_copula_specified()` are
-    already checked and working.
-
 - File `PCBN-tag.R` : contains some utilities about the tag/hashmap
   system for storing estimated copulas and estimated conditional
   margins.
@@ -26,7 +21,24 @@ Development of the PCBN package
   `print_key_keychain()`, `make_and_store_keyCopula()` and
   `make_and_store_keyMargin()`.
 
-## Simulation and estimation
+## 2. PCBN and graphical models
+
+- File `PCBN-find-copula-specified.R`
+
+  - `is_cond_copula_specified()`, `find_cond_copula_specified()` are
+    already checked and working.
+
+- File `CopulaAssignement_possibleCandidates.R`
+
+  - `possible_candidates()`, `possible_candidate_incoming_arc()`,
+    `possible_candidate_outgoing_arc()` are already checked and working.
+
+- File `Parents_ordering.R`
+
+  - `find_all_orders()`, `extend_orders()`, `find_all_orders_v()`,
+    `complete_and_check_orders()` are already checked and working.
+
+## 3. Simulation and estimation
 
 - File `PCBN-simulation.R`
 
@@ -55,26 +67,15 @@ Development of the PCBN package
 
   - `fit_copulas()` and `fit_all_orders()` are working.
 
-## Graph utilities
+## 4. Graph utilities
 
 - File `Graph_B_sets.R`
-
   - `has_interfering_vstrucs()`, `find_B_sets()`, `find_B_sets_v()`,
     `find_interfering_v()`, `B_sets_make_unique()`,
     `B_sets_cut_increments()` are already checked and working.
 
   A vignette *“B-sets and interfering v-structures”* has been written to
   explain how these functions work.
-
-- File `CopulaAssignement_possibleCandidates.R`
-
-  - `possible_candidates()`, `possible_candidate_incoming_arc()`,
-    `possible_candidate_outgoing_arc()` are already checked and working.
-
-- File `Parents_ordering.R`
-
-  - `find_all_orders()`, `extend_orders()`, `find_all_orders_v()`,
-    `complete_and_check_orders()` are already checked and working.
 
 # Plan for future work
 
