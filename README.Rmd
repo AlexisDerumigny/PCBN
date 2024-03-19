@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Files that have been checked and are fully working
 
+## Graphical models
+
 - File `PCBN-object.R`
 
    + `new_PCBN()`: working, but may be changed / developed further.
@@ -22,10 +24,31 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - File `PCBN-find-copula-specified.R`
 
-   + `is_cond_copula_specified()`
-   + `find_cond_copula_specified()`
-   
+   + `is_cond_copula_specified()`, `find_cond_copula_specified()`
    are already checked and working.
+
+
+- File `PCBN-tag.R` : contains some utilities about the tag/hashmap system
+  for storing estimated copulas and estimated conditional margins.
+  
+  The functions are: `paste_margin()`, `unpaste_margin()`, `print_key_keychain()`,
+  `make_and_store_keyCopula()` and `make_and_store_keyMargin()`.
+  
+
+## Simulation and estimation
+
+
+- File `PCBN-simulation.R`
+
+   + `PCBN_sim()`, `compute_sample_margin()`
+   
+   Both functions are finished, but will return an error if the PCBN does not
+   satisfy the restrictions. This is the case for example if the order of the
+   parents are not chosen in the correct way (even though the graph may not
+   have any active cycle nor interfering v-structure).
+   
+   They also can be further optimized by storing already computed margins in
+   a hashmap.
 
 
 - File `PCBN-logLik.R`
@@ -35,56 +58,7 @@ knitr::opts_chunk$set(echo = TRUE)
    **TODO:** add methods `AIC` and `BIC`.
 
 
-- File `PCBN-simulation.R`
-
-   + `PCBN_sim()`
-   + `compute_sample_margin()`
-   
-   Both functions are finished, but will return an error if the PCBN does not
-   satisfy the restrictions. This is the case for example if the order of the
-   parents are not chosen in the correct way (even though the graph may not
-   have any active cycle nor interfering v-structure).
-
-
-- File `PCBN-tag.R` : contains some utilities about the tag/hashmap system
-  for storing estimated copulas and estimated conditional margins.
-  
-  The functions are: `paste_margin()`, `unpaste_margin()`, `print_key_keychain()`,
-  `make_and_store_keyCopula()` and `make_and_store_keyMargin()`.
-
-
-- File `Graph_B_sets.R`
-   + `has_interfering_vstrucs()`
-   + `find_B_sets()`, `find_B_sets_v()`
-   + `find_interfering_v()`
-   + `B_sets_make_unique()`
-   + `B_sets_cut_increments()`
-   
-   are already checked and working.
-
-  A vignette _"B-sets and interfering v-structures"_ has been written to
-  explain how these functions work.
-
-
-- File `CopulaAssignement_possibleCandidates.R`
-   + `possible_candidates()`
-   + `possible_candidate_incoming_arc()`
-   + `possible_candidate_outgoing_arc()`
-   
-   are already checked and working.
-
-
-- File `Parents_ordering.R`
-
-   + `find_all_orders()`
-   + `extend_orders()`
-   + `find_all_orders_v()`
-   + `complete_and_check_orders()`
-   
-   are already checked and working.
-
-
-- File `Estimation.R` : rewriting in progress.
+- File `Estimation.R`
 
   + `BiCopCondFit()` and  `ComputeCondMargin()` have been rewritten.
 
@@ -92,6 +66,30 @@ knitr::opts_chunk$set(echo = TRUE)
   explain how these functions work.
   
   + `fit_copulas()` and `fit_all_orders()` are working.
+
+
+## Graph utilities
+
+- File `Graph_B_sets.R`
+   + `has_interfering_vstrucs()`, `find_B_sets()`, `find_B_sets_v()`, 
+   `find_interfering_v()`, `B_sets_make_unique()`, `B_sets_cut_increments()`
+   are already checked and working.
+
+  A vignette _"B-sets and interfering v-structures"_ has been written to
+  explain how these functions work.
+
+
+- File `CopulaAssignement_possibleCandidates.R`
+   + `possible_candidates()`, `possible_candidate_incoming_arc()`,
+   `possible_candidate_outgoing_arc()`
+   are already checked and working.
+
+
+- File `Parents_ordering.R`
+
+   + `find_all_orders()`, `extend_orders()`, `find_all_orders_v()`, 
+   `complete_and_check_orders()`
+   are already checked and working.
 
 
 # Plan for future work
