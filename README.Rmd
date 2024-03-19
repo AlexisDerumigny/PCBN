@@ -106,8 +106,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - File `Graph.R`
 
-   + `remove_CondInd()` is already checked and working.
+   + `remove_CondInd()`, `dsep_set()`, `active_cycles()`, `path_check()`
+   are already checked and working.
 
+- File `PCBN-restrictions.R`
 
 - File `Utilities.R`
 
