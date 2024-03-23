@@ -7,6 +7,12 @@
 #' And in general, it does not work if the PCBN is outside of
 #' the class of restricted PCBNs.}
 #'
+#' @param check_PCBN check whether the given PCBN satisfies the restrictions.
+#' If this is set to \code{FALSE}, no checking is performed.
+#' This means that the error due to the a non-restricted PCBN object (if this
+#' is the case) will occur later in the computations (and may not be so clear -
+#' typically it is because of failing to find a given conditional copula).
+#'
 #' @param N sample size
 #'
 #' @return a data frame of N samples
@@ -34,7 +40,11 @@
 #'
 #' @export
 #'
-PCBN_sim <- function(object, N) {
+PCBN_sim <- function(object, N, check_PCBN = TRUE)
+{
+  if (check_PCBN){
+    .checkPCBNobject_for_simulation(object)
+  }
 
   # Initialize data frame
   nodes = bnlearn::nodes(object$DAG)
@@ -57,7 +67,8 @@ PCBN_sim <- function(object, N) {
           } else {parents[1:(i_parent - 1)]}
         parent_given_lower = compute_sample_margin(object = object, data = data,
                                                    v = parents[i_parent],
-                                                   cond_set = lower)
+                                                   cond_set = lower,
+                                                   check_PCBN = FALSE)
         data[, node] = VineCopula::BiCopHinv1(u1 = parent_given_lower,
                                               u2 = stats::runif(N, 0, 1),
                                               family = fam,
@@ -82,6 +93,13 @@ PCBN_sim <- function(object, N) {
 #' @param v name of the node
 #' @param cond_set conditioning set.
 #' This is a vector containing the names of all the nodes in the conditioning set.
+#'
+#' @param check_PCBN check whether the given PCBN satisfies the restrictions.
+#' If this is set to \code{FALSE}, no checking is performed.
+#' This means that the error due to the a non-restricted PCBN object (if this
+#' is the case) will occur later in the computations (and may not be so clear -
+#' typically it is because of failing to find a given conditional copula).
+#'
 #'
 #' @return a vector of size \eqn{n} of realizations \eqn{u_{i, v | cond_set}}
 #' for \eqn{i = 1, \dots, n}.
@@ -119,8 +137,12 @@ PCBN_sim <- function(object, N) {
 #'
 #' @export
 #'
-compute_sample_margin <- function(object, data, v, cond_set)
+compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE)
 {
+  if (check_PCBN){
+    .checkPCBNobject_for_simulation(object)
+  }
+
   # Unpack PCBN object
   DAG = object$DAG
   order_hash = object$order_hash
@@ -149,8 +171,11 @@ compute_sample_margin <- function(object, data, v, cond_set)
     # FIXME: the performance can potentially be improved
     # by caching these sample margins to reuse them whenever needed
 
-    w_given_rest = compute_sample_margin(object, data, w, cond_set_minus_w)
-    v_given_rest = compute_sample_margin(object, data, v, cond_set_minus_w)
+    w_given_rest = compute_sample_margin(object, data, w, cond_set_minus_w,
+                                         check_PCBN = FALSE)
+
+    v_given_rest = compute_sample_margin(object, data, v, cond_set_minus_w,
+                                         check_PCBN = FALSE)
 
     v_given_cond = VineCopula::BiCopHfunc1(u1 = w_given_rest,
                                            u2 = v_given_rest,
@@ -161,8 +186,11 @@ compute_sample_margin <- function(object, data, v, cond_set)
     tau = copula_mat$tau[v, w]
     par = VineCopula::BiCopTau2Par(fam, tau)
 
-    w_given_rest = compute_sample_margin(object, data, w, cond_set_minus_w)
-    v_given_rest = compute_sample_margin(object, data, v, cond_set_minus_w)
+    w_given_rest = compute_sample_margin(object, data, w, cond_set_minus_w,
+                                         check_PCBN = FALSE)
+
+    v_given_rest = compute_sample_margin(object, data, v, cond_set_minus_w,
+                                         check_PCBN = FALSE)
 
     v_given_cond = VineCopula::BiCopHfunc2(u1 = v_given_rest, u2 = w_given_rest,
                                            family = fam, par = par)
@@ -170,3 +198,37 @@ compute_sample_margin <- function(object, data, v, cond_set)
 
   return(v_given_cond)
 }
+
+
+# This is the internal function used by the functions above to check that the
+# PCBN object indeed satisfies the restrictions of no active cycle nor interfering
+# v-structure.
+#
+# We use `verbose = 1` so that it only prints a message if it finds anything.
+# Else it prints nothing.
+# We use `check_both = FALSE` to save time so that we do not check a second time
+# if the first condition is already not satisfied.
+#
+# If the conditions are not satisfied, this function raises a classed error.
+# The class of this error condition is "UnRestrictedPCBNError". This helps for
+# the unit test (written in the corresponding test page) so that we can detect
+# that the error in the simulation function indeed comes from this test
+# (and is therefore user-friendly, as opposed to an error that would come later
+# and would be hard to understand for the user - typically that a given
+# conditional copula has not been specified).
+#
+#
+# FIXME: also check that the orderings abide by the B-sets.
+#
+#
+.checkPCBNobject_for_simulation <- function(PCBN)
+{
+  is_restricted = is_restrictedDAG(PCBN$DAG, verbose = 1, check_both = FALSE)
+  if (!is_restricted){
+    stop(errorCondition(
+      message = paste0("The DAG does not satisfy the restrictions. ",
+                       "Therefore, simulation is not possible."),
+      class = "UnRestrictedPCBNError"))
+  }
+}
+

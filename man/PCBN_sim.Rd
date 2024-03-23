@@ -4,7 +4,7 @@
 \alias{PCBN_sim}
 \title{Simulate data from a specified PCBN}
 \usage{
-PCBN_sim(object, N)
+PCBN_sim(object, N, check_PCBN = TRUE)
 }
 \arguments{
 \item{object}{PCBN object to simulate from.
@@ -13,6 +13,12 @@ And in general, it does not work if the PCBN is outside of
 the class of restricted PCBNs.}}
 
 \item{N}{sample size}
+
+\item{check_PCBN}{check whether the given PCBN satisfies the restrictions.
+If this is set to \code{FALSE}, no checking is performed.
+This means that the error due to the a non-restricted PCBN object (if this
+is the case) will occur later in the computations (and may not be so clear -
+typically it is because of failing to find a given conditional copula).}
 }
 \value{
 a data frame of N samples

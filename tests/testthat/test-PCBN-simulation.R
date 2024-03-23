@@ -1,3 +1,30 @@
+test_that("PCBN_sim does not sample from a non-restricted PCBN", {
+
+  DAG = create_DAG(4)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+
+  order_hash = r2r::hashmap()
+  order_hash[['U4']] = c("U2", "U3")
+
+  fam = matrix(c(0, 1, 1, 1,
+                 0, 0, 1, 1,
+                 0, 0, 0, 1,
+                 0, 0, 0, 0), byrow = TRUE, ncol = 4)
+
+  tau = 0.2 * fam
+
+  my_PCBN = new_PCBN(
+    DAG, order_hash,
+    copula_mat = list(tau = tau, fam = fam))
+
+  # 1 active cycle, so no simulation is possible
+  expect_error({ mydata = PCBN_sim(my_PCBN, N = 5) },
+               class = "UnRestrictedPCBNError")
+})
+
 test_that("compute_sample_margin works", {
 
   DAG = create_DAG(3)

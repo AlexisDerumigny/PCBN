@@ -4,7 +4,7 @@
 \alias{compute_sample_margin}
 \title{Computes a conditional margin during sampling}
 \usage{
-compute_sample_margin(object, data, v, cond_set)
+compute_sample_margin(object, data, v, cond_set, check_PCBN = TRUE)
 }
 \arguments{
 \item{object}{PCBN object to sample from.
@@ -18,6 +18,12 @@ the class of restricted PCBNs.}}
 
 \item{cond_set}{conditioning set.
 This is a vector containing the names of all the nodes in the conditioning set.}
+
+\item{check_PCBN}{check whether the given PCBN satisfies the restrictions.
+If this is set to \code{FALSE}, no checking is performed.
+This means that the error due to the a non-restricted PCBN object (if this
+is the case) will occur later in the computations (and may not be so clear -
+typically it is because of failing to find a given conditional copula).}
 }
 \value{
 a vector of size \eqn{n} of realizations \eqn{u_{i, v | cond_set}}
