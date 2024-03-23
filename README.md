@@ -71,7 +71,7 @@ Development of the PCBN package
 
 - File `Graph_B_sets.R`
   - `has_interfering_vstrucs()`, `find_B_sets()`, `find_B_sets_v()`,
-    `find_interfering_v()`, `B_sets_make_unique()`,
+    `find_interfering_v_from_B_sets()`, `B_sets_make_unique()`,
     `B_sets_cut_increments()` are already checked and working.
 
   A vignette *“B-sets and interfering v-structures”* has been written to

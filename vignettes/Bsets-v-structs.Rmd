@@ -107,7 +107,7 @@ has_interfering_vstrucs(DAG)
 To find the interfering v-structures at a given node, we can use:
 ```{r, results = "kable"}
 find_B_sets_v(DAG, v = 'U3') |>
-  find_interfering_v() |>
+  find_interfering_v_from_B_sets() |>
   print()
 ```
 

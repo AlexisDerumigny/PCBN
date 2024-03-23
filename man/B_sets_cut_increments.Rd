@@ -8,7 +8,7 @@ B_sets_cut_increments(B_sets)
 }
 \arguments{
 \item{B_sets}{matrix of B-sets, assumed to be increasing.
-This means \code{\link{find_interfering_v}} should return \code{NULL}
+This means \code{\link{find_interfering_v_from_B_sets}} should return \code{NULL}
 on this matrix.
 This can be the output of \code{\link{find_B_sets_v}}
 or of \code{\link{B_sets_make_unique}}.}

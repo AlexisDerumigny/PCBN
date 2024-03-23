@@ -117,7 +117,7 @@ test_that("B_sets_are_increasing", {
   expect_false(B_sets_are_increasing(B_sets))
 })
 
-test_that("find_interfering_v works", {
+test_that("find_interfering_v_from_B_sets works", {
 
   DAG = create_DAG(7)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
@@ -131,7 +131,7 @@ test_that("find_interfering_v works", {
   DAG = bnlearn::set.arc(DAG, 'U5', 'U7')
 
   B_sets = find_B_sets_v(DAG, v = 'U5')
-  interf_v = find_interfering_v(B_sets)
+  interf_v = find_interfering_v_from_B_sets(B_sets)
 
   # `interf_v` is a data.frame
   expect_s3_class(interf_v, "data.frame")
@@ -149,7 +149,7 @@ test_that("find_interfering_v works", {
 })
 
 
-test_that("find_interfering_v works with 3 interfering v-structures", {
+test_that("find_interfering_v_from_B_sets works with 3 interfering v-structures", {
 
   DAG = create_DAG(8)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
@@ -167,7 +167,7 @@ test_that("find_interfering_v works with 3 interfering v-structures", {
 
   B_sets = find_B_sets_v(DAG, v = 'U5')
   unique_B_sets = B_sets_make_unique(B_sets)
-  interf_v = find_interfering_v(B_sets)
+  interf_v = find_interfering_v_from_B_sets(B_sets)
 
   # There is 3 interfering v-structures
   expect_equal(nrow(interf_v), 3)
@@ -175,7 +175,7 @@ test_that("find_interfering_v works with 3 interfering v-structures", {
 })
 
 
-test_that("find_interfering_v works with 3 interfering v-structures", {
+test_that("find_interfering_v_from_B_sets works with 3 interfering v-structures", {
 
   DAG = create_DAG(8)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
@@ -194,7 +194,7 @@ test_that("find_interfering_v works with 3 interfering v-structures", {
 
   B_sets = find_B_sets_v(DAG, v = 'U5')
   unique_B_sets = B_sets_make_unique(B_sets)
-  interf_v = find_interfering_v(B_sets)
+  interf_v = find_interfering_v_from_B_sets(B_sets)
 
   # There is 3 interfering v-structures
   expect_equal(nrow(interf_v), 1)

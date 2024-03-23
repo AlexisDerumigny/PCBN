@@ -87,7 +87,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - File `Graph_B_sets.R`
    + `has_interfering_vstrucs()`, `find_B_sets()`, `find_B_sets_v()`, 
-   `find_interfering_v()`, `B_sets_make_unique()`, `B_sets_cut_increments()`
+   `find_interfering_v_from_B_sets()`, `B_sets_make_unique()`, `B_sets_cut_increments()`
    are already checked and working.
 
   A vignette _"B-sets and interfering v-structures"_ has been written to

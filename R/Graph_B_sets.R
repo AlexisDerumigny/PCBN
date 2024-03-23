@@ -260,16 +260,16 @@ B_sets_are_increasing <- function(B_sets){
 #' DAG = bnlearn::set.arc(DAG, 'U5', 'U7')
 #'
 #' B_sets = find_B_sets_v(DAG, v = 'U5')
-#' find_interfering_v(B_sets)
+#' find_interfering_v_from_B_sets(B_sets)
 #'
 #' # Adding the missing arc
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U7')
 #' # Now no interfering v-structure
 #' B_sets = find_B_sets_v(DAG, v = 'U5')
-#' find_interfering_v(B_sets)
+#' find_interfering_v_from_B_sets(B_sets)
 #'
 #' @export
-find_interfering_v <- function(B_sets)
+find_interfering_v_from_B_sets <- function(B_sets)
 {
   if (nrow(B_sets) <= 3 || ncol(B_sets) <= 0){
     return (NULL)
@@ -354,7 +354,7 @@ B_sets_make_unique <- function(B_sets)
 #' Find the decomposition of B-sets
 #'
 #' @param B_sets matrix of B-sets, assumed to be increasing.
-#' This means \code{\link{find_interfering_v}} should return \code{NULL}
+#' This means \code{\link{find_interfering_v_from_B_sets}} should return \code{NULL}
 #' on this matrix.
 #' This can be the output of \code{\link{find_B_sets_v}}
 #' or of \code{\link{B_sets_make_unique}}.
