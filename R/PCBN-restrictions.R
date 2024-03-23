@@ -1,4 +1,59 @@
 
+#' Does a DAG satisfy the restrictions of no active cycle and no
+#' interfering v-structures
+#'
+#' @param DAG the DAG object
+#' @param verbose if \code{verbose} is \code{2}, details are printed.
+#' If \code{verbose} is \code{1}, details are printed only if an active cyle
+#' or an interfering v-structure is found.
+#' If \code{verbose} is \code{0} the function does not print and only returns
+#' the result.
+#' @param check_both if \code{TRUE}, both v-structures and active cycles are
+#' checked anyway. If \code{FALSE}, the function stops early if it already found
+#' any v-structures.
+#'
+#' @return a Boolean indicating whether or not the PCBN satisfies the
+#' restrictions.
+#'
+#' @examples
+#'
+#' DAG = create_DAG(4)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#'
+#' is_restrictedDAG(DAG)  # 1 active cycle
+#'
+#' @export
+is_restrictedDAG <- function(DAG, verbose = 2, check_both = TRUE)
+{
+  has_vstructs = has_interfering_vstrucs(DAG)
+  if (has_vstructs && verbose >= 1){
+    cat("At least one v-structure was found.\n")
+  } else if (!has_vstructs && verbose >= 2){
+    cat("No v-structures were found.\n")
+  }
+
+  if (!check_both && has_vstructs){
+    # Early stopping: we know that the conditions are not satisfied
+    return (FALSE)
+  }
+
+  active_cycle = active_cycles(DAG = DAG, early.stopping = TRUE)
+  has_active_cycles = (length(active_cycle) > 0)
+
+  if (has_active_cycles && verbose >= 1){
+    cat("At least one active cycle was found.\n")
+  } else if (!has_active_cycles && verbose >= 2){
+    cat("No active cycle were found.\n")
+  }
+
+  is_restricted = !has_vstructs && !has_active_cycles
+  return (is_restricted)
+}
+
+
 #' Turns a general graph into a restricted graph.
 #'
 #' @param DAG Directed Acyclic Graph.

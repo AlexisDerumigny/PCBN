@@ -92,6 +92,8 @@ Development of the PCBN package
 
 - File `PCBN-restrictions.R`
 
+  - `is_restrictedDAG()` is already checked and working.
+
 - File `Utilities.R`
 
 ## Other files to be checked later

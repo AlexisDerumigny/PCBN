@@ -1,4 +1,35 @@
 
+test_that("is_restrictedDAG works", {
+
+  DAG = create_DAG(4)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+
+  # 1 active cycle
+  expect_false(is_restrictedDAG(DAG, verbose = FALSE))
+  # Now no active cycle
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  expect_true(is_restrictedDAG(DAG, verbose = FALSE))
+
+  DAG = create_DAG(5)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+
+  # There is one interfering v-structure
+  expect_false(is_restrictedDAG(DAG, verbose = FALSE))
+
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+  # Now no interfering v-structure
+  expect_true(is_restrictedDAG(DAG, verbose = FALSE))
+})
+
 test_that("DAG_to_restricted works", {
 
   # DAG with active cycle
