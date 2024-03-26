@@ -18,7 +18,9 @@ the class of restricted PCBNs.}}
 If this is set to \code{FALSE}, no checking is performed.
 This means that the error due to the a non-restricted PCBN object (if this
 is the case) will occur later in the computations (and may not be so clear -
-typically it is because of failing to find a given conditional copula).}
+typically it is because of failing to find a given conditional copula).
+Nevertheless, even with `check_PCBN = TRUE` if could be that some error happen
+later if the parental orderings are not compatible with each other.}
 }
 \value{
 a data frame of N samples
