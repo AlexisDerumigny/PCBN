@@ -248,6 +248,75 @@ complete_and_check_orders <- function(DAG, order_hash)
 }
 
 
+#' Check whether a certain order abides by the B-sets
+#'
+#' @param B_sets matrix of B-sets, assumed to be increasing.
+#' This can be the output of \code{\link{find_B_sets_v}}
+#' or of \code{\link{B_sets_make_unique}}.
+#'
+#' @param orderParents a vector of characters, interpreted as the ordered
+#' parents
+#'
+#' @return It returns `TRUE` if the order abides by the B-sets, and `FALSE` else.
+#'
+#' @examples
+#'
+#' DAG = create_DAG(4)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+#'
+#' order_hash = r2r::hashmap()
+#' order_hash[['U3']] = c("U1", "U2")
+#' order_hash[['U4']] = c("U1", "U3")
+#' is_order_abiding_Bsets(DAG, order_hash)
+#' order_hash[['U3']] = c("U2", "U1")
+#' is_order_abiding_Bsets(DAG, order_hash)
+#'
+#' @export
+is_order_abiding_Bsets <- function(DAG, order_hash)
+{
+  nodes = bnlearn::nodes(DAG)
+  for (i_node in 1:length(nodes)){
+    node = nodes[i_node]
+    B_sets = find_B_sets_v(DAG, node)
+    # We test only if there are at least 2 parents
+    # otherwise this is always TRUE.
+    if (ncol(B_sets) >= 2){
+      is_abiding_v = is_order_abiding_Bsets_v(B_sets = B_sets,
+                                              orderParents = order_hash[[node]])
+      if (!is_abiding_v){
+        # Early stopping
+        return (FALSE)
+      }
+    }
+  }
+  return (TRUE)
+}
+
+#' @rdname is_order_abiding_Bsets
+#' @export
+is_order_abiding_Bsets_v <- function(B_sets, orderParents)
+{
+  B_sets_increments = B_sets_cut_increments(B_sets)
+
+  # We start looking at 0
+  position_in_ordering = 0
+  for (i in 1:length(B_sets_increments)){
+    nodes = B_sets_increments[[i]]
+    indices_ordering = position_in_ordering + (1:length(nodes))
+    if ( ! identical(sort(nodes) ,
+                     sort(orderParents[indices_ordering]) ) ){
+      return (FALSE)
+    }
+    # We update the reference in the ordering vector
+    position_in_ordering = position_in_ordering + length(nodes)
+  }
+  return (TRUE)
+}
+
+
 # Nice printing of a character vector
 dputCharacterVec <- function (vec){
   return (c("c(",

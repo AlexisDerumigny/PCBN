@@ -98,4 +98,46 @@ test_that("complete_and_check_orders works for 4 dimensional example", {
 })
 
 
+test_that("is_order_abiding_Bsets_v works", {
+
+  DAG = create_DAG(4)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+
+  expect_false( {
+    is_order_abiding_Bsets_v(B_sets = find_B_sets_v(DAG, 'U3'),
+                             orderParents = c('U1'))
+  } )
+
+  expect_true( {
+    is_order_abiding_Bsets_v(B_sets = find_B_sets_v(DAG, 'U3'),
+                             orderParents = c("U1", "U2"))
+  } )
+
+  expect_false( {
+    is_order_abiding_Bsets_v(B_sets = find_B_sets_v(DAG, 'U3'),
+                             orderParents = c("U2", "U1"))
+  } )
+
+
+  expect_false( {
+    is_order_abiding_Bsets_v(
+      B_sets = find_B_sets_v(DAG, 'U3') |>  B_sets_make_unique(),
+      orderParents = c('U1'))
+  } )
+
+  expect_true( {
+    is_order_abiding_Bsets_v(
+      B_sets = find_B_sets_v(DAG, 'U3') |>  B_sets_make_unique(),
+      orderParents = c("U1", "U2"))
+  } )
+
+  expect_false( {
+    is_order_abiding_Bsets_v(
+      B_sets = find_B_sets_v(DAG, 'U3') |>  B_sets_make_unique(),
+      orderParents = c("U2", "U1"))
+  } )
+})
 
