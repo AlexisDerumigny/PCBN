@@ -47,7 +47,8 @@ knitr::opts_chunk$set(echo = TRUE)
 - File `Parents_ordering.R`
 
    + `find_all_orders()`, `extend_orders()`, `find_all_orders_v()`, 
-   `complete_and_check_orders()`
+   `complete_and_check_orders()`,
+   `is_order_abiding_Bsets`, `is_order_abiding_Bsets_v`
    are already checked and working.
 
 

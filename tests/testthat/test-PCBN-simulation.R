@@ -25,6 +25,38 @@ test_that("PCBN_sim does not sample from a non-restricted PCBN", {
                class = "UnRestrictedPCBNError")
 })
 
+test_that("PCBN_sim does not sample if the ordering do not abide by the Bsets", {
+
+  DAG = create_DAG(4)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+
+  order_hash = r2r::hashmap()
+  order_hash[['U3']] = c("U2", "U1")
+  order_hash[['U4']] = c("U1", "U3")
+
+  fam = matrix(c(0, 1, 1, 1,
+                 0, 0, 1, 1,
+                 0, 0, 0, 1,
+                 0, 0, 0, 0), byrow = TRUE, ncol = 4)
+
+  tau = 0.2 * fam
+
+  my_PCBN = new_PCBN(
+    DAG, order_hash,
+    copula_mat = list(tau = tau, fam = fam))
+
+  # Order for U3 does not abide by the B-sets, so no simulation is possible
+  expect_error({ mydata = PCBN_sim(my_PCBN, N = 5) },
+               class = "ParentalOrderingsBsetsError")
+
+  my_PCBN$order_hash[['U3']] = c("U1", "U2")
+  # Now this works
+  mydata = PCBN_sim(my_PCBN, N = 5)
+})
+
 test_that("compute_sample_margin works", {
 
   DAG = create_DAG(3)

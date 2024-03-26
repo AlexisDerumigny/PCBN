@@ -12,6 +12,8 @@
 #' This means that the error due to the a non-restricted PCBN object (if this
 #' is the case) will occur later in the computations (and may not be so clear -
 #' typically it is because of failing to find a given conditional copula).
+#' Nevertheless, even with `check_PCBN = TRUE` if could be that some error happen
+#' later if the parental orderings are not compatible with each other.
 #'
 #' @param N sample size
 #'
@@ -217,9 +219,14 @@ compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE)
 # and would be hard to understand for the user - typically that a given
 # conditional copula has not been specified).
 #
+# In the same way, if (at least) one of the ordering does not abide by the B sets,
+# this also raises a classed error.
 #
-# FIXME: also check that the orderings abide by the B-sets.
+# Nevertheless, it does not raises an error if the orderings are not compatible
+# with each other (this can happen even if all the orderings abide by the B-sets).
+# Testing for this would amount to pre-compute the whole computation tree.
 #
+# FIXME: maybe we want to do this anyway?
 #
 .checkPCBNobject_for_simulation <- function(PCBN)
 {
@@ -229,6 +236,15 @@ compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE)
       message = paste0("The DAG does not satisfy the restrictions. ",
                        "Therefore, simulation is not possible."),
       class = "UnRestrictedPCBNError"))
+  }
+
+  is_order_abiding_Bsets = is_order_abiding_Bsets(DAG = PCBN$DAG,
+                                                  order_hash = PCBN$order_hash)
+  if (!is_order_abiding_Bsets){
+    stop(errorCondition(
+      message = paste0("The parental orderings do not abide by the B-sets. ",
+                       "Therefore, simulation is not possible."),
+      class = "ParentalOrderingsBsetsError"))
   }
 }
 

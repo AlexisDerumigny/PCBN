@@ -36,7 +36,8 @@ Development of the PCBN package
 - File `Parents_ordering.R`
 
   - `find_all_orders()`, `extend_orders()`, `find_all_orders_v()`,
-    `complete_and_check_orders()` are already checked and working.
+    `complete_and_check_orders()`, `is_order_abiding_Bsets`,
+    `is_order_abiding_Bsets_v` are already checked and working.
 
 ## 3. Simulation and estimation
 
