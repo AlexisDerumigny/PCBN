@@ -106,38 +106,57 @@ test_that("is_order_abiding_Bsets_v works", {
   DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
 
-  expect_false( {
+  expect_false(
     is_order_abiding_Bsets_v(B_sets = find_B_sets_v(DAG, 'U3'),
                              orderParents = c('U1'))
-  } )
+  )
 
-  expect_true( {
+  expect_true(
     is_order_abiding_Bsets_v(B_sets = find_B_sets_v(DAG, 'U3'),
                              orderParents = c("U1", "U2"))
-  } )
+  )
 
-  expect_false( {
+  expect_false(
     is_order_abiding_Bsets_v(B_sets = find_B_sets_v(DAG, 'U3'),
                              orderParents = c("U2", "U1"))
-  } )
+  )
 
-
-  expect_false( {
+  expect_false(
     is_order_abiding_Bsets_v(
       B_sets = find_B_sets_v(DAG, 'U3') |>  B_sets_make_unique(),
       orderParents = c('U1'))
-  } )
+  )
 
-  expect_true( {
+  expect_true(
     is_order_abiding_Bsets_v(
       B_sets = find_B_sets_v(DAG, 'U3') |>  B_sets_make_unique(),
       orderParents = c("U1", "U2"))
-  } )
+  )
 
-  expect_false( {
+  expect_false(
     is_order_abiding_Bsets_v(
       B_sets = find_B_sets_v(DAG, 'U3') |>  B_sets_make_unique(),
       orderParents = c("U2", "U1"))
-  } )
+  )
+})
+
+
+test_that("is_order_abiding_Bsets works", {
+
+  DAG = create_DAG(4)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+
+
+  order_hash = r2r::hashmap()
+  order_hash[['U3']] = c("U1", "U2")
+  order_hash[['U4']] = c("U1", "U3")
+
+  expect_true( is_order_abiding_Bsets(DAG, order_hash) )
+
+  order_hash[['U3']] = c("U2", "U1")
+  expect_false( is_order_abiding_Bsets(DAG, order_hash) )
 })
 

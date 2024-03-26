@@ -10,6 +10,10 @@ is_order_abiding_Bsets(DAG, order_hash)
 is_order_abiding_Bsets_v(B_sets, orderParents)
 }
 \arguments{
+\item{DAG}{the considered DAG}
+
+\item{order_hash}{the hashmaps of parents ordering}
+
 \item{B_sets}{matrix of B-sets, assumed to be increasing.
 This can be the output of \code{\link{find_B_sets_v}}
 or of \code{\link{B_sets_make_unique}}.}

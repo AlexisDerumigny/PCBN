@@ -250,6 +250,9 @@ complete_and_check_orders <- function(DAG, order_hash)
 
 #' Check whether a certain order abides by the B-sets
 #'
+#' @param DAG the considered DAG
+#' @param order_hash the hashmaps of parents ordering
+#'
 #' @param B_sets matrix of B-sets, assumed to be increasing.
 #' This can be the output of \code{\link{find_B_sets_v}}
 #' or of \code{\link{B_sets_make_unique}}.
