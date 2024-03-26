@@ -160,3 +160,25 @@ test_that("is_order_abiding_Bsets works", {
   expect_false( is_order_abiding_Bsets(DAG, order_hash) )
 })
 
+
+test_that("is_order_abiding_Bsets works for a larger example", {
+
+  DAG = create_DAG(7)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U6')
+  DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U7')
+  DAG = bnlearn::set.arc(DAG, 'U6', 'U7')
+
+  order_hash = r2r::hashmap()
+  order_hash[['U4']] = c("U2", "U1", "U3")
+  order_hash[['U6']] = c("U4", "U5")
+  order_hash[['U7']] = c("U4", "U6")
+
+  expect_true( is_order_abiding_Bsets(DAG, order_hash) )
+})
+

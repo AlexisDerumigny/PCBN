@@ -308,13 +308,16 @@ is_order_abiding_Bsets_v <- function(B_sets, orderParents)
   position_in_ordering = 0
   for (i in 1:length(B_sets_increments)){
     nodes = B_sets_increments[[i]]
-    indices_ordering = position_in_ordering + (1:length(nodes))
-    if ( ! identical(sort(nodes) ,
-                     sort(orderParents[indices_ordering]) ) ){
-      return (FALSE)
+    # We skip empty increments
+    if (length(nodes) > 0){
+      indices_ordering = position_in_ordering + (1:length(nodes))
+      if ( ! identical(sort(nodes) ,
+                       sort(orderParents[indices_ordering]) ) ){
+        return (FALSE)
+      }
+      # We update the reference in the ordering vector
+      position_in_ordering = position_in_ordering + length(nodes)
     }
-    # We update the reference in the ordering vector
-    position_in_ordering = position_in_ordering + length(nodes)
   }
   return (TRUE)
 }
