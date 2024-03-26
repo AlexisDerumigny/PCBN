@@ -1,12 +1,16 @@
 Package: PCBN
-Title: Create and sample pair-copula Bayesian networks not requiring integration
-Version: 0.0.1.1
-Authors@R: 
-    person("Niels", "Horsman", , "niels.horsman@hotmail.nl", role = c("aut", "cre"))
-Description: Is able to create and sample pair-copula Bayesian networks not requiring integration.
-    That is, it uses graphs with no active cycles or interfering v-structures.
-    Furthermore, it can fit a PCBN to a data set using a hill climbing alogrithm.
-License: What license is it under?
+Title: Inference of Pair-Copula Bayesian Networks under restrictions
+Version: 0.0.1.2
+Authors@R: c(
+    person("Alexis", "Derumigny", , email = "a.f.f.derumigny@tudelft.nl", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6163-8097")),
+    person("Niels", "Horsman", , "niels.horsman@hotmail.nl", role = c("aut"))
+    )
+Description: Is able to create and sample Pair-Copula Bayesian networks (PCBN)
+    under some restrictions on the underlying Directed Acyclic Graph (DAG),
+    that is, no active cycles nor interfering v-structures.
+    Furthermore, it can fit a PCBN to a data set for a fixed DAG structure; and
+    it can recover the structure if unknown using a hill climbing alogrithm.
+License: GPL (>= 2)
 Encoding: UTF-8
 Imports: 
     Rcpp (>= 1.0.11),
@@ -22,5 +26,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     data.tree
+URL: https://github.com/AlexisDerumigny/PCBN
+BugReports: https://github.com/AlexisDerumigny/PCBN/issues
 Config/testthat/edition: 3
 VignetteBuilder: knitr
