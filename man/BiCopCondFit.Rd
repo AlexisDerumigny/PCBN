@@ -25,7 +25,7 @@ ComputeCondMargin(
 \arguments{
 \item{data}{data frame}
 
-\item{DAG}{Directed Ayclic Graph}
+\item{DAG}{Directed Acylic Graph}
 
 \item{v, w}{nodes of the graph}
 

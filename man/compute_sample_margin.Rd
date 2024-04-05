@@ -26,7 +26,7 @@ is the case) will occur later in the computations (and may not be so clear -
 typically it is because of failing to find a given conditional copula).}
 }
 \value{
-a vector of size \eqn{n} of realizations \eqn{u_{i, v | cond_set}}
+a vector of size \eqn{n} of realizations \eqn{u_{i, v | cond\_set}}
 for \eqn{i = 1, \dots, n}.
 }
 \description{

@@ -18,7 +18,7 @@ default_envir <- function(){
 #' by the conditional independencies of the graph
 #'
 #' @param data data frame
-#' @param DAG Directed Ayclic Graph
+#' @param DAG Directed Acylic Graph
 #' @param v,w nodes of the graph
 #' @param cond_set vector of nodes of DAG. They should all be parents of v.
 #' They should be ordered from the smallest to the biggest.

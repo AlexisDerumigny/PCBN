@@ -103,7 +103,7 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE)
 #' typically it is because of failing to find a given conditional copula).
 #'
 #'
-#' @return a vector of size \eqn{n} of realizations \eqn{u_{i, v | cond_set}}
+#' @return a vector of size \eqn{n} of realizations \eqn{u_{i, v | cond\_set}}
 #' for \eqn{i = 1, \dots, n}.
 #'
 #' @examples
