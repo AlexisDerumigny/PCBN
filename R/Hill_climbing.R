@@ -31,7 +31,7 @@
 #' order_hash[['U3']] = c("U2", "U1")
 #' order_hash[['U4']] = c("U2", "U3")
 #'
-#' fam = matrix(c(0, 1, 1, 1,
+#' fam = matrix(c(0, 0, 0, 1,
 #'                0, 0, 1, 1,
 #'                0, 0, 0, 1,
 #'                0, 0, 0, 0), byrow = TRUE, ncol = 4)
@@ -47,7 +47,7 @@
 #'
 #' @export
 #'
-hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 1,
+hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 2,
                                start = NULL, e = NULL, score_metric = "BIC")
 {
   if (is.null(start)){
@@ -73,9 +73,6 @@ hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 1,
   iter = 1
   repeat{
     allowed.operations = allowed.operations.general(DAG)
-    if (verbose > 0){
-      cat("Number of possible operations:" , nrow(allowed.operations), "\n")
-    }
 
     # Compute data frame with the score delta of each operation
     df = operation_score_deltas(data, DAG, familyset, allowed.operations, e = e,
@@ -83,22 +80,28 @@ hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 1,
 
     # Select best operation based on the score
     if (score_metric == "logLik"){
-      bestop = df[which.max(df$score), ]
+      whichBest = which.max(df$score)
+      bestop = df[whichBest, ]
       improvement = bestop$score - reference
     } else {
-      bestop = df[which.min(df$score), ]
+      whichBest = which.min(df$score)
+      bestop = df[whichBest, ]
       improvement = reference - bestop$score
+    }
+    if (verbose == 1){
+      cat("Number of possible operations:" , nrow(allowed.operations), "\n")
+      cat("*best operation:\n")
+      print(bestop)
+
+    } else if (verbose >= 2){
+      cat("----------------------------------------------------------------\n")
+      cat("* possible operations:\n")
+      df$best = ""
+      df$best[whichBest] = "best"
+      print(df)
     }
 
     if (improvement > 0){
-      if (verbose > 0){
-        cat("----------------------------------------------------------------\n")
-        cat("* possible operations:\n")
-        print(df)
-        cat("*best operation:\n")
-        print(bestop)
-      }
-
       DAG = switch (
         bestop$operation,
         'set' = bnlearn::set.arc(DAG, bestop$from, bestop$to),
@@ -112,12 +115,21 @@ hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 1,
       }
     }
     else{
+      if (verbose > 0){
+        cat("No improvement found. Stopping Hill Climbing algorithm.\n")
+      }
       break;
     }
     iter = iter + 1
   }
 
   fitted = fit_all_orders(data = data, DAG = DAG, familyset = familyset, e = e)
+
+  if (verbose > 0){
+    cat("----------------------------------------------------------------\n")
+    cat("Best PCBN:\n")
+    print(fitted$best_fit)
+  }
 
   return(fitted)
 }
