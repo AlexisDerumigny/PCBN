@@ -58,17 +58,16 @@ random_good_graph <- function(N.nodes, N.arcs){
   DAG = create_DAG(N.nodes)
   node.names = bnlearn::nodes(DAG)
 
-  additions = which(bnlearn::amat(DAG)+diag(N.nodes)+t(bnlearn::amat(DAG))==0, arr.ind = TRUE)
+  additions = which(bnlearn::amat(DAG) + diag(N.nodes) + t(bnlearn::amat(DAG))
+                    == 0, arr.ind = TRUE)
   L = length(additions[,1])
   iter = 0
   while ((L>0) & (iter<= N.arcs)) {
     k = sample(1:L, 1)
-    op = list()
-    op['from'] = node.names[additions[k,][1]]
-    op['to'] = node.names[additions[k,][2]]
-    op['operation'] = 'set'
-    DAG_help = apply.operation(DAG, op)
 
+    from = node.names[additions[k,][1]]
+    to = node.names[additions[k,][2]]
+    DAG_help = bnlearn::set.arc(DAG, from, to)
 
     if (bnlearn::acyclic(DAG_help)){
       if (!(has_interfering_vstrucs(DAG_help))){
