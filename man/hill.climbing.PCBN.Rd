@@ -4,18 +4,26 @@
 \alias{hill.climbing.PCBN}
 \title{Hill climbing algorithm for restricted PCBNs}
 \usage{
-hill.climbing.PCBN(data, start, familyset, debug = FALSE, e)
+hill.climbing.PCBN(
+  data,
+  familyset = c(1, 3, 4, 5, 6),
+  verbose = 2,
+  start = NULL,
+  e = NULL,
+  score_metric = "BIC"
+)
 }
 \arguments{
 \item{data}{data frame}
 
-\item{start}{starting Directed Acyclic Graph}
-
 \item{familyset}{vector of copula families}
 
-\item{debug}{to print debug information}
+\item{start}{starting Directed Acyclic Graph. If \code{NULL} (the default),
+we start with the empty graph.}
 
 \item{e}{environment containing all the hashmaps}
+
+\item{debug}{to print debug information}
 }
 \value{
 DAG which locally maximizes BIC based score function
@@ -35,11 +43,11 @@ order_hash = r2r::hashmap()
 order_hash[['U3']] = c("U2", "U1")
 order_hash[['U4']] = c("U2", "U3")
 
-fam = matrix(c(0, 1, 1, 1,
+fam = matrix(c(0, 0, 0, 1,
                0, 0, 1, 1,
                0, 0, 0, 1,
                0, 0, 0, 0), byrow = TRUE, ncol = 4)
-tau = 0.2 * fam
+tau = 0.8 * fam
 
 my_PCBN = new_PCBN(
   DAG, order_hash,
@@ -47,10 +55,6 @@ my_PCBN = new_PCBN(
 
 mydata = PCBN_sim(my_PCBN, N = 5)
 
-# Does not work yet
-# TODO: fix storing of the trees in the hash thing
-#
-# result = hill.climbing.PCBN(data = mydata, start = create_DAG(4),
-#                             familyset = 1, debug=FALSE)
+result = hill.climbing.PCBN(data = mydata, familyset = 1)
 
 }

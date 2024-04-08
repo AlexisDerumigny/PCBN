@@ -162,7 +162,7 @@ operation_score_deltas = function(data, DAG, familyset, allowed.operations,
 #'
 #' @param DAG the current DAG
 #'
-#' @returm a matrix with 3 columns `from`, `to`, `operation`.
+#' @return a matrix with 3 columns `from`, `to`, `operation`.
 #' Possible operations are "set", "drop" and "reverse".
 #'
 #' @noRd
