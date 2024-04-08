@@ -6,9 +6,14 @@
 #' Hill climbing algorithm for restricted PCBNs
 #'
 #' @param data data frame
-#' @param start starting Directed Acyclic Graph
+#'
+#' @param start starting Directed Acyclic Graph. If \code{NULL} (the default),
+#' we start with the empty graph.
+#'
 #' @param familyset vector of copula families
+#'
 #' @param debug to print debug information
+#'
 #' @param e environment containing all the hashmaps
 #'
 #'
@@ -30,7 +35,7 @@
 #'                0, 0, 1, 1,
 #'                0, 0, 0, 1,
 #'                0, 0, 0, 0), byrow = TRUE, ncol = 4)
-#' tau = 0.2 * fam
+#' tau = 0.8 * fam
 #'
 #' my_PCBN = new_PCBN(
 #'   DAG, order_hash,
@@ -38,55 +43,55 @@
 #'
 #' mydata = PCBN_sim(my_PCBN, N = 5)
 #'
-#' # Does not work yet
-#' # TODO: fix storing of the trees in the hash thing
-#' #
-#' # result = hill.climbing.PCBN(data = mydata, start = create_DAG(4),
-#' #                             familyset = 1, debug=FALSE)
+#' result = hill.climbing.PCBN(data = mydata, familyset = 1)
 #'
 #' @export
 #'
-hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE, e)
+hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 1,
+                               start = NULL, e = NULL, score_metric = "BIC")
 {
-  nodes = names(data)
-  n.nodes = length(nodes)
-  adj.mat = bnlearn::amat(start)
-  nparents = colSums(adj.mat)
-  iter = 1
-  DAG = start
-  fitted = fit_all_orders(data, DAG)
-  reference = fitted$best_fit$metrics$BIC
+  if (is.null(start)){
+    nodes = colnames(data)
+    DAG = bnlearn::empty.graph(nodes)
+  } else{
+    DAG = start
+  }
+  if (is.null(e)){
+    e = default_envir()
+  }
+  fitted = fit_all_orders(data = data, DAG = DAG, familyset = familyset, e = e,
+                          score_metric = score_metric)
+  reference = fitted$best_fit$metrics[score_metric]
 
-  if (debug) {
+  if (verbose > 0) {
     cat("----------------------------------------------------------------\n")
     cat("* starting from the following network:\n")
     print(DAG)
     cat("* current score:", reference, "\n")
   }
 
+  iter = 1
   repeat{
-    if (iter>1){
-      cat("----------------------------------------------------------------\n")
-      cat("* current network:\n")
-      print(DAG)
-      cat("* current score:", reference, "\n")
+    allowed.operations = allowed.operations.general(DAG)
+    if (verbose > 0){
+      cat("Number of possible operations:" , nrow(allowed.operations), "\n")
     }
 
-    allowed.operations = allowed.operations.general(DAG)
-
     # Compute data frame with the score delta of each operation
-    df = operation_score_deltas(data, DAG, familyset, reference, allowed.operations,
-                                e = e)
+    df = operation_score_deltas(data, DAG, familyset, allowed.operations, e = e,
+                                score_metric = score_metric)
 
-    ## Select best operation based on column order
-    bestop = df[which.max(df$score.delta),]
+    # Select best operation based on the score
+    if (score_metric == "logLik"){
+      bestop = df[which.max(df$score), ]
+      improvement = bestop$score - reference
+    } else {
+      bestop = df[which.min(df$score), ]
+      improvement = reference - bestop$score
+    }
 
-    ## Select best operation at random (function slice_max from tidyverse library)
-    # maxima = slice_max(df, order_by = score.delta)
-    # bestop = sample_n(maxima, 1)
-
-    if (bestop$improve){
-      if (debug){
+    if (improvement > 0){
+      if (verbose > 0){
         cat("----------------------------------------------------------------\n")
         cat("* possible operations:\n")
         print(df)
@@ -94,89 +99,79 @@ hill.climbing.PCBN <- function(data, start, familyset, debug=FALSE, e)
         print(bestop)
       }
 
-      # There is a function for this below
-      if (bestop$operation == 'set'){
-        DAG = bnlearn::set.arc(DAG, bestop$from, bestop$to)
+      DAG = switch (
+        bestop$operation,
+        'set' = bnlearn::set.arc(DAG, bestop$from, bestop$to),
+        'drop' = bnlearn::drop.arc(DAG, bestop$from, bestop$to),
+        'reverse' = bnlearn::reverse.arc(DAG, bestop$from, bestop$to)
+      )
+      reference = bestop$score
+
+      if (verbose > 0){
+        print(DAG)
       }
-      if (bestop$operation == 'drop'){
-        DAG = bnlearn::drop.arc(DAG, bestop$from, bestop$to)
-      }
-      if (bestop$operation == 'reverse'){
-        DAG = bnlearn::reverse.arc(DAG, bestop$from, bestop$to)
-      }
-      reference = reference + bestop$score.delta
     }
     else{
       break;
     }
     iter = iter + 1
   }
-  return(DAG)
+
+  fitted = fit_all_orders(data = data, DAG = DAG, familyset = familyset, e = e)
+
+  return(fitted)
 }
 
 # Computes the score delta for all allowed operations
-operation_score_deltas = function(data, DAG, familyset, reference, allowed.operations,
-                                  e)
+operation_score_deltas = function(data, DAG, familyset, allowed.operations,
+                                  e, score_metric)
 {
-  nodes = names(data)
-  n.nodes = length(nodes)
-  adj.mat = bnlearn::amat(DAG)
-
-  # Create dataframe to store all operations
-  df <- data.frame(matrix(ncol = 5, nrow = 0))
-  colnames(df) <- c("from", "to", "operation", "score.delta", "improve")
-
   # Loop over all allowed operations
   for (i in 1:nrow(allowed.operations)){
     op = allowed.operations[i,]
-    DAG_new = apply.operation(DAG, op)
+    DAG_new = switch (
+      op$operation,
+      'set' = bnlearn::set.arc(DAG, op$from, op$to),
+      'drop' = bnlearn::drop.arc(DAG, op$from, op$to),
+      'reverse' = bnlearn::reverse.arc(DAG, op$from, op$to)
+    )
 
     # Fit all possible orders
     fitted = fit_all_orders(data, DAG_new, familyset, e = e)
-    score.delta = fitted$best_fit$metrics$BIC - reference
+    score = fitted$best_fit$metrics[score_metric]
 
-
-    if (score.delta>0){improve = TRUE}
-    else{improve=FALSE}
-    df = rbind(df, data.frame(list(from=op$from, to=op$to, operation=op$operation,
-                                   score.delta=score.delta, improve=improve)))
+    allowed.operations$score[i] = score
   }
-  return(df)
+  return(allowed.operations)
 }
 
-# Applies operation op to DAG
-apply.operation <- function(DAG, op){
-  if (op$operation == 'set'){
-    DAG_new = bnlearn::set.arc(DAG, op$from, op$to, check.cycles = FALSE)
-  }
-  if (op$operation == 'drop'){
-    DAG_new = bnlearn::drop.arc(DAG, op$from, op$to)
-  }
-  if (op$operation == 'reverse'){
-    DAG_new = bnlearn::reverse.arc(DAG, op$from, op$to, check.cycles = FALSE)
-  }
-  return(DAG_new)
-}
 
-# Finds all operations resulting in a restricted DAG
+#' Finds all operations resulting in a restricted DAG
+#'
+#' @param DAG the current DAG
+#'
+#' @returm a matrix with 3 columns `from`, `to`, `operation`.
+#' Possible operations are "set", "drop" and "reverse".
+#'
+#' @noRd
 allowed.operations.general <- function(DAG){
   nodes = bnlearn::nodes(DAG)
   n.nodes = length(nodes)
   adj.mat = bnlearn::amat(DAG)
 
   # Create data frame to store all operations
-  df <- data.frame(matrix(ncol = 5, nrow = 0))
+  df <- data.frame(matrix(ncol = 3, nrow = 0))
   colnames(df) <- c("from", "to", "operation")
 
   # Loop over all edges
   for (i in 1:nrow(adj.mat)){
     for (j in 1:nrow(adj.mat)){
-      if (i!=j){
+      if (i != j){
         from = nodes[i]
         to = nodes[j]
 
         # Addition
-        if (adj.mat[i,j]==0 & adj.mat[j,i]==0){
+        if (adj.mat[i,j] == 0 & adj.mat[j,i] == 0){
           # If you set check.cycles to TRUE it stops your code I think
           DAG_new = bnlearn::set.arc(DAG, from, to, check.cycles = FALSE)
           if (bnlearn::acyclic(DAG_new)){
@@ -186,9 +181,8 @@ allowed.operations.general <- function(DAG){
               }
             }
           }
-        }
-        # Removal
-        if (adj.mat[i,j]==1){
+        } else if (adj.mat[i,j] == 1){
+          # Removal
           DAG_new = bnlearn::drop.arc(DAG, from, to)
           if (bnlearn::acyclic(DAG_new)){
             if (!(has_interfering_vstrucs(DAG_new))){
@@ -197,9 +191,8 @@ allowed.operations.general <- function(DAG){
               }
             }
           }
-        }
-        # Reversal
-        if (adj.mat[i,j]==1){
+
+          # Reversal
           DAG_new = bnlearn::reverse.arc(DAG, from, to, check.cycles = FALSE)
           if (bnlearn::acyclic(DAG_new)){
             if (!(has_interfering_vstrucs(DAG_new))){
