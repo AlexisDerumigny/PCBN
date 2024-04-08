@@ -380,8 +380,8 @@ fit_copulas <- function(data,
 
         C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset, order_hash, e = e)
 
-        tau[i_parent, i_v] = C$tau
-        fam[i_parent, i_v] = C$family
+        tau[w, v] = C$tau
+        fam[w, v] = C$family
 
         logLik = logLik + C$logLik
         BIC = BIC + C$BIC
