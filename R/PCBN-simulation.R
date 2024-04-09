@@ -1,4 +1,3 @@
-
 #' Simulate data from a specified PCBN
 #'
 #'
@@ -58,7 +57,8 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE)
     parents = object$order_hash[[node]]
 
     # Simulating is analogous to regular vine
-    if (length(parents) > 0) {
+    marginal = stats::runif(N, 0, 1) # Start with uniform
+    if (length(parents) > 0) { # If node has parents apply recursion of h-functions
       for (i_parent in length(parents):1) {
         fam = object$copula_mat$fam[parents[i_parent], node]
         tau = object$copula_mat$tau[parents[i_parent], node]
@@ -71,14 +71,14 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE)
                                                    v = parents[i_parent],
                                                    cond_set = lower,
                                                    check_PCBN = FALSE)
-        data[, node] = VineCopula::BiCopHinv1(u1 = parent_given_lower,
-                                              u2 = stats::runif(N, 0, 1),
+        marginal = VineCopula::BiCopHinv1(u1 = parent_given_lower,
+                                              u2 = marginal,
                                               family = fam,
                                               par = par)
       }
-    } else { # if there are no parents
-      data[, node] = stats::runif(N, 0, 1)
+
     }
+    data[, node] = marginal
   }
   return(data)
 }
