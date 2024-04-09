@@ -90,3 +90,53 @@ test_that("compute_sample_margin works", {
   expect_identical(data[, "U1"], u_1_given2)
 
 })
+
+
+test_that("PCBN_sim applies proper recursion of h-functions for small example", {
+
+  # Initialize PCBN
+  DAG = create_DAG(3)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+
+  order_hash = r2r::hashmap()
+  order_hash[['U3']] = c("U1", "U2")
+  complete_and_check_orders(DAG, order_hash)
+
+  fam = matrix(c(0, 1, 1,
+                 0, 0, 1,
+                 0, 0, 0), byrow = TRUE, ncol = 3)
+  tau = 0.5 * fam
+
+  my_PCBN = new_PCBN(
+    DAG, order_hash,
+    copula_mat = list(tau = tau, fam = fam))
+
+  N = 10
+
+  # Sample data using package
+  set.seed(51)
+  PCBN_sim_data = PCBN_sim(object = my_PCBN, N = N)
+
+  # Sample data manually
+  par_13  = VineCopula::BiCopTau2Par(family = fam[1,3], tau = tau[1,3])
+  par_23  = VineCopula::BiCopTau2Par(family = fam[2,3], tau = tau[2,3])
+
+  set.seed(51)
+  U1 = stats::runif(N, 0, 1)
+  U2 = stats::runif(N, 0, 1)
+  U2_given_1 = U2
+
+  marginal = stats::runif(N, 0, 1)
+  U3_given_1 = VineCopula::BiCopHinv1(U1, marginal, family = fam[1,3], par = par_13)
+  U3_given_12 = VineCopula::BiCopHinv1(U2_given_1, U3_given_1, family = fam[2,3], par = par_23)
+
+  # Answers must agree
+  expect_equal(PCBN_sim_data$U1, U1)
+  expect_equal(PCBN_sim_data$U2, U2)
+  expect_equal(PCBN_sim_data$U3, U3_given_12)
+
+})
+
+
+
