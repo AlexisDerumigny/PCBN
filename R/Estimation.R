@@ -379,6 +379,14 @@ fit_copulas <- function(data,
         parents_up_to_w = if (i_parent == 1) {c()
         } else {parents[1:(i_parent - 1)]}
 
+        # Sort the parents up to w (necessary for `BiCopCondFit` below)
+        # and nice for printing
+        parents_up_to_w = sort(parents_up_to_w)
+
+        if (verbose > 1){
+          cat("Trying to fit the copula of ", v, " and ", w,
+              if (length(parents_up_to_w)) {c(" given ", parents_up_to_w)} else {c()}, "...\n")
+        }
         C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset, order_hash,
                          e = e, verbose = verbose)
 

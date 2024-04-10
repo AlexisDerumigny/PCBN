@@ -204,6 +204,45 @@ test_that("fit_copulas respects the adjacency matrix", {
 })
 
 
+test_that("fit_copulas works for an example of dimension 5", {
+
+  # Initialize PCBN
+  DAG = create_DAG(5)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+
+  order_hash = r2r::hashmap()
+  order_hash[['U3']] = c("U1", "U2")
+  order_hash[['U5']] = c("U4", "U3", "U1", "U2")
+  complete_and_check_orders(DAG, order_hash)
+
+  fam = matrix(c(0, 0, 1, 0, 1,
+                 0, 0, 1, 0, 1,
+                 0, 0, 0, 1, 1,
+                 0, 0, 0, 0, 1,
+                 0, 0, 0, 0, 0), byrow = TRUE, ncol = 5)
+  tau = fam * 0.8
+
+  my_PCBN = new_PCBN(
+    DAG, order_hash,
+    copula_mat = list(tau = tau, fam = fam))
+
+  N = 10
+  PCBN_sim_data = PCBN_sim(object = my_PCBN, N = N)
+
+  expect_no_error({
+    result = fit_copulas(data = PCBN_sim_data, DAG = DAG,
+                         order_hash = order_hash, familyset = 1,
+                         e = default_envir(), verbose = 0)
+  })
+})
+
+
 test_that("fit_all_orders works", {
 
   DAG = create_DAG(3)
