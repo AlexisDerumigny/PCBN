@@ -127,7 +127,8 @@ find_cond_copula_specified <- function(DAG, order_hash, v, cond)
            "with an empty conditioning set.")
     }
     stop("no specified conditional copula found.\n",
-         "We are at node: ", v, " and the conditioning set is: ", cond, "\n",
+         "We are at node: ", v, " and the conditioning set is: ",
+         dputCharacterVec(cond), "\n",
          "Check that the PCBN satisfies the restrictions ",
          "and that the orders of the parents are all compatible.")
   }
