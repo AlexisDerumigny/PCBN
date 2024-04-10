@@ -162,11 +162,11 @@ test_that("PCBN_sim applies proper recursion of h-functions on an example with 5
                  0, 0, 0, 3, 6,
                  0, 0, 0, 0, 3,
                  0, 0, 0, 0, 0), byrow = TRUE, ncol = 5)
-  tau = matrix(c(0, 0, 0.7, 0, 0.8,
-                 0, 0, 0.3, 0, 0.4,
-                 0, 0, 0, 0.6, 0.5,
-                 0, 0, 0, 0, 0.2,
-                 0, 0, 0, 0, 0), byrow = TRUE, ncol = 5)
+  tau = matrix(c(0, 0, 0.7, 0  , 0.8,
+                 0, 0, 0.3, 0  , 0.4,
+                 0, 0, 0  , 0.6, 0.5,
+                 0, 0, 0  , 0  , 0.2,
+                 0, 0, 0  , 0  , 0  ), byrow = TRUE, ncol = 5)
 
   my_PCBN = new_PCBN(
     DAG, order_hash,
