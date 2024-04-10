@@ -64,6 +64,21 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
          "where d is the number of nodes of DAG.")
   }
 
+  adjacency_mat = bnlearn::amat(DAG)
+  specified_taus = (copula_mat$tau != 0)
+  if ( !(all(specified_taus == adjacency_mat))){
+    stop("'copula_mat$tau' not well specified, there is either an arc in the
+         graph with no corresponding tau or vice versa.")
+  }
+  specified_fams = (copula_mat$fam != 0)
+  if ( !(all(specified_fams == adjacency_mat))){
+    stop("'copula_mat$fam' not well specified, there is either an arc in the
+         graph with no corresponding family or vice versa.")
+  }
+
+  non_specified_tau = any(copula_mat$tau != 0 & adjacency_mat != 0)
+  wrongly_specified_tau = any(copula_mat$tau != 0 & adjacency_mat == 0)
+
   # Check 'order_hash' and complete if necessary
   complete_and_check_orders(DAG, order_hash)
 
