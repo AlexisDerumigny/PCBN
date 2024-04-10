@@ -13,7 +13,7 @@ order_hash[['U4']] = c("U2", "U1", "U3")
 complete_and_check_orders(DAG, order_hash)
 
 fam = matrix(c(0, 1, 1, 1,
-               0, 0, 1, 1,
+               0, 0, 0, 1,
                0, 0, 0, 1,
                0, 0, 0, 0), byrow = TRUE, ncol = 4)
 
@@ -212,7 +212,7 @@ test_that("fit_all_orders works", {
   order_hash = r2r::hashmap()
   order_hash[['U3']] = c("U1", "U2")
 
-  fam = matrix(c(0, 1, 1,
+  fam = matrix(c(0, 0, 1,
                  0, 0, 1,
                  0, 0, 0), byrow = TRUE, ncol = 3)
 
