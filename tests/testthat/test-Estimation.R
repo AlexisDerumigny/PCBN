@@ -232,7 +232,7 @@ test_that("fit_copulas works for an example of dimension 5", {
     DAG, order_hash,
     copula_mat = list(tau = tau, fam = fam))
 
-  N = 100
+  N = 5000
   PCBN_sim_data = PCBN_sim(object = my_PCBN, N = N)
 
   expect_no_error({
@@ -240,6 +240,8 @@ test_that("fit_copulas works for an example of dimension 5", {
                          order_hash = order_hash, familyset = 1,
                          e = default_envir(), verbose = 0)
   })
+
+  result$copula_mat$tau
 })
 
 
