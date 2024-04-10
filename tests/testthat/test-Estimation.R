@@ -232,7 +232,7 @@ test_that("fit_copulas works for an example of dimension 5", {
     DAG, order_hash,
     copula_mat = list(tau = tau, fam = fam))
 
-  N = 10
+  N = 100
   PCBN_sim_data = PCBN_sim(object = my_PCBN, N = N)
 
   expect_no_error({
