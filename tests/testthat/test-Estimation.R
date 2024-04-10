@@ -197,7 +197,8 @@ test_that("fit_copulas respects the adjacency matrix", {
   e = default_envir()
 
   result = fit_copulas(data = mydata, DAG = DAG,
-                       order_hash = order_hash, familyset = 1, e = e)
+                       order_hash = order_hash, familyset = 1, e = e, verbose = 0)
+
 
   expect_equal(result$copula_mat$fam, my_PCBN$copula_mat$fam)
 })

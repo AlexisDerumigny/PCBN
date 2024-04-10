@@ -358,7 +358,8 @@ fit_copulas <- function(data,
                         DAG,
                         order_hash,
                         familyset = c(1, 3, 4, 5, 6),
-                        e) {
+                        e,
+                        verbose = 1) {
   tau = bnlearn::amat(DAG)
   fam = bnlearn::amat(DAG)
 
@@ -378,7 +379,8 @@ fit_copulas <- function(data,
         parents_up_to_w = if (i_parent == 1) {c()
         } else {parents[1:(i_parent - 1)]}
 
-        C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset, order_hash, e = e)
+        C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset, order_hash,
+                         e = e, verbose = verbose)
 
         tau[w, v] = C$tau
         fam[w, v] = C$family
