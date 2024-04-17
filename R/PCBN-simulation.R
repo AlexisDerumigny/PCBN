@@ -65,16 +65,16 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE)
         par = VineCopula::BiCopTau2Par(fam, tau)
 
         # We must compute the conditional margin parent|lower using a proper recursion
-        lower = if (i_parent == 1) {c()
-          } else {parents[1:(i_parent - 1)]}
+        lower = if (i_parent == 1) {c()} else {parents[1:(i_parent - 1)]}
+
         parent_given_lower = compute_sample_margin(object = object, data = data,
                                                    v = parents[i_parent],
                                                    cond_set = lower,
                                                    check_PCBN = FALSE)
         marginal = VineCopula::BiCopHinv1(u1 = parent_given_lower,
-                                              u2 = marginal,
-                                              family = fam,
-                                              par = par)
+                                          u2 = marginal,
+                                          family = fam,
+                                          par = par)
       }
     }
     data[, node] = marginal
