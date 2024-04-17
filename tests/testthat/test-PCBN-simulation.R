@@ -87,6 +87,8 @@ test_that("compute_sample_margin works for a 3-dimensional example", {
   u_1_given2 = compute_sample_margin(object = my_PCBN, data = data,
                                      v = "U1", cond_set = c("U2"))
 
+  # We expect that U1 is the same as U1|2
+  # because U1 and U2 are known to be independent
   expect_identical(data[, "U1"], u_1_given2)
 })
 
@@ -105,13 +107,14 @@ test_that("PCBN_sim applies proper recursion of h-functions for an example with 
   fam = matrix(c(0, 0, 1,
                  0, 0, 1,
                  0, 0, 0), byrow = TRUE, ncol = 3)
-  tau = 0.5 * fam
+  trueCKT = 0.8
+  tau = trueCKT * fam
 
   my_PCBN = new_PCBN(
     DAG, order_hash,
     copula_mat = list(tau = tau, fam = fam))
 
-  N = 10
+  N = 1000
 
   # Sample data using package
   set.seed(51)
@@ -126,15 +129,18 @@ test_that("PCBN_sim applies proper recursion of h-functions for an example with 
   U2 = stats::runif(N, 0, 1)
   U2_given_1 = U2
 
-  marginal = stats::runif(N, 0, 1)
-  U3_given_1 = VineCopula::BiCopHinv1(U1, marginal, family = fam[1,3], par = par_13)
-  U3_given_12 = VineCopula::BiCopHinv1(U2_given_1, U3_given_1, family = fam[2,3], par = par_23)
+  newObsU3 = stats::runif(N, 0, 1)
+  U3_given_12 = VineCopula::BiCopHinv1(U2_given_1, newObsU3, family = fam[2,3], par = par_23)
+  U3_given_1 = VineCopula::BiCopHinv1(U1, U3_given_12, family = fam[1,3], par = par_13)
 
   # Answers must agree
   expect_equal(PCBN_sim_data$U1, U1)
   expect_equal(PCBN_sim_data$U2, U2)
-  expect_equal(PCBN_sim_data$U3, U3_given_12)
+  expect_equal(PCBN_sim_data$U3, U3_given_1)
 
+  # We expect Kendall's tau to be close to the true value
+  estimCKT = cor(PCBN_sim_data[, "U1"], PCBN_sim_data[, "U3"], method = "kendall")
+  expect_equal(estimCKT, trueCKT, tolerance = 0.01)
 })
 
 
