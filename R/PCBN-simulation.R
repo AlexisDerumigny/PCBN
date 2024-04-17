@@ -72,6 +72,11 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE, verbose = 1)
                                                    cond_set = lower,
                                                    check_PCBN = FALSE,
                                                    verbose = verbose)
+												   
+        if (verbose > 1){
+          cat("Using the invert h function of ", node, " given ", lower, "\n")
+        }
+
         marginal = VineCopula::BiCopHinv1(u1 = parent_given_lower,
                                           u2 = marginal,
                                           family = fam,
@@ -151,8 +156,16 @@ compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE,
   order_hash = object$order_hash
   copula_mat = object$copula_mat
 
+  if (verbose > 1){
+    cat("Trying to estimated the cond cdf of ", v, " given ", cond_set, "...\n")
+  }
+
   # Remove nodes by conditional independence
   cond_set_dependent = remove_CondInd(DAG, v, cond_set)
+
+  if (verbose > 1 & !identical(cond_set, cond_set_dependent)){
+    cat("Trying to estimated the cond cdf of ", v, " given ", cond_set_dependent, "...\n")
+  }
 
   # If there is no conditioning set, returns the unchanged observations of v
   if (length(cond_set_dependent) == 0) {
@@ -175,10 +188,10 @@ compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE,
     # by caching these sample margins to reuse them whenever needed
 
     w_given_rest = compute_sample_margin(object, data, w, cond_set_minus_w,
-                                         check_PCBN = FALSE)
+                                         check_PCBN = FALSE, verbose = verbose)
 
     v_given_rest = compute_sample_margin(object, data, v, cond_set_minus_w,
-                                         check_PCBN = FALSE)
+                                         check_PCBN = FALSE, verbose = verbose)
 
     v_given_cond = VineCopula::BiCopHfunc1(u1 = w_given_rest,
                                            u2 = v_given_rest,
@@ -190,10 +203,10 @@ compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE,
     par = VineCopula::BiCopTau2Par(fam, tau)
 
     w_given_rest = compute_sample_margin(object, data, w, cond_set_minus_w,
-                                         check_PCBN = FALSE)
+                                         check_PCBN = FALSE, verbose = verbose)
 
     v_given_rest = compute_sample_margin(object, data, v, cond_set_minus_w,
-                                         check_PCBN = FALSE)
+                                         check_PCBN = FALSE, verbose = verbose)
 
     v_given_cond = VineCopula::BiCopHfunc2(u1 = v_given_rest, u2 = w_given_rest,
                                            family = fam, par = par)
