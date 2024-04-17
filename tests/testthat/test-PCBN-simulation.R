@@ -177,11 +177,11 @@ test_that("PCBN_sim applies proper recursion of h-functions on an example with 5
     DAG, order_hash,
     copula_mat = list(tau = tau, fam = fam))
 
-  N = 10
+  N = 100
 
   # Sample data using package
   set.seed(51)
-  PCBN_sim_data = PCBN_sim(object = my_PCBN, N = N)
+  PCBN_sim_data = PCBN_sim(object = my_PCBN, N = N, verbose = 0)
 
   # Sample data manually
   par_13  = VineCopula::BiCopTau2Par(family = fam[1,3], tau = tau[1,3])
@@ -199,8 +199,9 @@ test_that("PCBN_sim applies proper recursion of h-functions on an example with 5
   # Sampling U3 | U1, U2
   U2_given_1 = U2
   marginal = stats::runif(N, 0, 1)
-  U3_given_1 = VineCopula::BiCopHinv1(U1, marginal, family = fam[1,3], par = par_13)
-  U3 = VineCopula::BiCopHinv1(U2_given_1, U3_given_1, family = fam[2,3], par = par_23)
+  U3_given_12 = VineCopula::BiCopHinv1(U2_given_1, marginal, family = fam[2,3], par = par_23)
+  U3_given_1 = VineCopula::BiCopHinv1(U1, U3_given_12, family = fam[1,3], par = par_13)
+  U3 = U3_given_1
 
   # Sampling U4 | U3
   marginal = stats::runif(N, 0, 1)
@@ -215,11 +216,24 @@ test_that("PCBN_sim applies proper recursion of h-functions on an example with 5
   U2_given_13 = VineCopula::BiCopHfunc2(U2_given_1, U3_given_1, family = fam[2,3], par = par_23)
   U2_given_134 = U2_given_13
 
+  u2_given_134_true = compute_sample_margin(object = my_PCBN, data = PCBN_sim_data,
+                                            v = "U2", cond_set = c("U1", "U3", "U4"))
+  expect_identical(U2_given_134, u2_given_134_true)
+
+  u1_given_34_true = compute_sample_margin(object = my_PCBN, data = PCBN_sim_data,
+                                            v = "U1", cond_set = c("U3", "U4"))
+  expect_identical(U1_given_34, u1_given_34_true)
+
+  u3_given_4_true = compute_sample_margin(object = my_PCBN, data = PCBN_sim_data,
+                                           v = "U3", cond_set = c("U4"))
+  expect_identical(U3_given_4, u3_given_4_true)
+
   marginal = stats::runif(N, 0, 1)
-  U5_given_4 = VineCopula::BiCopHinv1(U4, marginal, family = fam[4,5], par = par_45)
-  U5_given_34 = VineCopula::BiCopHinv1(U3_given_4, U5_given_4, family = fam[3,5], par = par_35)
-  U5_given_134 = VineCopula::BiCopHinv1(U1_given_34, U5_given_34, family = fam[1,5], par = par_15)
-  U5 = VineCopula::BiCopHinv1(U2_given_134, U5_given_134, family = fam[2,5], par = par_25)
+  U5_given_1234 = VineCopula::BiCopHinv1(U2_given_134, marginal     , family = fam[2,5], par = par_25)
+  U5_given_134  = VineCopula::BiCopHinv1(U1_given_34 , U5_given_1234, family = fam[1,5], par = par_15)
+  U5_given_34   = VineCopula::BiCopHinv1(U3_given_4  , U5_given_134 , family = fam[3,5], par = par_35)
+  U5_given_4    = VineCopula::BiCopHinv1(U4          , U5_given_34  , family = fam[4,5], par = par_45)
+  U5 = U5_given_4
 
   # Answers must agree
   expect_equal(PCBN_sim_data$U1, U1)
