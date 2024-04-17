@@ -41,10 +41,10 @@
 #'
 #' @export
 #'
-PCBN_sim <- function(object, N, check_PCBN = TRUE)
+PCBN_sim <- function(object, N, check_PCBN = TRUE, verbose = 1)
 {
   if (check_PCBN){
-    .checkPCBNobject_for_simulation(object)
+    .checkPCBNobject_for_simulation(object, verbose = verbose)
   }
 
   # Initialize data frame
@@ -70,7 +70,8 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE)
         parent_given_lower = compute_sample_margin(object = object, data = data,
                                                    v = parents[i_parent],
                                                    cond_set = lower,
-                                                   check_PCBN = FALSE)
+                                                   check_PCBN = FALSE,
+                                                   verbose = verbose)
         marginal = VineCopula::BiCopHinv1(u1 = parent_given_lower,
                                           u2 = marginal,
                                           family = fam,
@@ -138,10 +139,11 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE)
 #'
 #' @export
 #'
-compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE)
+compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE,
+                                  verbose = 1)
 {
   if (check_PCBN){
-    .checkPCBNobject_for_simulation(object)
+    .checkPCBNobject_for_simulation(object, verbose = verbose)
   }
 
   # Unpack PCBN object
@@ -227,9 +229,9 @@ compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE)
 #
 # FIXME: maybe we want to do this anyway?
 #
-.checkPCBNobject_for_simulation <- function(PCBN)
+.checkPCBNobject_for_simulation <- function(PCBN, verbose)
 {
-  is_restricted = is_restrictedDAG(PCBN$DAG, verbose = 1, check_both = FALSE)
+  is_restricted = is_restrictedDAG(PCBN$DAG, verbose = verbose, check_both = FALSE)
   if (!is_restricted){
     stop(errorCondition(
       message = paste0("The DAG does not satisfy the restrictions. ",

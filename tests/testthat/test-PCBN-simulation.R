@@ -21,7 +21,7 @@ test_that("PCBN_sim does not sample from a PCBN with an active cycle", {
     copula_mat = list(tau = tau, fam = fam))
 
   # 1 active cycle, so no simulation is possible
-  expect_error({ mydata = PCBN_sim(my_PCBN, N = 5) },
+  expect_error({ mydata = PCBN_sim(my_PCBN, N = 5, verbose = 0) },
                class = "UnRestrictedPCBNError")
 })
 
