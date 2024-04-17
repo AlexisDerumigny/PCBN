@@ -58,8 +58,10 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE, verbose = 1)
 
     # Simulating is analogous to regular vine
     marginal = stats::runif(N, 0, 1) # Start with uniform
-    if (length(parents) > 0) { # If node has parents apply recursion of h-functions
-      for (i_parent in 1:length(parents)) {
+    if (length(parents) > 0) {
+      # If node has parents, we apply recursion of h-functions
+      # The innermost part of the recursion starts with the biggest conditioning
+      for (i_parent in length(parents):1) {
         fam = object$copula_mat$fam[parents[i_parent], node]
         tau = object$copula_mat$tau[parents[i_parent], node]
         par = VineCopula::BiCopTau2Par(fam, tau)
