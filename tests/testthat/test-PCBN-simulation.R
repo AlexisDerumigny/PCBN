@@ -1,4 +1,4 @@
-test_that("PCBN_sim does not sample from a non-restricted PCBN", {
+test_that("PCBN_sim does not sample from a PCBN with an active cycle", {
 
   DAG = create_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
@@ -9,8 +9,8 @@ test_that("PCBN_sim does not sample from a non-restricted PCBN", {
   order_hash = r2r::hashmap()
   order_hash[['U4']] = c("U2", "U3")
 
-  fam = matrix(c(0, 1, 1, 1,
-                 0, 0, 1, 1,
+  fam = matrix(c(0, 1, 1, 0,
+                 0, 0, 0, 1,
                  0, 0, 0, 1,
                  0, 0, 0, 0), byrow = TRUE, ncol = 4)
 
@@ -37,8 +37,8 @@ test_that("PCBN_sim does not sample if the ordering do not abide by the Bsets", 
   order_hash[['U3']] = c("U2", "U1")
   order_hash[['U4']] = c("U1", "U3")
 
-  fam = matrix(c(0, 1, 1, 1,
-                 0, 0, 1, 1,
+  fam = matrix(c(0, 0, 1, 1,
+                 0, 0, 1, 0,
                  0, 0, 0, 1,
                  0, 0, 0, 0), byrow = TRUE, ncol = 4)
 
@@ -57,7 +57,7 @@ test_that("PCBN_sim does not sample if the ordering do not abide by the Bsets", 
   mydata = PCBN_sim(my_PCBN, N = 5)
 })
 
-test_that("compute_sample_margin works", {
+test_that("compute_sample_margin works for a 3-dimensional example", {
 
   DAG = create_DAG(3)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
@@ -67,7 +67,7 @@ test_that("compute_sample_margin works", {
   order_hash[['U3']] = c("U1", "U2")
   complete_and_check_orders(DAG, order_hash)
 
-  fam = matrix(c(0, 1, 1,
+  fam = matrix(c(0, 0, 1,
                  0, 0, 1,
                  0, 0, 0), byrow = TRUE, ncol = 3)
   tau = 0.2 * fam
@@ -88,7 +88,6 @@ test_that("compute_sample_margin works", {
                                      v = "U1", cond_set = c("U2"))
 
   expect_identical(data[, "U1"], u_1_given2)
-
 })
 
 
@@ -103,7 +102,7 @@ test_that("PCBN_sim applies proper recursion of h-functions for an example with 
   order_hash[['U3']] = c("U1", "U2")
   complete_and_check_orders(DAG, order_hash)
 
-  fam = matrix(c(0, 1, 1,
+  fam = matrix(c(0, 0, 1,
                  0, 0, 1,
                  0, 0, 0), byrow = TRUE, ncol = 3)
   tau = 0.5 * fam
