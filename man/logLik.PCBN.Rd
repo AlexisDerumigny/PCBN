@@ -31,7 +31,7 @@ DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 order_hash = r2r::hashmap()
 order_hash[['U3']] = c("U1", "U2")
 
-fam = matrix(c(0, 1, 1,
+fam = matrix(c(0, 0, 1,
                0, 0, 1,
                0, 0, 0), byrow = TRUE, ncol = 3)
 tau = 0.2 * fam
