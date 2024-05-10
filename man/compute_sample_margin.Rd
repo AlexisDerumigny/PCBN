@@ -4,7 +4,14 @@
 \alias{compute_sample_margin}
 \title{Computes a conditional margin during sampling}
 \usage{
-compute_sample_margin(object, data, v, cond_set, check_PCBN = TRUE)
+compute_sample_margin(
+  object,
+  data,
+  v,
+  cond_set,
+  check_PCBN = TRUE,
+  verbose = 1
+)
 }
 \arguments{
 \item{object}{PCBN object to sample from.

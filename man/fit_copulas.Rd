@@ -5,7 +5,14 @@
 \alias{fit_all_orders}
 \title{Fit the copulas of a PCBN given data}
 \usage{
-fit_copulas(data, DAG, order_hash, familyset = c(1, 3, 4, 5, 6), e)
+fit_copulas(
+  data,
+  DAG,
+  order_hash,
+  familyset = c(1, 3, 4, 5, 6),
+  e,
+  verbose = 1
+)
 
 fit_all_orders(
   data,

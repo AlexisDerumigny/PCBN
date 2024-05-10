@@ -4,7 +4,7 @@
 \alias{PCBN_sim}
 \title{Simulate data from a specified PCBN}
 \usage{
-PCBN_sim(object, N, check_PCBN = TRUE)
+PCBN_sim(object, N, check_PCBN = TRUE, verbose = 1)
 }
 \arguments{
 \item{object}{PCBN object to simulate from.
