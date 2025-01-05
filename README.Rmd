@@ -88,20 +88,37 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - File `Graph_B_sets.R`
    + `has_interfering_vstrucs()`, `find_B_sets()`, `find_B_sets_v()`, 
-   `find_interfering_v_from_B_sets()`, `B_sets_make_unique()`, `B_sets_cut_increments()`
+   `find_interfering_v_from_B_sets()`, `B_sets_make_unique()`,
+   `B_sets_cut_increments()`
    are already checked and working.
 
   A vignette _"B-sets and interfering v-structures"_ has been written to
   explain how these functions work.
 
 
+## 5. Choice of PCBN structure by Hill Climbing (work in progress)
+
+- File `Hill_climbing.R`
+   + A first version of `hill.climbing.PCBN` is working
+   (although its statistical performance remains to be tested).
+   It often fails to find the right PCBN, even in low-dimensional cases.
+   
+   + `operation_score_deltas` works, although it could be better.
+   
+     **TODO**: this could save all metrics always
+     (in case we want to see them for further debugging/visualization).
+   
+   + `allowed.operations.general` works but could be better written.
+   
+   + `operation_do` and `operation_undo` work.
+   
+     **TODO**: improve and finish documentation.
+
 
 # Plan for future work
 
 
-## Files to be checked soon
-
-- File `Hill_climbing.R`
+<!-- ## Files to be checked soon -->
 
 
 ## Files to be checked and rearranged

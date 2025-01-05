@@ -78,11 +78,27 @@ Development of the PCBN package
   A vignette *“B-sets and interfering v-structures”* has been written to
   explain how these functions work.
 
-# Plan for future work
-
-## Files to be checked soon
+## 5. Choice of PCBN structure by Hill Climbing (work in progress)
 
 - File `Hill_climbing.R`
+  - A first version of `hill.climbing.PCBN` is working (although its
+    statistical performance remains to be tested). It often fails to
+    find the right PCBN, even in low-dimensional cases.
+
+  - `operation_score_deltas` works, although it could be better.
+
+    **TODO**: this could save all metrics always (in case we want to see
+    them for further debugging/visualization).
+
+  - `allowed.operations.general` works but could be better written.
+
+  - `operation_do` and `operation_undo` work.
+
+    **TODO**: improve and finish documentation.
+
+# Plan for future work
+
+<!-- ## Files to be checked soon -->
 
 ## Files to be checked and rearranged
 
