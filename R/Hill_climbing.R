@@ -106,12 +106,7 @@ hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 2,
     }
 
     if (improvement > 0){
-      DAG = switch (
-        bestop$operation,
-        'set' = bnlearn::set.arc(DAG, bestop$from, bestop$to),
-        'drop' = bnlearn::drop.arc(DAG, bestop$from, bestop$to),
-        'reverse' = bnlearn::reverse.arc(DAG, bestop$from, bestop$to)
-      )
+      DAG = operation_do(DAG, op = bestop)
       reference = bestop$score
 
       if (verbose > 0){
@@ -145,12 +140,7 @@ operation_score_deltas = function(data, DAG, familyset, allowed.operations,
   # Loop over all allowed operations
   for (i in 1:nrow(allowed.operations)){
     op = allowed.operations[i,]
-    DAG_new = switch (
-      op$operation,
-      'set' = bnlearn::set.arc(DAG, op$from, op$to),
-      'drop' = bnlearn::drop.arc(DAG, op$from, op$to),
-      'reverse' = bnlearn::reverse.arc(DAG, op$from, op$to)
-    )
+    DAG_new = operation_do(DAG, op)
 
     # Fit all possible orders
     fitted = fit_all_orders(data, DAG_new, familyset, e = e)
