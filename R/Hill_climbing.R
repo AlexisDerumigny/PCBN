@@ -64,7 +64,7 @@ hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 2,
     e = default_envir()
   }
   fitted = fit_all_orders(data = data, DAG = DAG, familyset = familyset, e = e,
-                          score_metric = score_metric)
+                          score_metric = score_metric, verbose = verbose - 2)
   reference = fitted$best_fit$metrics[score_metric]
 
   if (verbose > 0) {
@@ -80,7 +80,8 @@ hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 2,
 
     # Compute data frame with the score delta of each operation
     df = operation_score_deltas(data, DAG, familyset, allowed.operations, e = e,
-                                score_metric = score_metric)
+                                score_metric = score_metric,
+                                verbose = verbose - 1)
 
     # Select best operation based on the score
     if (score_metric == "logLik"){
@@ -122,7 +123,8 @@ hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 2,
     iter = iter + 1
   }
 
-  fitted = fit_all_orders(data = data, DAG = DAG, familyset = familyset, e = e)
+  fitted = fit_all_orders(data = data, DAG = DAG, familyset = familyset, e = e,
+                          verbose = verbose - 2)
 
   if (verbose > 0){
     cat("----------------------------------------------------------------\n")
@@ -135,7 +137,7 @@ hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 2,
 
 # Computes the score delta for all allowed operations
 operation_score_deltas = function(data, DAG, familyset, allowed.operations,
-                                  e, score_metric)
+                                  e, score_metric, verbose = 1)
 {
   # Loop over all allowed operations
   for (i in 1:nrow(allowed.operations)){
@@ -143,7 +145,8 @@ operation_score_deltas = function(data, DAG, familyset, allowed.operations,
     DAG_new = operation_do(DAG, op)
 
     # Fit all possible orders
-    fitted = fit_all_orders(data, DAG_new, familyset, e = e)
+    fitted = fit_all_orders(data, DAG_new, familyset, e = e,
+                            verbose = verbose - 1)
     score = fitted$best_fit$metrics[score_metric]
 
     allowed.operations$score[i] = score

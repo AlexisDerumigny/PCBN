@@ -424,7 +424,7 @@ fit_copulas <- function(data,
 #' @export
 #'
 fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
-                           e, score_metric = "BIC")
+                           e, score_metric = "BIC", verbose = 1)
 {
   all_metrics = c("logLik", "BIC", "AIC")
   if (! (score_metric %in% all_metrics) ){
@@ -439,9 +439,19 @@ fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
   metrics = matrix(nrow = length(all_orders), ncol = 3)
   colnames(metrics) <- all_metrics
 
+  if (verbose > 0){
+    cat(paste0(length(all_orders), " order(s) found.\n"))
+  }
+
   for (i_order in 1:length(all_orders)) {
+
+    if (verbose > 1){
+      cat(paste0("Fitting order ", i_order, "...\n"))
+    }
+
     order = all_orders[[i_order]]
-    fitted_PCBN = fit_copulas(data, DAG, order, familyset, e = e)
+    fitted_PCBN = fit_copulas(data, DAG, order, familyset, e = e,
+                              verbose = verbose - 2)
 
     fitted_list[[i_order]] = fitted_PCBN
     metrics[i_order, ] = fitted_PCBN$metrics
