@@ -27,3 +27,49 @@ test_that("Hill climbing works for a small example", {
   result$best_fit$copula_mat$fam
   result$best_fit$copula_mat$tau
 })
+
+
+test_that("allowed.operations.general returns the right matrix in a small example", {
+  DAG = create_DAG(4)
+
+  operations = allowed.operations.general(DAG)
+
+  expect_identical(length(dim(operations)), 2L)
+
+  # 12 operations are possible
+  expect_identical(NROW(operations), 4L * 3L)
+  expect_identical(NCOL(operations), 3L)
+
+  #
+})
+
+
+test_that("operation_do does not modify the original DAG", {
+  DAG = create_DAG(4)
+
+  operations = allowed.operations.general(DAG)
+
+  op = operations[1,]
+  DAG2 = operation_do(DAG, op)
+
+  # This should not modify the original DAG
+  expect_identical(nrow(DAG$arcs), 0L)
+
+  # But should modify the first DAG
+  expect_identical(nrow(DAG2$arcs), 1L)
+})
+
+
+test_that("operation_do and operation_undo are invert", {
+  DAG1 = create_DAG(4)
+
+  operations = allowed.operations.general(DAG1)
+
+  op = operations[1,]
+  DAG2 = operation_do(DAG1, op)
+
+  DAG3 = operation_undo(DAG2, op)
+
+  # This should return the original DAG
+  expect_identical(DAG1, DAG3)
+})

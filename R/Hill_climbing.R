@@ -169,7 +169,7 @@ operation_score_deltas = function(data, DAG, familyset, allowed.operations,
 #' @return a matrix with 3 columns `from`, `to`, `operation`.
 #' Possible operations are "set", "drop" and "reverse".
 #'
-#' @noRd
+#' @export
 allowed.operations.general <- function(DAG){
   nodes = bnlearn::nodes(DAG)
   n.nodes = length(nodes)
@@ -224,4 +224,43 @@ allowed.operations.general <- function(DAG){
   return(df)
 }
 
+#' Apply an operation on a DAG
+#'
+#' @param DAG the DAG object
+#' @param op the operation to be applied
+#' It should be a data frame of length 3, with a first column \code{from}, the
+#' second \code{to}, the third \code{operation}. \code{From} and \code{to} are
+#' the nodes (characters) and \code{operation} is a character vector describing
+#' the operation to be applied
+#'
+#' @returns the modified DAG. This does not modify the original DAG.
+#'
+#' @export
+operation_do <- function (DAG, op){
+  DAG_new = switch (
+    op$operation,
+    'set' = bnlearn::set.arc(DAG, op$from, op$to),
+    'drop' = bnlearn::drop.arc(DAG, op$from, op$to),
+    'reverse' = bnlearn::reverse.arc(DAG, op$from, op$to),
+    {stop(errorCondition(
+      message = paste0("Operation '", op$operation, "' is not supported. ",
+                       "Possible types are: 'set', 'drop' and 'reverse'."),
+      class = "UnknownOperationError"))}
+  )
+  return (DAG_new)
+}
 
+#' @export
+operation_undo <- function (DAG, op){
+  DAG_new = switch (
+    op$operation,
+    'set' = bnlearn::drop.arc(DAG, op$from, op$to),
+    'drop' = bnlearn::set.arc(DAG, op$from, op$to),
+    'reverse' = bnlearn::reverse.arc(DAG, op$from, op$to),
+    {stop(errorCondition(
+      message = paste0("Operation '", op$operation, "' is not supported. ",
+                       "Possible types are: 'set', 'drop' and 'reverse'."),
+      class = "UnknownOperationError"))}
+  )
+  return (DAG_new)
+}
