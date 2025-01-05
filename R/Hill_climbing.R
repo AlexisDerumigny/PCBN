@@ -166,8 +166,8 @@ allowed.operations.general <- function(DAG){
   adj.mat = bnlearn::amat(DAG)
 
   # Create data frame to store all operations
-  df <- data.frame(matrix(ncol = 3, nrow = 0))
-  colnames(df) <- c("from", "to", "operation")
+  list_operations = list()
+  i_operations = 1
 
   # Loop over all edges
   for (i in 1:nrow(adj.mat)){
@@ -183,7 +183,9 @@ allowed.operations.general <- function(DAG){
           if (bnlearn::acyclic(DAG_new)){
             if (!(has_interfering_vstrucs(DAG_new))){
               if (length(active_cycles(DAG_new, early.stopping = TRUE)) == 0){
-                df = rbind(df, list(from = from, to = to, operation = "set"))
+                list_operations[[i_operations]] =
+                  c("from" = from, "to" = to, operation = "set")
+                i_operations = i_operations + 1
               }
             }
           }
@@ -193,7 +195,9 @@ allowed.operations.general <- function(DAG){
           if (bnlearn::acyclic(DAG_new)){
             if (!(has_interfering_vstrucs(DAG_new))){
               if (length(active_cycles(DAG_new, early.stopping = TRUE)) == 0){
-                df = rbind(df, list(from = from, to = to, operation = "drop"))
+                list_operations[[i_operations]] =
+                  c("from" = from, "to" = to, operation = "drop")
+                i_operations = i_operations + 1
               }
             }
           }
@@ -203,7 +207,9 @@ allowed.operations.general <- function(DAG){
           if (bnlearn::acyclic(DAG_new)){
             if (!(has_interfering_vstrucs(DAG_new))){
               if (length(active_cycles(DAG_new, early.stopping = TRUE)) == 0){
-                df = rbind(df, list(from = from, to = to, operation = "reverse"))
+                list_operations[[i_operations]] =
+                  c("from" = from, "to" = to, operation = "reverse")
+                i_operations = i_operations + 1
               }
             }
           }
@@ -211,8 +217,14 @@ allowed.operations.general <- function(DAG){
       }
     }
   }
+
+  # We now make it a data.frame
+  df = do.call(what = rbind, args = list_operations) |>
+    as.data.frame.matrix()
+
   return(df)
 }
+
 
 #' Apply an operation on a DAG
 #'
