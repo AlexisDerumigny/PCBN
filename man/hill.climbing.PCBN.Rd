@@ -25,6 +25,9 @@ If \code{verbose >= 1}, print information about the procedure.}
 we start with the empty graph.}
 
 \item{e}{environment containing all the hashmaps}
+
+\item{score_metric}{name of the metric used to choose the best order.
+Possible choices are \code{logLik}, \code{AIC} and \code{BIC}.}
 }
 \value{
 DAG which locally maximizes BIC based score function

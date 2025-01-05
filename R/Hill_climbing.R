@@ -12,6 +12,9 @@
 #'
 #' @param familyset vector of copula families
 #'
+#' @param score_metric name of the metric used to choose the best order.
+#' Possible choices are \code{logLik}, \code{AIC} and \code{BIC}.
+#'
 #' @param verbose if \code{0}, don't print anything.
 #' If \code{verbose >= 1}, print information about the procedure.
 #'
