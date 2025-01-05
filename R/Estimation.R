@@ -81,7 +81,7 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
     # We switch them. From now on, v < w
     return (BiCopCondFit(data = data, DAG = DAG, v = w, w = v,
                          cond_set = cond_set, familyset = familyset,
-                         order_hash = order_hash, e = e))
+                         order_hash = order_hash, e = e, verbose = verbose))
   }
 
   # If the conditioning set is null,
