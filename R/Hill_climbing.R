@@ -54,9 +54,16 @@
 hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 2,
                                start = NULL, e = NULL, score_metric = "BIC")
 {
+  if (verbose > 0) {
+    cat("----------------------------------------------------------------\n")
+  }
+
   if (is.null(start)){
     nodes = colnames(data)
     DAG = bnlearn::empty.graph(nodes)
+    if (verbose > 0){
+      cat("* Starting from the empty graph.\n")
+    }
   } else{
     DAG = start
   }
@@ -68,14 +75,14 @@ hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 2,
   reference = fitted$best_fit$metrics[score_metric]
 
   if (verbose > 0) {
-    cat("----------------------------------------------------------------\n")
-    cat("* starting from the following network:\n")
-    print(DAG)
     cat("* current score:", reference, "\n")
   }
 
   iter = 1
   repeat{
+    if (verbose > 0){
+      cat(paste0("* Starting iteration ", iter, "\n"))
+    }
     allowed.operations = allowed.operations.general(DAG)
 
     # Compute data frame with the score delta of each operation
@@ -110,15 +117,19 @@ hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 2,
       DAG = operation_do(DAG, op = bestop)
       reference = bestop$score
 
-      if (verbose > 0){
-        print(DAG)
-      }
+      # if (verbose > 0){
+      #   print(DAG)
+      # }
     }
     else{
       if (verbose > 0){
         cat("No improvement found. Stopping Hill Climbing algorithm.\n")
       }
       break;
+    }
+
+    if (verbose > 0) {
+      cat("----------------------------------------------------------------\n")
     }
     iter = iter + 1
   }
