@@ -19,7 +19,8 @@ fit_all_orders(
   DAG,
   familyset = c(1, 3, 4, 5, 6),
   e,
-  score_metric = "BIC"
+  score_metric = "BIC",
+  verbose = 1
 )
 }
 \arguments{
