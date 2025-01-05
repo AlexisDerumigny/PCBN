@@ -129,8 +129,8 @@ distance_DAGs = function(DAG1, DAG2){
   ### Compute difference in the skeleton differences in the skeleton
 
   # Turn both into undirected graphs
-  g1 = igraph::as.undirected(bnlearn::as.igraph(DAG1))
-  g2 = igraph::as.undirected(bnlearn::as.igraph(DAG2))
+  g1 = igraph::as_undirected(bnlearn::as.igraph(DAG1))
+  g2 = igraph::as_undirected(bnlearn::as.igraph(DAG2))
 
   # Sum all arcs and substract the intersection
   int <- igraph::graph.intersection(g1,g2)

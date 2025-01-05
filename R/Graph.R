@@ -142,7 +142,7 @@ active_cycles <- function(DAG, early.stopping = FALSE)
   active_cycle_list = list()
 
   # Turn DAG into undirected graph
-  DAG_igraph = igraph::as.undirected(bnlearn::as.igraph(DAG))
+  DAG_igraph = igraph::as_undirected(bnlearn::as.igraph(DAG))
 
   for (v in node.names){
     parents = DAG$nodes[[v]]$parent
