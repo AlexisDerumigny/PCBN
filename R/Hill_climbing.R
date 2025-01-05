@@ -12,7 +12,8 @@
 #'
 #' @param familyset vector of copula families
 #'
-#' @param debug to print debug information
+#' @param verbose if \code{0}, don't print anything.
+#' If \code{verbose >= 1}, print information about the procedure.
 #'
 #' @param e environment containing all the hashmaps
 #'

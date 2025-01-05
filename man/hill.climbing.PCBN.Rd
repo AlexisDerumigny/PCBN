@@ -18,12 +18,13 @@ hill.climbing.PCBN(
 
 \item{familyset}{vector of copula families}
 
+\item{verbose}{if \code{0}, don't print anything.
+If \code{verbose >= 1}, print information about the procedure.}
+
 \item{start}{starting Directed Acyclic Graph. If \code{NULL} (the default),
 we start with the empty graph.}
 
 \item{e}{environment containing all the hashmaps}
-
-\item{debug}{to print debug information}
 }
 \value{
 DAG which locally maximizes BIC based score function

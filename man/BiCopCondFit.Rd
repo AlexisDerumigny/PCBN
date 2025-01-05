@@ -39,7 +39,7 @@ They should be ordered from the smallest to the biggest.}
 \item{e}{environment containing all the hashmaps}
 
 \item{verbose}{if \code{0}, don't print anything.
-If \code{verbose = 1}, print information about the fitting procedure.}
+If \code{verbose >= 1}, print information about the fitting procedure.}
 }
 \value{
 \code{default_envir} returns an environment to be passed

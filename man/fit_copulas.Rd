@@ -33,6 +33,9 @@ fit_all_orders(
 
 \item{e}{environment containing all the hashmaps}
 
+\item{verbose}{if \code{0}, don't print anything.
+If \code{verbose >= 1}, print information about the simulation procedure.}
+
 \item{score_metric}{name of the metric used to choose the best order.
 Possible choices are \code{logLik}, \code{AIC} and \code{BIC}.}
 }

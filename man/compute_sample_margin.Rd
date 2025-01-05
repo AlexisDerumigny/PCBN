@@ -31,6 +31,9 @@ If this is set to \code{FALSE}, no checking is performed.
 This means that the error due to the a non-restricted PCBN object (if this
 is the case) will occur later in the computations (and may not be so clear -
 typically it is because of failing to find a given conditional copula).}
+
+\item{verbose}{if \code{0}, don't print anything.
+If \code{verbose >= 1}, print information about the fitting procedure.}
 }
 \value{
 a vector of size \eqn{n} of realizations \eqn{u_{i, v | cond\_set}}

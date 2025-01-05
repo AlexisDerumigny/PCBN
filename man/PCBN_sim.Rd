@@ -21,6 +21,9 @@ is the case) will occur later in the computations (and may not be so clear -
 typically it is because of failing to find a given conditional copula).
 Nevertheless, even with `check_PCBN = TRUE` if could be that some error happen
 later if the parental orderings are not compatible with each other.}
+
+\item{verbose}{if \code{0}, don't print anything.
+If \code{verbose >= 1}, print information about the simulation procedure.}
 }
 \value{
 a data frame of N samples

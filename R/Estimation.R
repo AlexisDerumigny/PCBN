@@ -25,8 +25,9 @@ default_envir <- function(){
 #' @param familyset vector of copula families
 #' @param order_hash hashmap of parental orders
 #' @param e environment containing all the hashmaps
+#'
 #' @param verbose if \code{0}, don't print anything.
-#' If \code{verbose = 1}, print information about the fitting procedure.
+#' If \code{verbose >= 1}, print information about the fitting procedure.
 #'
 #' @return \code{default_envir} returns an environment to be passed
 #' to \code{BiCopCondFit} or to \code{ComputeCondMargin}. \code{BiCopCondFit}
@@ -291,6 +292,9 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 #' @param e environment containing all the hashmaps
 #' @param score_metric name of the metric used to choose the best order.
 #' Possible choices are \code{logLik}, \code{AIC} and \code{BIC}.
+#'
+#' @param verbose if \code{0}, don't print anything.
+#' If \code{verbose >= 1}, print information about the simulation procedure.
 #'
 #' @returns \code{fit_copulas} returns the fitted PCBN, with an additional
 #' element called \code{metrics} which is a named vector of length 3 with names

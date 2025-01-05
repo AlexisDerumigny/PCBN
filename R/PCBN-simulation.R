@@ -16,6 +16,9 @@
 #'
 #' @param N sample size
 #'
+#' @param verbose if \code{0}, don't print anything.
+#' If \code{verbose >= 1}, print information about the simulation procedure.
+#'
 #' @return a data frame of N samples
 #'
 #' @examples
@@ -109,6 +112,8 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE, verbose = 1)
 #' is the case) will occur later in the computations (and may not be so clear -
 #' typically it is because of failing to find a given conditional copula).
 #'
+#' @param verbose if \code{0}, don't print anything.
+#' If \code{verbose >= 1}, print information about the fitting procedure.
 #'
 #' @return a vector of size \eqn{n} of realizations \eqn{u_{i, v | cond\_set}}
 #' for \eqn{i = 1, \dots, n}.
