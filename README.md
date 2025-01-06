@@ -90,9 +90,8 @@ Development of the PCBN package
     **TODO**: this could save all metrics always (in case we want to see
     them for further debugging/visualization).
 
-  - `allowed.operations.general` works but could be better written.
-
-  - `operation_do` and `operation_undo` work.
+  - `allowed.operations.general`, `operation_do` and `operation_undo`
+    work.
 
     **TODO**: improve and finish documentation.
 

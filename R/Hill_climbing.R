@@ -186,12 +186,20 @@ allowed.operations.general <- function(DAG){
   # Loop over all edges
   for (i in 1:nrow(adj.mat)){
     for (j in 1:nrow(adj.mat)){
+      # We could potentially change this to a `for` loop as:
+      # for (i in 1:(nrow(adj.mat)-1)){
+      #   for (j in (i+1):nrow(adj.mat)){
+      # to avoid the `if` statement below. This could also avoid
+      # checking twice for the non-zer adjancency list. But this would
+      # mean that part of th code is duplicated for (i,j) and for (j,i).
+      # For the moment, let's keep it like this.
+
       if (i != j){
         from = nodes[i]
         to = nodes[j]
 
         # Addition
-        if (adj.mat[i,j] == 0 & adj.mat[j,i] == 0){
+        if (adj.mat[i,j] == 0 && adj.mat[j,i] == 0){
           # If you set check.cycles to TRUE it stops your code I think
           DAG_new = bnlearn::set.arc(DAG, from, to, check.cycles = FALSE)
           if (is_DAG_and_restricted(DAG_new)){
