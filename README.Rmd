@@ -121,7 +121,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - File `Graph.R`
 
-   + `remove_CondInd()`, `dsep_set()`, `active_cycles()`, `path_check()`
+   + `remove_CondInd()`, `create_empty_DAG()`, `dsep_set()`, `active_cycles()`, 
+   `path_hasConvergingConnections()`, `path_hasChords()`
    are already checked and working.
 
 

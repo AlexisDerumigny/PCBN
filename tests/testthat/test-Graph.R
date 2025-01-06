@@ -115,24 +115,46 @@ test_that("active_cycles works" , {
   # The first active cycle is returned.
 })
 
-test_that("path_check works", {
+test_that("path_hasConvergingConnections works", {
 
   DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-  expect_true(path_check(DAG, c('U1', 'U2', 'U3', 'U4')))
+  expect_false(path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4')))
+  # has no converging connections
 
   DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-  expect_false(path_check(DAG, c('U1', 'U2', 'U3', 'U4')))
+  expect_false(path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4')))
+  # has a chord but no converging connections
+
+  DAG = create_empty_DAG(4)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U4', 'U3')
+  expect_true(path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4')))
+  expect_true(path_hasConvergingConnections(DAG, c('U2', 'U3', 'U4')))
+  # has a converging connection
+})
+
+test_that("path_hasChords works", {
+
+  DAG = create_empty_DAG(4)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+  expect_false(path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4')))
+  # has no chords
+
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+  expect_true(path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4')))
   # has a chord
 
   DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U4', 'U3')
-  expect_false(path_check(DAG, c('U1', 'U2', 'U3', 'U4')))
-  expect_false(path_check(DAG, c('U2', 'U3', 'U4')))
-  # has a converging connection
-
+  expect_false(path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4')))
+  expect_false(path_hasChords(DAG, c('U2', 'U3', 'U4')))
+  # has a converging connection but no chords
 })

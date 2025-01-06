@@ -101,8 +101,9 @@ Development of the PCBN package
 
 - File `Graph.R`
 
-  - `remove_CondInd()`, `dsep_set()`, `active_cycles()`, `path_check()`
-    are already checked and working.
+  - `remove_CondInd()`, `create_empty_DAG()`, `dsep_set()`,
+    `active_cycles()`, `path_hasConvergingConnections()`,
+    `path_hasChords()` are already checked and working.
 
 - File `PCBN-restrictions.R`
 

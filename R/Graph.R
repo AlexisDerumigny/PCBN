@@ -187,7 +187,9 @@ active_cycles <- function(DAG, early.stopping = FALSE)
             if (length(paths) > 0){
               for (i in 1:length(paths)){
                 names_path_nodes = names(paths[[i]])
-                if (path_check(DAG, names_path_nodes)){ # Checks for v-strucs and chords
+
+                if (!path_hasConvergingConnections(DAG, names_path_nodes) &&
+                    !path_hasChords(DAG, names_path_nodes)){
                   L = length(active_cycle_list)
                   path_vec = c(v, names_path_nodes) # v + path = active cycle
                   active_cycle_list[[L + 1]] = path_vec
@@ -212,8 +214,10 @@ active_cycles <- function(DAG, early.stopping = FALSE)
 #' @param DAG Directed Acyclic Graph.
 #' @param path character vector of nodes in the DAG forming a trail.
 #'
-#' @returns \code{TRUE} if the path contains no converging connections nor
-#' chords.
+#' @return \code{path_hasConvergingConnections} returns \code{TRUE}
+#' if the path contains a converging connection.
+#' \code{path_hasChords} returns \code{TRUE}
+#' if the path contains a chord..
 #'
 #' @examples
 #'
@@ -221,40 +225,51 @@ active_cycles <- function(DAG, early.stopping = FALSE)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-#' path_check(DAG, c('U1', 'U2', 'U3', 'U4')) # TRUE
+#' path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
+#' path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 #'
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-#' path_check(DAG, c('U1', 'U2', 'U3', 'U4')) # has a chord
+#' path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
+#' path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # TRUE: has a chord
 #'
 #' DAG = create_empty_DAG(4)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U4', 'U3')
-#' path_check(DAG, c('U1', 'U2', 'U3', 'U4')) # has a converging connection
+#' path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') )
+#' # TRUE: has a converging connection
+#' path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 #'
 #' @export
-path_check <- function(DAG, path){
+path_hasConvergingConnections <- function(DAG, path){
   node.names = bnlearn::nodes(DAG)
   adj.mat = bnlearn::amat(DAG)
   N = length(path)
 
-  for (i in 1:(N - 1)){
-    # Check vstrucs
-    if (i >= 2){
-      if ((adj.mat[path[i-1], path[i]] == 1) &
-          (adj.mat[path[i+1], path[i]] == 1)){
-        return(FALSE)
-      }
+  for (i in 2:(N - 1)){
+    # Check v-structures at i
+    if ((adj.mat[path[i-1], path[i]] == 1) &&
+        (adj.mat[path[i+1], path[i]] == 1)){
+      return(TRUE)
     }
-    # Check chords
-    if(i <= N - 2){
-      for(j in (i+2):N){ # Ensures that we don't check arcs twice
-        if (adj.mat[path[i], path[j]] +
-            adj.mat[path[j], path[i]] > 0){
-          return(FALSE)
-        }
+  }
+  return(FALSE)
+}
+
+#' @rdname path_hasConvergingConnections
+#' @export
+path_hasChords <- function(DAG, path){
+  node.names = bnlearn::nodes(DAG)
+  adj.mat = bnlearn::amat(DAG)
+  N = length(path)
+
+  for (i in 1:(N - 2)){
+    for(j in (i+2):N){ # Ensures that we don't check arcs twice
+      if (adj.mat[path[i], path[j]] ||
+          adj.mat[path[j], path[i]] > 0){
+        return(TRUE)
       }
     }
   }
-  return(TRUE)
+  return(FALSE)
 }
