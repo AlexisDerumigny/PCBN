@@ -114,9 +114,8 @@ Development of the PCBN package
 
   - `remove_CondInd()`, `create_empty_DAG()`, `dsep_set()` are already
     checked and working.
-	
-- File `Utilities.R`
 
+- File `Utilities.R`
 
 ## Other files to be checked later
 
