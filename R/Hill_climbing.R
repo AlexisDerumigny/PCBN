@@ -215,6 +215,8 @@ allowed_operations_fromDAG <- function(DAG){
   # Loop over all edges
   for (i in 1:nrow(adj.mat)){
     for (j in 1:nrow(adj.mat)){
+      if (i == j) next
+
       # We could potentially change this to a `for` loop as:
       # for (i in 1:(nrow(adj.mat)-1)){
       #   for (j in (i+1):nrow(adj.mat)){
@@ -223,35 +225,33 @@ allowed_operations_fromDAG <- function(DAG){
       # mean that part of th code is duplicated for (i,j) and for (j,i).
       # For the moment, let's keep it like this.
 
-      if (i != j){
-        from = nodes[i]
-        to = nodes[j]
+      from = nodes[i]
+      to = nodes[j]
 
-        # Addition
-        if (adj.mat[i,j] == 0 && adj.mat[j,i] == 0){
-          # If you set check.cycles to TRUE it stops your code I think
-          DAG_new = bnlearn::set.arc(DAG, from, to, check.cycles = FALSE)
-          if (is_DAG_and_restricted(DAG_new)){
-            list_operations[[i_operations]] = c("from" = from, "to" = to,
-                                                operation = "set")
-            i_operations = i_operations + 1
-          }
-        } else if (adj.mat[i,j] == 1){
-          # Removal
-          DAG_new = bnlearn::drop.arc(DAG, from, to)
-          if (is_DAG_and_restricted(DAG_new)){
-            list_operations[[i_operations]] = c("from" = from, "to" = to,
-                                                operation = "drop")
-            i_operations = i_operations + 1
-          }
+      # Addition
+      if (adj.mat[i,j] == 0 && adj.mat[j,i] == 0){
+        # If you set check.cycles to TRUE it stops your code I think
+        DAG_new = bnlearn::set.arc(DAG, from, to, check.cycles = FALSE)
+        if (is_DAG_and_restricted(DAG_new)){
+          list_operations[[i_operations]] = c("from" = from, "to" = to,
+                                              operation = "set")
+          i_operations = i_operations + 1
+        }
+      } else if (adj.mat[i,j] == 1){
+        # Removal
+        DAG_new = bnlearn::drop.arc(DAG, from, to)
+        if (is_DAG_and_restricted(DAG_new)){
+          list_operations[[i_operations]] = c("from" = from, "to" = to,
+                                              operation = "drop")
+          i_operations = i_operations + 1
+        }
 
-          # Reversal
-          DAG_new = bnlearn::reverse.arc(DAG, from, to, check.cycles = FALSE)
-          if (is_DAG_and_restricted(DAG_new)){
-            list_operations[[i_operations]] = c("from" = from, "to" = to,
-                                                operation = "reverse")
-            i_operations = i_operations + 1
-          }
+        # Reversal
+        DAG_new = bnlearn::reverse.arc(DAG, from, to, check.cycles = FALSE)
+        if (is_DAG_and_restricted(DAG_new)){
+          list_operations[[i_operations]] = c("from" = from, "to" = to,
+                                              operation = "reverse")
+          i_operations = i_operations + 1
         }
       }
     }
