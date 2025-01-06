@@ -14,7 +14,8 @@ remove_CondInd(DAG, node, cond_set)
 \item{cond_set}{vector of nodes in conditioning set}
 }
 \value{
-a vector containing the nodes not removable from the conditioning set
+a vector containing the nodes that cannot be removed from the
+conditioning set.
 }
 \description{
 Remove elements from a conditioning set by using conditional independence

@@ -4,7 +4,8 @@
 #' @param node node
 #' @param cond_set vector of nodes in conditioning set
 #'
-#' @returns a vector containing the nodes not removable from the conditioning set
+#' @returns a vector containing the nodes that cannot be removed from the
+#' conditioning set.
 #'
 #'
 #' @examples
@@ -211,7 +212,8 @@ active_cycles <- function(DAG, early.stopping = FALSE)
 #' @param DAG Directed Acyclic Graph.
 #' @param path character vector of nodes in the DAG forming a trail.
 #'
-#' @returns \code{TRUE} if the path contains no converging connections nor chords.
+#' @returns \code{TRUE} if the path contains no converging connections nor
+#' chords.
 #'
 #' @examples
 #'
