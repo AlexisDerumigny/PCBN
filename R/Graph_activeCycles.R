@@ -206,7 +206,7 @@ plot_active_cycles = function(DAG, active_cycles_list = NULL){
             "to work.\nYou can download it using the following command:\n",
             "install.packages('BiocManager')\nBiocManager::install()\n",
             "BiocManager::install('Rgraphviz')")
-    return ()
+    return (invisible())
   }
   if (is.null(active_cycles_list)){
     active_cycles_list = active_cycles(DAG)
@@ -214,7 +214,7 @@ plot_active_cycles = function(DAG, active_cycles_list = NULL){
 
   if (length(active_cycles_list)==0){
     cat("The list of active cycles is empty. \n")
-    return ()
+    return (invisible())
   }
 
   adj.mat = bnlearn::amat(DAG)
