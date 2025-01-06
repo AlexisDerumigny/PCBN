@@ -29,7 +29,7 @@ Check whether a certain order abides by the B-sets
 }
 \examples{
 
-DAG = create_DAG(4)
+DAG = create_empty_DAG(4)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U3', 'U4')

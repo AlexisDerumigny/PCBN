@@ -5,7 +5,7 @@
 #' @returns a list of hashmaps containing the possible orders
 #'
 #' @examples
-#' DAG = create_DAG(4)
+#' DAG = create_empty_DAG(4)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
@@ -44,7 +44,7 @@ find_all_orders <- function(DAG) {
 #' @returns list of order hashmaps
 #'
 #' @examples
-#' DAG = create_DAG(4)
+#' DAG = create_empty_DAG(4)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
@@ -122,7 +122,7 @@ extend_orders <- function(DAG, all_orders, node)
 #' @returns list of vectors containing all possible orders for v
 #'
 #' @examples
-#' DAG = create_DAG(5)
+#' DAG = create_empty_DAG(5)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
@@ -198,7 +198,7 @@ find_all_orders_v <- function(DAG, v, order_hash)
 #'
 #' @examples
 #'
-#' DAG = create_DAG(4)
+#' DAG = create_empty_DAG(4)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
@@ -264,7 +264,7 @@ complete_and_check_orders <- function(DAG, order_hash)
 #'
 #' @examples
 #'
-#' DAG = create_DAG(4)
+#' DAG = create_empty_DAG(4)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')

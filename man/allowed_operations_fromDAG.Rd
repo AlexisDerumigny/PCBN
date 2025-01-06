@@ -35,7 +35,7 @@ Finds all operations resulting in a restricted DAG
 \examples{
 
 # We create an empty DAG with 4 nodes
-DAG1 = create_DAG(4)
+DAG1 = create_empty_DAG(4)
 
 # Which kind of operations are possible?
 operations = allowed_operations_fromDAG(DAG1)

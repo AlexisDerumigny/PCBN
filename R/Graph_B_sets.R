@@ -6,7 +6,7 @@
 #'
 #' @examples
 #'
-#' DAG = create_DAG(5)
+#' DAG = create_empty_DAG(5)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #'
@@ -61,7 +61,7 @@ has_interfering_vstrucs <- function(DAG)
 #' This is also true if \code{length(parents) == 0} and \code{length(parents) == 1}.
 #'
 #' @examples
-#' DAG = create_DAG(6)
+#' DAG = create_empty_DAG(6)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
 #' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
@@ -248,7 +248,7 @@ B_sets_are_increasing <- function(B_sets){
 #' Each line correspond to 1 interfering v-structure.
 #'
 #' @examples
-#' DAG = create_DAG(7)
+#' DAG = create_empty_DAG(7)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
 #' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
@@ -319,7 +319,7 @@ find_interfering_v_from_B_sets <- function(B_sets)
 #' of \code{v} corresponding to this B-set.
 #'
 #' @examples
-#' DAG = create_DAG(5)
+#' DAG = create_empty_DAG(5)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
 #' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')

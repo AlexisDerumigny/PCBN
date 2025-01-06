@@ -1,5 +1,5 @@
 test_that("new_PCBN respect contraints on copula_mat", {
-  DAG = create_DAG(3)
+  DAG = create_empty_DAG(3)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 
@@ -41,7 +41,7 @@ test_that("new_PCBN respect contraints on copula_mat", {
 
 
 test_that("new_PCBN controls names on copula_mat", {
-  DAG = create_DAG(3)
+  DAG = create_empty_DAG(3)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 

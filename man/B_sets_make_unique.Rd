@@ -23,7 +23,7 @@ of \code{v} corresponding to this B-set.
 Compress a given collection of B-sets
 }
 \examples{
-DAG = create_DAG(5)
+DAG = create_empty_DAG(5)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
 DAG = bnlearn::set.arc(DAG, 'U3', 'U4')

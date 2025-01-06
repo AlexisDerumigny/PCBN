@@ -20,7 +20,7 @@ list of order hashmaps
 Fills in all possible orders for the next node for each possible order
 }
 \examples{
-DAG = create_DAG(4)
+DAG = create_empty_DAG(4)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U1', 'U4')

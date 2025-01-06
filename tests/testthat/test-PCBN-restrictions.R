@@ -1,7 +1,7 @@
 
 test_that("is_restrictedDAG works", {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
@@ -13,7 +13,7 @@ test_that("is_restrictedDAG works", {
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   expect_true(is_restrictedDAG(DAG, verbose = FALSE))
 
-  DAG = create_DAG(5)
+  DAG = create_empty_DAG(5)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 
@@ -33,7 +33,7 @@ test_that("is_restrictedDAG works", {
 test_that("DAG_to_restricted works", {
 
   # DAG with active cycle
-  DAG = create_DAG(5)
+  DAG = create_empty_DAG(5)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
@@ -53,7 +53,7 @@ test_that("DAG_to_restricted works", {
   expect_identical(false_positives + false_negatives, 0)
 
   # DAG with an interfering v-structures node 3
-  DAG = create_DAG(5)
+  DAG = create_empty_DAG(5)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
@@ -76,7 +76,7 @@ test_that("DAG_to_restricted works", {
 
 test_that("DAG_to_restricted works with complicated graph", {
 
-  DAG = create_DAG(8)
+  DAG = create_empty_DAG(8)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U7')

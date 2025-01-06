@@ -13,7 +13,7 @@
 #'
 #' @examples
 #'
-#' DAG = create_DAG(3)
+#' DAG = create_empty_DAG(3)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #'
@@ -89,7 +89,7 @@ is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
 #'
 #' @examples
 #'
-#' DAG = create_DAG(3)
+#' DAG = create_empty_DAG(3)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #'

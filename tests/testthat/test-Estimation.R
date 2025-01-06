@@ -1,7 +1,7 @@
 
 # Setup code ===================================================================
 
-DAG = create_DAG(4)
+DAG = create_empty_DAG(4)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
@@ -224,7 +224,7 @@ test_that("fit_copulas gives the same results as what is in the keychain", {
 
 test_that("fit_copulas respects the adjacency matrix", {
 
-  DAG = create_DAG(3)
+  DAG = create_empty_DAG(3)
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 
   order_hash = r2r::hashmap()
@@ -254,7 +254,7 @@ test_that("fit_copulas respects the adjacency matrix", {
 test_that("fit_copulas works for an example of dimension 5", {
 
   # Initialize PCBN
-  DAG = create_DAG(3)
+  DAG = create_empty_DAG(3)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 
@@ -311,7 +311,7 @@ test_that("fit_copulas works for an example of dimension 5", {
 test_that("fit_copulas works for an example of dimension 5", {
 
   # Initialize PCBN
-  DAG = create_DAG(5)
+  DAG = create_empty_DAG(5)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
@@ -371,7 +371,7 @@ test_that("fit_copulas works for an example of dimension 5", {
 
 test_that("fit_all_orders works", {
 
-  DAG = create_DAG(3)
+  DAG = create_empty_DAG(3)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 

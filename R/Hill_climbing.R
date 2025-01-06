@@ -25,7 +25,7 @@
 #'
 #' @examples
 #'
-#' DAG = create_DAG(4)
+#' DAG = create_empty_DAG(4)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
@@ -186,7 +186,7 @@ operation_score_deltas = function(data, DAG, familyset, allowed.operations,
 #' @examples
 #'
 #' # We create an empty DAG with 4 nodes
-#' DAG1 = create_DAG(4)
+#' DAG1 = create_empty_DAG(4)
 #'
 #' # Which kind of operations are possible?
 #' operations = allowed_operations_fromDAG(DAG1)

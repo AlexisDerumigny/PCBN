@@ -17,7 +17,7 @@ Checks if graph has interfering v-structures
 }
 \examples{
 
-DAG = create_DAG(5)
+DAG = create_empty_DAG(5)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 

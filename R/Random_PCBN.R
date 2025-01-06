@@ -55,7 +55,7 @@ pick_random_ordering <- function(DAG)
 
 # Creates a graph with no active cycles or interfering vstrucs
 random_good_graph <- function(N.nodes, N.arcs){
-  DAG = create_DAG(N.nodes)
+  DAG = create_empty_DAG(N.nodes)
   node.names = bnlearn::nodes(DAG)
 
   additions = which(bnlearn::amat(DAG) + diag(N.nodes) + t(bnlearn::amat(DAG))

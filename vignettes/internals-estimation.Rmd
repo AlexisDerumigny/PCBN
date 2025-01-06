@@ -22,7 +22,7 @@ library(PCBN)
 # Data simulation
 
 ```{r}
-DAG = create_DAG(7)
+DAG = create_empty_DAG(7)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U1', 'U4')

@@ -16,7 +16,7 @@ a list of hashmaps containing the possible orders
 Finds all possible copula assignments given a DAG
 }
 \examples{
-DAG = create_DAG(4)
+DAG = create_empty_DAG(4)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U1', 'U4')

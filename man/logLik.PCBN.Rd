@@ -24,7 +24,7 @@ on \eqn{[0,1]}. This is the same as the logarithm of the density of the PCBN
 at the observations.
 }
 \examples{
-DAG = create_DAG(3)
+DAG = create_empty_DAG(3)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 

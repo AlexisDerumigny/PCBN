@@ -21,7 +21,7 @@ This function computes the Probability Density Function of a PCBN model.
 This is a wrapper to \code{\link{logLik.PCBN}}.
 }
 \examples{
-DAG = create_DAG(3)
+DAG = create_empty_DAG(3)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 

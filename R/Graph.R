@@ -9,7 +9,7 @@
 #'
 #' @examples
 #'
-#' DAG = create_DAG(3)
+#' DAG = create_empty_DAG(3)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #'
@@ -42,10 +42,11 @@ remove_CondInd <- function(DAG, node, cond_set){
 #' @seealso [bnlearn::empty.graph()] which this function wraps.
 #'
 #' @examples
-#' create_DAG(6)
-#' create_DAG(10)
+#' create_empty_DAG(6)
+#' create_empty_DAG(10)
+#'
 #' @export
-create_DAG <- function(N_nodes){
+create_empty_DAG <- function(N_nodes){
   node.names = c()
   for (i in 1:N_nodes){
     node.names[i] = paste("U",as.character(i),sep="")
@@ -69,7 +70,7 @@ create_DAG <- function(N_nodes){
 #'
 #' @examples
 #'
-#' DAG = create_DAG(5)
+#' DAG = create_empty_DAG(5)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
@@ -108,7 +109,7 @@ dsep_set <- function(DAG, X, Y, Z = NULL){
 #'
 #' @examples
 #'
-#' DAG = create_DAG(4)
+#' DAG = create_empty_DAG(4)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
@@ -117,7 +118,7 @@ dsep_set <- function(DAG, X, Y, Z = NULL){
 #'
 #' active_cycles(DAG)  # no active cycle
 #'
-#' DAG = create_DAG(4)
+#' DAG = create_empty_DAG(4)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
@@ -125,7 +126,7 @@ dsep_set <- function(DAG, X, Y, Z = NULL){
 #'
 #' active_cycles(DAG)  # 1 active cycle
 #'
-#' DAG = create_DAG(5)
+#' DAG = create_empty_DAG(5)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
@@ -214,7 +215,7 @@ active_cycles <- function(DAG, early.stopping = FALSE)
 #'
 #' @examples
 #'
-#' DAG = create_DAG(4)
+#' DAG = create_empty_DAG(4)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
@@ -223,7 +224,7 @@ active_cycles <- function(DAG, early.stopping = FALSE)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
 #' path_check(DAG, c('U1', 'U2', 'U3', 'U4')) # has a chord
 #'
-#' DAG = create_DAG(4)
+#' DAG = create_empty_DAG(4)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U4', 'U3')

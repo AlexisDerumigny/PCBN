@@ -27,7 +27,7 @@ Checks if a given (conditional) copula has already been specified
 }
 \examples{
 
-DAG = create_DAG(3)
+DAG = create_empty_DAG(3)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 

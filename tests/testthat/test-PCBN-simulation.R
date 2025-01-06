@@ -1,6 +1,6 @@
 test_that("PCBN_sim does not sample from a PCBN with an active cycle", {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
@@ -27,7 +27,7 @@ test_that("PCBN_sim does not sample from a PCBN with an active cycle", {
 
 test_that("PCBN_sim does not sample if the ordering do not abide by the Bsets", {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
@@ -59,7 +59,7 @@ test_that("PCBN_sim does not sample if the ordering do not abide by the Bsets", 
 
 test_that("compute_sample_margin works for a 3-dimensional example", {
 
-  DAG = create_DAG(3)
+  DAG = create_empty_DAG(3)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 
@@ -96,7 +96,7 @@ test_that("compute_sample_margin works for a 3-dimensional example", {
 test_that("PCBN_sim applies proper recursion of h-functions for an example with 3 nodes", {
 
   # Initialize PCBN
-  DAG = create_DAG(3)
+  DAG = create_empty_DAG(3)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 
@@ -148,7 +148,7 @@ test_that("PCBN_sim applies proper recursion of h-functions for an example with 
 test_that("PCBN_sim applies proper recursion of h-functions on an example with 5 nodes", {
 
   # Initialize PCBN
-  DAG = create_DAG(5)
+  DAG = create_empty_DAG(5)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U4')

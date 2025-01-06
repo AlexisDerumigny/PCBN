@@ -37,7 +37,7 @@ Hill climbing algorithm for restricted PCBNs
 }
 \examples{
 
-DAG = create_DAG(4)
+DAG = create_empty_DAG(4)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U4')

@@ -1,6 +1,6 @@
 test_that("possible_candidate_incoming_arc works", {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
@@ -46,7 +46,7 @@ test_that("possible_candidate_incoming_arc works", {
 
 test_that("possible_candidate_incoming_arc works", {
 
-  DAG = create_DAG(5)
+  DAG = create_empty_DAG(5)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
@@ -80,7 +80,7 @@ test_that("possible_candidate_incoming_arc works", {
 
 test_that("possible_candidate_incoming_arc works", {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
@@ -109,7 +109,7 @@ test_that("possible_candidate_incoming_arc works", {
 
 test_that("possible_candidates works", {
 
-  DAG = create_DAG(5)
+  DAG = create_empty_DAG(5)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U4')

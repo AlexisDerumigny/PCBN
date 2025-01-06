@@ -15,7 +15,7 @@
 #' @return the log-likelihood of the PCBN model for the given dataset
 #'
 #' @examples
-#' DAG = create_DAG(3)
+#' DAG = create_empty_DAG(3)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #'
@@ -87,7 +87,7 @@ logLik.PCBN <- function(PCBN, data_uniform, ...){
 #' @return the probability density at newdata.
 #'
 #' @examples
-#' DAG = create_DAG(3)
+#' DAG = create_empty_DAG(3)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #'

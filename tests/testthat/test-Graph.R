@@ -1,7 +1,7 @@
 
 test_that("remove_CondInd works", {
 
-  DAG = create_DAG(7)
+  DAG = create_empty_DAG(7)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
@@ -39,7 +39,7 @@ test_that("remove_CondInd works", {
 
 test_that("remove_CondInd works on a complicated example", {
 
-  DAG = create_DAG(9)
+  DAG = create_empty_DAG(9)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
@@ -79,7 +79,7 @@ test_that("remove_CondInd works on a complicated example", {
 
 test_that("active_cycles works" , {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
@@ -89,7 +89,7 @@ test_that("active_cycles works" , {
   expect_equal(length(active_cycles(DAG)), 0)
   # no active cycle
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
@@ -98,7 +98,7 @@ test_that("active_cycles works" , {
   expect_equal(length(active_cycles(DAG)), 1)
   # 1 active cycle
 
-  DAG = create_DAG(5)
+  DAG = create_empty_DAG(5)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
@@ -117,7 +117,7 @@ test_that("active_cycles works" , {
 
 test_that("path_check works", {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
@@ -127,7 +127,7 @@ test_that("path_check works", {
   expect_false(path_check(DAG, c('U1', 'U2', 'U3', 'U4')))
   # has a chord
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U4', 'U3')

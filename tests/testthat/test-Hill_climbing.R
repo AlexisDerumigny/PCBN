@@ -1,6 +1,6 @@
 test_that("Hill climbing works for a small example", {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
@@ -30,7 +30,7 @@ test_that("Hill climbing works for a small example", {
 
 
 test_that("allowed_operations_fromDAG returns the right matrix in a small example", {
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
 
   operations = allowed_operations_fromDAG(DAG)
 
@@ -43,7 +43,7 @@ test_that("allowed_operations_fromDAG returns the right matrix in a small exampl
 
 
 test_that("operation_do does not modify the original DAG", {
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
 
   operations = allowed_operations_fromDAG(DAG)
 
@@ -59,7 +59,7 @@ test_that("operation_do does not modify the original DAG", {
 
 
 test_that("operation_do and operation_undo are invert", {
-  DAG1 = create_DAG(4)
+  DAG1 = create_empty_DAG(4)
 
   operations = allowed_operations_fromDAG(DAG1)
 

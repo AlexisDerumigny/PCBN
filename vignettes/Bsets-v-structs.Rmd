@@ -30,7 +30,7 @@ sets of the children of $v$ with $v$'s own parents sets.
 
 They can be obtained using the function
 ```{r}
-DAG = create_DAG(6)
+DAG = create_empty_DAG(6)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
 DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
@@ -73,7 +73,7 @@ node are not comparable
 Here is an example of a graph with interfering v-structures.
 
 ```{r}
-DAG = create_DAG(5)
+DAG = create_empty_DAG(5)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 

@@ -30,7 +30,7 @@ Each line correspond to 1 interfering v-structure.
 Find all interfering v-structures for a given collection of B-sets
 }
 \examples{
-DAG = create_DAG(7)
+DAG = create_empty_DAG(7)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
 DAG = bnlearn::set.arc(DAG, 'U3', 'U5')

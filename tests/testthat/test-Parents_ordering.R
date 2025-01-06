@@ -1,7 +1,7 @@
 
 test_that("extend_orders works for a simple case", {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
@@ -32,7 +32,7 @@ test_that("extend_orders works for a simple case", {
 
 test_that("extend_orders works for the edge cases: 0 parent, 1 parent", {
 
-  DAG = create_DAG(3)
+  DAG = create_empty_DAG(3)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 
@@ -52,7 +52,7 @@ test_that("extend_orders works for the edge cases: 0 parent, 1 parent", {
 
 test_that("find_all_orders_v works", {
 
-  DAG = create_DAG(5)
+  DAG = create_empty_DAG(5)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
@@ -76,7 +76,7 @@ test_that("find_all_orders_v works", {
 
 test_that("complete_and_check_orders works for 4 dimensional example", {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
@@ -100,7 +100,7 @@ test_that("complete_and_check_orders works for 4 dimensional example", {
 
 test_that("is_order_abiding_Bsets_v works", {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
@@ -143,7 +143,7 @@ test_that("is_order_abiding_Bsets_v works", {
 
 test_that("is_order_abiding_Bsets works", {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
@@ -163,7 +163,7 @@ test_that("is_order_abiding_Bsets works", {
 
 test_that("is_order_abiding_Bsets works for a larger example", {
 
-  DAG = create_DAG(7)
+  DAG = create_empty_DAG(7)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U1', 'U4')

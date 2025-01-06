@@ -20,7 +20,7 @@ list of vectors containing all possible orders for v
 Finds all possible orders of node v given previous copula assignments
 }
 \examples{
-DAG = create_DAG(5)
+DAG = create_empty_DAG(5)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U1', 'U4')

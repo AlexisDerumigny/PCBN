@@ -19,7 +19,7 @@ Checks a path for converging connections and chords.
 }
 \examples{
 
-DAG = create_DAG(4)
+DAG = create_empty_DAG(4)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
@@ -28,7 +28,7 @@ path_check(DAG, c('U1', 'U2', 'U3', 'U4')) # TRUE
 DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
 path_check(DAG, c('U1', 'U2', 'U3', 'U4')) # has a chord
 
-DAG = create_DAG(4)
+DAG = create_empty_DAG(4)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U4', 'U3')

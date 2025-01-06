@@ -21,7 +21,7 @@ Remove elements from a conditioning set by using conditional independence
 }
 \examples{
 
-DAG = create_DAG(3)
+DAG = create_empty_DAG(3)
 DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 

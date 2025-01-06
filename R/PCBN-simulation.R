@@ -22,7 +22,7 @@
 #' @return a data frame of N samples
 #'
 #' @examples
-#' DAG = create_DAG(3)
+#' DAG = create_empty_DAG(3)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #'
@@ -120,7 +120,7 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE, verbose = 1)
 #'
 #' @examples
 #'
-#' DAG = create_DAG(3)
+#' DAG = create_empty_DAG(3)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #'

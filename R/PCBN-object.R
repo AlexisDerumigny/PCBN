@@ -20,7 +20,7 @@
 #' @return the new PCBN
 #'
 #' @examples
-#' DAG = create_DAG(3)
+#' DAG = create_empty_DAG(3)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #'
@@ -145,7 +145,7 @@ plot.PCBN <- function(x, ...){
 #' @param ... other arguments, unused
 #'
 #' @examples
-#' DAG = create_DAG(3)
+#' DAG = create_empty_DAG(3)
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
 #' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 #'

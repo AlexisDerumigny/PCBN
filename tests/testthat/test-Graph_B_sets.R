@@ -1,6 +1,6 @@
 test_that("has_interfering_vstrucs works", {
 
-  DAG = create_DAG(7)
+  DAG = create_empty_DAG(7)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
@@ -41,7 +41,7 @@ test_that("B_sets_are_increasing works", {
 
 test_that("find_B_sets works", {
 
-  DAG = create_DAG(6)
+  DAG = create_empty_DAG(6)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
@@ -62,7 +62,7 @@ test_that("find_B_sets works", {
 
 test_that("find_B_sets works on a more complicated example", {
 
-  DAG = create_DAG(7)
+  DAG = create_empty_DAG(7)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
@@ -84,7 +84,7 @@ test_that("find_B_sets works on a more complicated example", {
 
 test_that("find_B_sets_v works in an example with 1 parent and 2 children", {
 
-  DAG = create_DAG(4)
+  DAG = create_empty_DAG(4)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
@@ -119,7 +119,7 @@ test_that("B_sets_are_increasing", {
 
 test_that("find_interfering_v_from_B_sets works", {
 
-  DAG = create_DAG(7)
+  DAG = create_empty_DAG(7)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
@@ -151,7 +151,7 @@ test_that("find_interfering_v_from_B_sets works", {
 
 test_that("find_interfering_v_from_B_sets works with 3 interfering v-structures", {
 
-  DAG = create_DAG(8)
+  DAG = create_empty_DAG(8)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
@@ -177,7 +177,7 @@ test_that("find_interfering_v_from_B_sets works with 3 interfering v-structures"
 
 test_that("find_interfering_v_from_B_sets works with 3 interfering v-structures", {
 
-  DAG = create_DAG(8)
+  DAG = create_empty_DAG(8)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
@@ -203,7 +203,7 @@ test_that("find_interfering_v_from_B_sets works with 3 interfering v-structures"
 
 test_that("B_sets_cut_increments works with the output of B_sets_make_unique", {
 
-  DAG = create_DAG(5)
+  DAG = create_empty_DAG(5)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
   DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
 
