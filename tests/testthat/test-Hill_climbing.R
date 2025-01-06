@@ -29,25 +29,23 @@ test_that("Hill climbing works for a small example", {
 })
 
 
-test_that("allowed.operations.general returns the right matrix in a small example", {
+test_that("allowed_operations_fromDAG returns the right matrix in a small example", {
   DAG = create_DAG(4)
 
-  operations = allowed.operations.general(DAG)
+  operations = allowed_operations_fromDAG(DAG)
 
   expect_identical(length(dim(operations)), 2L)
 
   # 12 operations are possible
   expect_identical(NROW(operations), 4L * 3L)
   expect_identical(NCOL(operations), 3L)
-
-  #
 })
 
 
 test_that("operation_do does not modify the original DAG", {
   DAG = create_DAG(4)
 
-  operations = allowed.operations.general(DAG)
+  operations = allowed_operations_fromDAG(DAG)
 
   op = operations[1,]
   DAG2 = operation_do(DAG, op)
@@ -63,7 +61,7 @@ test_that("operation_do does not modify the original DAG", {
 test_that("operation_do and operation_undo are invert", {
   DAG1 = create_DAG(4)
 
-  operations = allowed.operations.general(DAG1)
+  operations = allowed_operations_fromDAG(DAG1)
 
   op = operations[1,]
   DAG2 = operation_do(DAG1, op)

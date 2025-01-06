@@ -83,7 +83,7 @@ hill.climbing.PCBN <- function(data, familyset = c(1, 3, 4, 5, 6), verbose = 2,
     if (verbose > 0){
       cat(paste0("* Starting iteration ", iter, "\n"))
     }
-    allowed.operations = allowed.operations.general(DAG)
+    allowed.operations = allowed_operations_fromDAG(DAG)
 
     # Compute data frame with the score delta of each operation
     df = operation_score_deltas(data, DAG, familyset, allowed.operations, e = e,
@@ -168,13 +168,42 @@ operation_score_deltas = function(data, DAG, familyset, allowed.operations,
 
 #' Finds all operations resulting in a restricted DAG
 #'
-#' @param DAG the current DAG
+#' @param DAG the current DAG.
 #'
-#' @return a matrix with 3 columns `from`, `to`, `operation`.
-#' Possible operations are "set", "drop" and "reverse".
+#' @param op the operation to be applied
+#' It should be a list with at least the elements \code{from}, \code{to}, and
+#' \code{operation}. \code{From} and \code{to} are the nodes (characters) and
+#' \code{operation} is a character describing the operation to be applied.
+#'
+#' @return \code{allowed_operations_fromDAG} returns a \code{data.frame}
+#' with 3 columns: \code{from}, \code{to}, \code{operation}.
+#' Possible operations are \code{"set"}, \code{"drop"} and \code{"reverse"}.
+#'
+#' \code{operation_do} and \code{operation_undo} return the modified DAG after
+#' applying or undoing the operation. Note that this does not modify the
+#' original DAG.
+#'
+#' @examples
+#'
+#' # We create an empty DAG with 4 nodes
+#' DAG1 = create_DAG(4)
+#'
+#' # Which kind of operations are possible?
+#' operations = allowed_operations_fromDAG(DAG1)
+#'
+#' # We apply the first possible operation
+#' op = operations[1,]
+#' DAG2 = operation_do(DAG1, op)
+#'
+#' # and then undo it
+#' DAG3 = operation_undo(DAG2, op)
+#'
+#' # We come back to the original DAG
+#' stopifnot(identical(DAG1, DAG3))
 #'
 #' @export
-allowed.operations.general <- function(DAG){
+#'
+allowed_operations_fromDAG <- function(DAG){
   nodes = bnlearn::nodes(DAG)
   n.nodes = length(nodes)
   adj.mat = bnlearn::amat(DAG)
@@ -236,17 +265,7 @@ allowed.operations.general <- function(DAG){
 }
 
 
-#' Apply an operation on a DAG
-#'
-#' @param DAG the DAG object
-#' @param op the operation to be applied
-#' It should be a data frame of length 3, with a first column \code{from}, the
-#' second \code{to}, the third \code{operation}. \code{From} and \code{to} are
-#' the nodes (characters) and \code{operation} is a character vector describing
-#' the operation to be applied
-#'
-#' @returns the modified DAG. This does not modify the original DAG.
-#'
+#' @rdname allowed_operations_fromDAG
 #' @export
 operation_do <- function (DAG, op){
   DAG_new = switch (
@@ -262,6 +281,7 @@ operation_do <- function (DAG, op){
   return (DAG_new)
 }
 
+#' @rdname allowed_operations_fromDAG
 #' @export
 operation_undo <- function (DAG, op){
   DAG_new = switch (
@@ -276,3 +296,4 @@ operation_undo <- function (DAG, op){
   )
   return (DAG_new)
 }
+
