@@ -41,7 +41,7 @@ Development of the PCBN package
 
 - File `PCBN-restrictions.R`
 
-  - `is_restrictedDAG()`, `DAG_to_restricted()`, `fix_active_cycles()`
+  - `is_restrictedDAG()`, `DAG_to_restrictedDAG()`, `fix_active_cycles()`
     and `fix_interfering_vstructs` are already checked and working.
 
 ## 3. Simulation and estimation

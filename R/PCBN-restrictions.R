@@ -70,7 +70,10 @@ is_DAG_and_restricted <- function(DAG, verbose = 0)
 
 #' Turns a general graph into a restricted graph.
 #'
-#' @param DAG Directed Acyclic Graph.
+#' @param DAG a directed acyclic graph object, of class \code{bn}.
+#'
+#' @param active_cycles,all_B_sets respective outputs of the functions
+#' \code{\link{active_cycles}} and \code{\link{find_B_sets}}.
 #'
 #' @returns Restricted DAG.
 #'
@@ -84,7 +87,7 @@ is_DAG_and_restricted <- function(DAG, verbose = 0)
 #' DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
 #'
 #' # Fixed graph has extra arcs 1 -> 5, 2 -> 5
-#' fixed_DAG = DAG_to_restricted(DAG)
+#' fixed_DAG = DAG_to_restrictedDAG(DAG)
 #'
 #'
 #' # DAG with an interfering v-structures node 3
@@ -97,10 +100,10 @@ is_DAG_and_restricted <- function(DAG, verbose = 0)
 #' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
 #'
 #' # Fixed graph has extra arc 1 -> 5
-#' fixed_DAG = DAG_to_restricted(DAG)
+#' fixed_DAG = DAG_to_restrictedDAG(DAG)
 #'
 #' @export
-DAG_to_restricted <- function(DAG) {
+DAG_to_restrictedDAG <- function(DAG) {
 
   repeat {
 
@@ -129,7 +132,7 @@ DAG_to_restricted <- function(DAG) {
 }
 
 
-#' @rdname DAG_to_restricted
+#' @rdname DAG_to_restrictedDAG
 #' @export
 fix_active_cycles <- function(DAG, active_cycles) {
 
@@ -144,7 +147,7 @@ fix_active_cycles <- function(DAG, active_cycles) {
   return (DAG)
 }
 
-#' @rdname DAG_to_restricted
+#' @rdname DAG_to_restrictedDAG
 #' @export
 fix_interfering_vstructs <- function(DAG, all_B_sets){
 

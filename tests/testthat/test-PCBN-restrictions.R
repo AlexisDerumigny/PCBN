@@ -30,7 +30,7 @@ test_that("is_restrictedDAG works", {
   expect_true(is_restrictedDAG(DAG, verbose = FALSE))
 })
 
-test_that("DAG_to_restricted works", {
+test_that("DAG_to_restrictedDAG works", {
 
   # DAG with active cycle
   DAG = create_empty_DAG(5)
@@ -40,7 +40,7 @@ test_that("DAG_to_restricted works", {
   DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
   DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
 
-  fixed_DAG = DAG_to_restricted(DAG)
+  fixed_DAG = DAG_to_restrictedDAG(DAG)
 
   # Fixed graph should have extra arcs 1 -> 5, 2 -> 5
   expected_DAG = DAG
@@ -61,7 +61,7 @@ test_that("DAG_to_restricted works", {
   DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
   DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
 
-  fixed_DAG = DAG_to_restricted(DAG)
+  fixed_DAG = DAG_to_restrictedDAG(DAG)
 
   # Fixed graph should have extra arcs 1 -> 5
   expected_DAG = DAG
@@ -74,7 +74,7 @@ test_that("DAG_to_restricted works", {
 })
 
 
-test_that("DAG_to_restricted works with complicated graph", {
+test_that("DAG_to_restrictedDAG works with complicated graph", {
 
   DAG = create_empty_DAG(8)
   DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
@@ -97,7 +97,7 @@ test_that("DAG_to_restricted works with complicated graph", {
 
   find_B_sets(DAG)$nodes_with_inter_vs
 
-  fixed_DAG = DAG_to_restricted(DAG)
+  fixed_DAG = DAG_to_restrictedDAG(DAG)
 
   # TODO: currently test is failed since fixing the inter-v's at node
   # U3 introduces new inter-v's at node 6
