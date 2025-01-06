@@ -96,6 +96,12 @@ knitr::opts_chunk$set(echo = TRUE)
   explain how these functions work.
 
 
+- File `Graph_activeCycles.R`
+
+   + `active_cycles()`, `path_hasConvergingConnections()`, `path_hasChords()`
+   are already checked and working.
+
+
 ## 5. Choice of PCBN structure by Hill Climbing (work in progress)
 
 - File `Hill_climbing.R`
@@ -119,10 +125,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Files to be checked and rearranged
 
+
 - File `Graph.R`
 
-   + `remove_CondInd()`, `create_empty_DAG()`, `dsep_set()`, `active_cycles()`, 
-   `path_hasConvergingConnections()`, `path_hasChords()`
+   + `remove_CondInd()`, `create_empty_DAG()`, `dsep_set()` 
    are already checked and working.
 
 
