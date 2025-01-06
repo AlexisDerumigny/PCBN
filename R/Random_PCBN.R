@@ -1,6 +1,6 @@
 
-###################################################
-######### Creating  random PCBNs  #####################
+##################################################
+######### Creating random PCBNs  #################
 ##################################################
 
 # Creates a PCBN with a random graph and copula assignment (to be fixed)
@@ -62,19 +62,17 @@ random_good_graph <- function(N.nodes, N.arcs){
                     == 0, arr.ind = TRUE)
   L = length(additions[,1])
   iter = 0
-  while ((L>0) & (iter<= N.arcs)) {
+  while ((L>0) & (iter <= N.arcs)) {
     k = sample(1:L, 1)
 
     from = node.names[additions[k,][1]]
     to = node.names[additions[k,][2]]
-    DAG_help = bnlearn::set.arc(DAG, from, to)
+    DAG_proposal = bnlearn::set.arc(DAG, from, to)
 
-    if (bnlearn::acyclic(DAG_help)){
-      if (!(has_interfering_vstrucs(DAG_help))){
-        if (length(active_cycles(DAG_help, early.stopping = TRUE)) == 0){
-          DAG = DAG_help
-        }
-      }
+    if (bnlearn::acyclic(DAG_proposal) &&
+        !has_interfering_vstrucs(DAG_proposal) &&
+        !has_active_cycles(DAG_proposal) ) {
+      DAG = DAG_proposal
     }
     additions = additions[-k,]
     L = dim(additions)[1]

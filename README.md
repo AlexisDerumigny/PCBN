@@ -95,9 +95,9 @@ Development of the PCBN package
 
 - File `Graph_activeCycles.R`
 
-  - `active_cycles()`, `path_hasConvergingConnections()`,
-    `path_hasChords()`, `plot_active_cycles()` are already checked and
-    working.
+  - `active_cycles()`, `has_active_cycles()`, `plot_active_cycles()`,
+    `path_hasConvergingConnections()`, `path_hasChords()`, are already
+    checked and working.
 
 - File `PCBN-distances.R`
 

@@ -2,10 +2,13 @@
 % Please edit documentation in R/Graph_activeCycles.R
 \name{active_cycles}
 \alias{active_cycles}
+\alias{has_active_cycles}
 \alias{plot_active_cycles}
 \title{Checks if a graph contains active cycles}
 \usage{
 active_cycles(DAG, early.stopping = FALSE)
+
+has_active_cycles(DAG)
 
 plot_active_cycles(DAG, active_cycles_list = NULL)
 }
@@ -25,6 +28,9 @@ displayed.}
 Each active cycle is a character vector of the name of the nodes involved in
 the active cycle. The first element of this vector is the converging node of
 the active cycle.
+
+\code{has_active_cycles} returns \code{TRUE} if at least 1 active cycle is
+found. Otherwise, it returns \code{FALSE}.
 
 \code{plot_active_cycles} is called for its side-effects only. It plots the
 active cycles if any, and else prints a message.
@@ -71,6 +77,7 @@ plot_active_cycles(DAG, active_cycles_list = active_cycles(DAG))
 fixedDAG = fix_active_cycles(DAG)
 # We can see that no active cycles is plotted anymore
 plot_active_cycles(fixedDAG)
+has_active_cycles(fixedDAG)
 # This is because two edges have been added, as can be seen on:
 plot(fixedDAG)
 

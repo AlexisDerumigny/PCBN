@@ -113,8 +113,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - File `Graph_activeCycles.R`
 
-   + `active_cycles()`, `path_hasConvergingConnections()`, `path_hasChords()`,
-   `plot_active_cycles()`
+   + `active_cycles()`, `has_active_cycles()`, `plot_active_cycles()`,
+   `path_hasConvergingConnections()`, `path_hasChords()`,
    are already checked and working.
 
 

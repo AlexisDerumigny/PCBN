@@ -15,6 +15,9 @@
 #' the active cycle. The first element of this vector is the converging node of
 #' the active cycle.
 #'
+#' \code{has_active_cycles} returns \code{TRUE} if at least 1 active cycle is
+#' found. Otherwise, it returns \code{FALSE}.
+#'
 #' \code{plot_active_cycles} is called for its side-effects only. It plots the
 #' active cycles if any, and else prints a message.
 #'
@@ -57,6 +60,7 @@
 #' fixedDAG = fix_active_cycles(DAG)
 #' # We can see that no active cycles is plotted anymore
 #' plot_active_cycles(fixedDAG)
+#' has_active_cycles(fixedDAG)
 #' # This is because two edges have been added, as can be seen on:
 #' plot(fixedDAG)
 #'
@@ -199,6 +203,14 @@ path_hasChords <- function(DAG, path){
   return(FALSE)
 }
 
+
+
+#' @rdname active_cycles
+#' @export
+#'
+has_active_cycles = function(DAG){
+  return (length(active_cycles(DAG, early.stopping = TRUE)) > 0)
+}
 
 
 #' @rdname active_cycles
