@@ -74,6 +74,7 @@ is_DAG_and_restricted <- function(DAG, verbose = 0)
 #'
 #' @param active_cycles_list,all_B_sets respective outputs of the functions
 #' \code{\link{active_cycles}} and \code{\link{find_B_sets}}.
+#' If they are \code{NULL}, the respective function is called to compute them.
 #'
 #' @returns Restricted DAG.
 #'
@@ -136,6 +137,9 @@ DAG_to_restrictedDAG <- function(DAG) {
 #' @export
 fix_active_cycles <- function(DAG, active_cycles_list = NULL) {
 
+  if (is.null(active_cycles_list)){
+    active_cycles_list = active_cycles(DAG)
+  }
   # Point arcs from all nodes to the v-structure
   for (ac in active_cycles_list) {
     vstruc = ac[[1]]
@@ -149,7 +153,11 @@ fix_active_cycles <- function(DAG, active_cycles_list = NULL) {
 
 #' @rdname DAG_to_restrictedDAG
 #' @export
-fix_interfering_vstructs <- function(DAG, all_B_sets){
+fix_interfering_vstructs <- function(DAG, all_B_sets = NULL){
+
+  if(is.null(all_B_sets)){
+    all_B_sets = find_B_sets(DAG)
+  }
 
   for (v in all_B_sets$nodes_with_inter_vs) {
     B_sets = all_B_sets$B_sets[[v]]

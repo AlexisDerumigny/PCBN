@@ -53,6 +53,9 @@
 #' # which is the same as
 #' plot_active_cycles(DAG, active_cycles_list = active_cycles(DAG))
 #'
+#' fixedDAG = fix_active_cycles(DAG)
+#' plot_active_cycles(fixedDAG)
+#'
 #' @export
 active_cycles <- function(DAG, early.stopping = FALSE)
 {
