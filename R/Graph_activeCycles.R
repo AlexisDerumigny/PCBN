@@ -53,8 +53,12 @@
 #' # which is the same as
 #' plot_active_cycles(DAG, active_cycles_list = active_cycles(DAG))
 #'
+#' # We now fix the active cycles by adding the some arcs.
 #' fixedDAG = fix_active_cycles(DAG)
+#' # We can see that no active cycles is plotted anymore
 #' plot_active_cycles(fixedDAG)
+#' # This is because two edges have been added, as can be seen on:
+#' plot(fixedDAG)
 #'
 #' @export
 active_cycles <- function(DAG, early.stopping = FALSE)
