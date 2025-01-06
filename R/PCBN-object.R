@@ -41,24 +41,24 @@
 new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
 {
   # Checking the components of copula_mat
-  if (!is.list(copula_mat) | length(copula_mat) < 2){
+  if (!is.list(copula_mat) || length(copula_mat) < 2){
     stop("'copula_mat' must be a list with at least 2 elements. ",
          "See 'help(new_PCBN)'.")
   }
-  if (! ("tau" %in% names(copula_mat)) |
+  if (! ("tau" %in% names(copula_mat)) ||
       ! ("fam" %in% names(copula_mat)) ){
     stop("'copula_mat' must include at least elements named 'tau' and 'fam'.")
   }
   d = bnlearn::nnodes(DAG)
 
-  if (!is.matrix(copula_mat$tau) |
-      nrow(copula_mat$tau) != ncol(copula_mat$tau) |
+  if (!is.matrix(copula_mat$tau) ||
+      nrow(copula_mat$tau) != ncol(copula_mat$tau) ||
       nrow(copula_mat$tau) != d){
     stop("'copula_mat$tau' should be a squared matrix of size d*d, ",
          "where d is the number of nodes of DAG.")
   }
-  if (!is.matrix(copula_mat$fam) |
-      nrow(copula_mat$fam) != ncol(copula_mat$fam) |
+  if (!is.matrix(copula_mat$fam) ||
+      nrow(copula_mat$fam) != ncol(copula_mat$fam) ||
       nrow(copula_mat$fam) != d){
     stop("'copula_mat$tau' should be a squared matrix of size d*d, ",
          "where d is the number of nodes of DAG.")
@@ -98,7 +98,7 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
   }
 
   # Automatically add names if there is none.
-  if (is.null(colnames(copula_mat$fam)) | is.null(rownames(copula_mat$fam)) ){
+  if (is.null(colnames(copula_mat$fam)) || is.null(rownames(copula_mat$fam)) ){
     if (verbose > 0){
       cat("Missing colnames and/or rownames in 'copula_mat$fam'.\n",
           "They are automatically replaced by 'bnlearn::nodes(DAG)', ",
@@ -107,7 +107,7 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
     }
     colnames(copula_mat$fam) <- rownames(copula_mat$fam) <- nodes_names
   }
-  if (is.null(colnames(copula_mat$tau)) | is.null(rownames(copula_mat$tau)) ){
+  if (is.null(colnames(copula_mat$tau)) || is.null(rownames(copula_mat$tau)) ){
     if (verbose > 0){
       cat("Missing colnames and/or rownames in 'copula_mat$tau'.\n",
           "They are automatically replaced by 'bnlearn::nodes(DAG)', ",
