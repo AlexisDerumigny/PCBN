@@ -1,8 +1,6 @@
 Development of the PCBN package
 ================
 
-# Files that have been checked and are fully working
-
 ## 1. PCBN object and structure
 
 - File `PCBN-object.R`
@@ -123,10 +121,9 @@ Development of the PCBN package
   - `allowed_operations_fromDAG`, `operation_do` and `operation_undo`
     work.
 
-# Plan for future work
-
-<!-- ## Files to be checked soon -->
-
-## Files to be checked and rearranged
+## 6. Future work: random PCBNs
 
 - File `Random_PCBN.R`
+
+  **TODO**: fix, improve and clean this. What do we need? What do we
+  want from this?

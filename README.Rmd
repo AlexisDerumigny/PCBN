@@ -9,8 +9,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-# Files that have been checked and are fully working
-
 
 ## 1. PCBN object and structure
 
@@ -141,14 +139,12 @@ knitr::opts_chunk$set(echo = TRUE)
    + `allowed_operations_fromDAG`, `operation_do` and `operation_undo` work.
 
 
-# Plan for future work
 
-
-<!-- ## Files to be checked soon -->
-
-
-## Files to be checked and rearranged
+## 6. Future work: random PCBNs
 
 
 - File `Random_PCBN.R`
 
+  **TODO**: fix, improve and clean this.
+  What do we need? What do we want from this?
+  
