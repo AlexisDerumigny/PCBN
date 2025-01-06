@@ -52,6 +52,12 @@ knitr::opts_chunk$set(echo = TRUE)
    are already checked and working.
 
 
+- File `PCBN-restrictions.R`
+
+   + `is_restrictedDAG()`, `DAG_to_restricted()`, `fix_active_cycles()`
+   and `fix_interfering_vstructs` are already checked and working.
+
+
 ## 3. Simulation and estimation
 
 - File `PCBN-simulation.R`
@@ -130,11 +136,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
    + `remove_CondInd()`, `create_empty_DAG()`, `dsep_set()` 
    are already checked and working.
-
-
-- File `PCBN-restrictions.R`
-
-   + `is_restrictedDAG()` is already checked and working.
 
 
 - File `Utilities.R`

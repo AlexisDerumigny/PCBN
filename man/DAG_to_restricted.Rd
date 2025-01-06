@@ -2,9 +2,15 @@
 % Please edit documentation in R/PCBN-restrictions.R
 \name{DAG_to_restricted}
 \alias{DAG_to_restricted}
+\alias{fix_active_cycles}
+\alias{fix_interfering_vstructs}
 \title{Turns a general graph into a restricted graph.}
 \usage{
 DAG_to_restricted(DAG)
+
+fix_active_cycles(DAG, active_cycles)
+
+fix_interfering_vstructs(DAG, all_B_sets)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph.}

@@ -101,54 +101,79 @@ is_DAG_and_restricted <- function(DAG, verbose = 0)
 #'
 #' @export
 DAG_to_restricted <- function(DAG) {
-  DAG_copy = DAG
 
-  # TODO: This should be a while loop, since fixing active cycles and int_vs can
-  # create more of them
+  repeat {
 
-  # Remove active cycles
-  active_cycles = active_cycles(DAG)
-  if (length(active_cycles) > 0) {
-    # Point arcs from all nodes to the v-structure
-    for (ac in active_cycles) {
-      vstruc = ac[[1]]
-      rest = ac[which(ac != vstruc)]
-      for (node in rest) {
-        DAG_copy = bnlearn::set.arc(DAG_copy, node, vstruc)
-      }
+    # Remove active cycles
+    active_cycles = active_cycles(DAG)
+    hasActiveCycles = length(active_cycles) > 0
+
+    if (hasActiveCycles) {
+      DAG = fix_active_cycles(DAG, active_cycles)
+    }
+
+    # Remove interfering v-structures
+    res = find_B_sets(DAG)
+    hasInterferingVStructs = res$has_interfering_vstrucs
+
+    if (hasInterferingVStructs) {
+      DAG = fix_interfering_vstructs(DAG, res)
+    }
+
+    if (!hasActiveCycles && !hasInterferingVStructs){
+      break
     }
   }
 
-  # Remove interfering v-structures
-  res = find_B_sets(DAG)
-  if (res$has_interfering_vstrucs) {
-    for (node in res$nodes_with_inter_vs) {
-      B_sets = res$B_sets[[node]]
+  return(DAG)
+}
 
-      # B_sets consists of empty B-set, full B-set, at least two interfering
-      # B-sets
-      # Empty and full B-set never provide problems, it remains to check the others
-      N_rows_B_sets = dim(B_sets)[1]
-      for (i in 2:(N_rows_B_sets - 1)) {
-        for (j in (i + 1):(N_rows_B_sets - 1)) {
-          # B_sets[i] not in B_sets[j]
-          Bset_i = B_sets[i, ]
-          Bset_j = B_sets[j, ]
-          increasing = all(Bset_i <= Bset_j)
 
-          if (! increasing)
-          {
-            # Add arcs from all nodes in Bset_i not in Bset_j to the bq of Bset_j
-            nodes_in_i_not_in_j = names(which(Bset_i > Bset_j))
-            bq_j = rownames(B_sets)[j]
-            for (node in nodes_in_i_not_in_j){
-              DAG_copy = bnlearn::set.arc(DAG_copy, node, bq_j)
-            }
-          }
+#' @rdname DAG_to_restricted
+#' @export
+fix_active_cycles <- function(DAG, active_cycles) {
+
+  # Point arcs from all nodes to the v-structure
+  for (ac in active_cycles) {
+    vstruc = ac[[1]]
+    rest = ac[which(ac != vstruc)]
+    for (node in rest) {
+      DAG = bnlearn::set.arc(DAG, node, vstruc)
+    }
+  }
+  return (DAG)
+}
+
+#' @rdname DAG_to_restricted
+#' @export
+fix_interfering_vstructs <- function(DAG, all_B_sets){
+
+  for (v in all_B_sets$nodes_with_inter_vs) {
+    B_sets = all_B_sets$B_sets[[v]]
+    N_rows_B_sets = dim(B_sets)[1]
+    if (N_rows_B_sets <= 3) next
+
+    # B_sets now consists of empty B-set, full B-set, and at least two
+    # interfering B-sets. Empty and full B-sets never provide problems,
+    # it remains to check the others
+    for (i in 2:(N_rows_B_sets - 2)) {
+      for (j in (i + 1):(N_rows_B_sets - 1)) {
+        # B_sets[i] not in B_sets[j]
+        Bset_i = B_sets[i, ]
+        Bset_j = B_sets[j, ]
+        increasing = all(Bset_i <= Bset_j)
+
+        if (increasing) next
+
+        # Add arcs from all nodes in Bset_i not in Bset_j to the bq of Bset_j
+        nodes_in_i_not_in_j = names(which(Bset_i > Bset_j))
+        bq_j = rownames(B_sets)[j]
+
+        for (node in nodes_in_i_not_in_j){
+          DAG = bnlearn::set.arc(DAG, node, bq_j)
         }
       }
     }
   }
-
-  return(DAG_copy)
+  return (DAG)
 }

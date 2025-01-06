@@ -39,6 +39,11 @@ Development of the PCBN package
     `complete_and_check_orders()`, `is_order_abiding_Bsets`,
     `is_order_abiding_Bsets_v` are already checked and working.
 
+- File `PCBN-restrictions.R`
+
+  - `is_restrictedDAG()`, `DAG_to_restricted()`, `fix_active_cycles()`
+    and `fix_interfering_vstructs` are already checked and working.
+
 ## 3. Simulation and estimation
 
 - File `PCBN-simulation.R`
@@ -109,10 +114,6 @@ Development of the PCBN package
 
   - `remove_CondInd()`, `create_empty_DAG()`, `dsep_set()` are already
     checked and working.
-
-- File `PCBN-restrictions.R`
-
-  - `is_restrictedDAG()` is already checked and working.
 
 - File `Utilities.R`
 

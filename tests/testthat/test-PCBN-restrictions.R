@@ -101,6 +101,26 @@ test_that("DAG_to_restricted works with complicated graph", {
 
   # TODO: currently test is failed since fixing the inter-v's at node
   # U3 introduces new inter-v's at node 6
-  # expect_identical(find_B_sets(fixed_DAG)$has_interfering_vstrucs, FALSE)
+  expect_false(find_B_sets(fixed_DAG)$has_interfering_vstrucs)
 } )
 
+
+test_that("fix_interfering_vstructs works in a simple case", {
+
+  DAG = create_empty_DAG(5)
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+  DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+
+  all_B_sets = find_B_sets(DAG)
+  all_B_sets$nodes_with_inter_vs
+
+  fixed_DAG = fix_interfering_vstructs(DAG, all_B_sets)
+
+  expect_false(find_B_sets(fixed_DAG)$has_interfering_vstrucs)
+} )
