@@ -92,6 +92,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 4. Graph utilities
 
+- File `Graph.R`
+
+   + `remove_CondInd()`, `create_empty_DAG()`, `dsep_set()` 
+   are already checked and working.
+
+
 - File `Graph_B_sets.R`
    + `has_interfering_vstrucs()`, `find_B_sets()`, `find_B_sets_v()`, 
    `find_interfering_v_from_B_sets()`, `B_sets_make_unique()`,
@@ -143,19 +149,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Files to be checked and rearranged
 
-
-- File `Graph.R`
-
-   + `remove_CondInd()`, `create_empty_DAG()`, `dsep_set()` 
-   are already checked and working.
-
-
-- File `Utilities.R`
-
-
-## Other files to be checked later
-   
-- File `Performance_metrics.R`
 
 - File `Random_PCBN.R`
 

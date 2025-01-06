@@ -76,6 +76,11 @@ Development of the PCBN package
 
 ## 4. Graph utilities
 
+- File `Graph.R`
+
+  - `remove_CondInd()`, `create_empty_DAG()`, `dsep_set()` are already
+    checked and working.
+
 - File `Graph_B_sets.R`
 
   - `has_interfering_vstrucs()`, `find_B_sets()`, `find_B_sets_v()`,
@@ -123,16 +128,5 @@ Development of the PCBN package
 <!-- ## Files to be checked soon -->
 
 ## Files to be checked and rearranged
-
-- File `Graph.R`
-
-  - `remove_CondInd()`, `create_empty_DAG()`, `dsep_set()` are already
-    checked and working.
-
-- File `Utilities.R`
-
-## Other files to be checked later
-
-- File `Performance_metrics.R`
 
 - File `Random_PCBN.R`
