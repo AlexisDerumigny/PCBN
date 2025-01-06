@@ -99,8 +99,6 @@ test_that("DAG_to_restrictedDAG works with complicated graph", {
 
   fixed_DAG = DAG_to_restrictedDAG(DAG)
 
-  # TODO: currently test is failed since fixing the inter-v's at node
-  # U3 introduces new inter-v's at node 6
   expect_false(find_B_sets(fixed_DAG)$has_interfering_vstrucs)
 } )
 
