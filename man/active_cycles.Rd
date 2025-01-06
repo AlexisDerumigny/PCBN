@@ -2,21 +2,32 @@
 % Please edit documentation in R/Graph_activeCycles.R
 \name{active_cycles}
 \alias{active_cycles}
+\alias{plot_active_cycles}
 \title{Checks if a graph contains active cycles}
 \usage{
 active_cycles(DAG, early.stopping = FALSE)
+
+plot_active_cycles(DAG, active_cycle_list = NULL)
 }
 \arguments{
 \item{DAG}{Directed Acyclic}
 
 \item{early.stopping}{if \code{TRUE}, stop at the first active cycle that is
 found.}
+
+\item{active_cycle_list}{a list of active cycles as given by
+\code{active_cycles}. If this is \code{NULL}, the function
+\code{active_cycles} is run on \code{DAG} to find the active cycles to be
+displayed.}
 }
 \value{
-a list containing the active cycles.
+\code{active_cycles} returns a list containing the active cycles.
 Each active cycle is a character vector of the name of the nodes involved in
 the active cycle. The first element of this vector is the converging node of
 the active cycle.
+
+\code{plot_active_cycles} is called for its side-effects only. It plots the
+active cycles if any, and else prints a message.
 }
 \description{
 Checks if a graph contains active cycles
@@ -51,4 +62,8 @@ DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
 active_cycles(DAG)  # 2 active cycles
 active_cycles(DAG, early.stopping = TRUE)  # The first active cycle
 
+# Plotting the active cycles
+plot_active_cycles(DAG)
+# which is the same as
+plot_active_cycles(DAG, active_cycle_list = active_cycles(DAG))
 }

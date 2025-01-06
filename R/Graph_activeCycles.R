@@ -1,13 +1,22 @@
 #' Checks if a graph contains active cycles
 #'
 #' @param DAG Directed Acyclic
+#'
 #' @param early.stopping if \code{TRUE}, stop at the first active cycle that is
 #' found.
 #'
-#' @returns a list containing the active cycles.
+#' @param active_cycle_list a list of active cycles as given by
+#' \code{active_cycles}. If this is \code{NULL}, the function
+#' \code{active_cycles} is run on \code{DAG} to find the active cycles to be
+#' displayed.
+#'
+#' @returns \code{active_cycles} returns a list containing the active cycles.
 #' Each active cycle is a character vector of the name of the nodes involved in
 #' the active cycle. The first element of this vector is the converging node of
 #' the active cycle.
+#'
+#' \code{plot_active_cycles} is called for its side-effects only. It plots the
+#' active cycles if any, and else prints a message.
 #'
 #' @examples
 #'
@@ -38,6 +47,11 @@
 #'
 #' active_cycles(DAG)  # 2 active cycles
 #' active_cycles(DAG, early.stopping = TRUE)  # The first active cycle
+#'
+#' # Plotting the active cycles
+#' plot_active_cycles(DAG)
+#' # which is the same as
+#' plot_active_cycles(DAG, active_cycle_list = active_cycles(DAG))
 #'
 #' @export
 active_cycles <- function(DAG, early.stopping = FALSE)
@@ -179,24 +193,11 @@ path_hasChords <- function(DAG, path){
 }
 
 
-#' Interactively plots a list of active cycles
-#'
-#' @examples
-#' DAG = create_empty_DAG(5)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
-#'
-#' activeCycles = active_cycles(DAG)  # 2 active cycles
-#'
-#' plot_active_cycles(DAG, activeCycles)
-#'
+
+#' @rdname active_cycles
 #' @export
 #'
-plot_active_cycles = function(DAG, active_cycle_list){
+plot_active_cycles = function(DAG, active_cycle_list = NULL){
   if (!requireNamespace("Rgraphviz", quietly = TRUE)) {
     warning("The package 'Rgraphviz' needs to be installed for this function ",
             "to work.\nYou can download it using the following command:\n",
@@ -204,9 +205,13 @@ plot_active_cycles = function(DAG, active_cycle_list){
             "BiocManager::install('Rgraphviz')")
     return ()
   }
+  if (is.null(active_cycle_list)){
+    active_cycle_list = active_cycles(DAG)
+  }
 
   if (length(active_cycle_list)==0){
-    stop("No active cycles")
+    cat("The list of active cycles is empty. \n")
+    return ()
   }
 
   adj.mat = bnlearn::amat(DAG)
