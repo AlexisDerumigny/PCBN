@@ -177,3 +177,63 @@ path_hasChords <- function(DAG, path){
   }
   return(FALSE)
 }
+
+
+#' Interactively plots a list of active cycles
+#'
+#' @examples
+#' DAG = create_empty_DAG(5)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+#'
+#' activeCycles = active_cycles(DAG)  # 2 active cycles
+#' plot_active_cycles(DAG, activeCycles)
+#'
+#' @export
+#'
+plot_active_cycles = function(DAG, active_cycle_list){
+  if (length(active_cycle_list)==0){
+    stop("No active cycles")
+  }
+
+  adj.mat = bnlearn::amat(DAG)
+  L = length(active_cycle_list)
+  for (i in 1:L){
+    if (i > 1){
+      more.plots <- readline(prompt = "Plot next active cycle? (Y/N): ")
+      if (substring(more.plots, 1, 1) %in% c("N", "n")){
+        break
+      }
+    }
+
+    cat("Plotting active cycle ", i, "of", L, "\n")
+    active_cycle = active_cycle_list[[i]]
+
+    # Graphviz requires a dataframe of the arcs to highlight them
+    # So, vector active_cycle -> dataframe of arcs along this active cycle df
+    df <- data.frame(matrix(ncol = 2, nrow = 0))
+    for (j in 1:(length(active_cycle))){
+      node1 = active_cycle[j]
+
+      if (j<length(active_cycle)){
+        node2 = active_cycle[j+1]
+      } else{
+        node2 = active_cycle[1]
+      }
+
+      if (adj.mat[node1,node2]==1){ # node1 -> node2
+        df = rbind(df, data.frame(list(from=node1, to=node2)))
+      }
+      if (adj.mat[node2,node1]==1){ # node2 -> node1
+        df = rbind(df, data.frame(list(from=node2, to=node1)))
+      }
+    }
+    bnlearn::graphviz.plot(DAG , highlight = list(arcs = df, col = "red", lwd = 3))
+  }
+}
+
+
