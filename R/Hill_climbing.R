@@ -194,38 +194,26 @@ allowed.operations.general <- function(DAG){
         if (adj.mat[i,j] == 0 & adj.mat[j,i] == 0){
           # If you set check.cycles to TRUE it stops your code I think
           DAG_new = bnlearn::set.arc(DAG, from, to, check.cycles = FALSE)
-          if (bnlearn::acyclic(DAG_new)){
-            if (!(has_interfering_vstrucs(DAG_new))){
-              if (length(active_cycles(DAG_new, early.stopping = TRUE)) == 0){
-                list_operations[[i_operations]] =
-                  c("from" = from, "to" = to, operation = "set")
-                i_operations = i_operations + 1
-              }
-            }
+          if (is_DAG_and_restricted(DAG_new)){
+            list_operations[[i_operations]] = c("from" = from, "to" = to,
+                                                operation = "set")
+            i_operations = i_operations + 1
           }
         } else if (adj.mat[i,j] == 1){
           # Removal
           DAG_new = bnlearn::drop.arc(DAG, from, to)
-          if (bnlearn::acyclic(DAG_new)){
-            if (!(has_interfering_vstrucs(DAG_new))){
-              if (length(active_cycles(DAG_new, early.stopping = TRUE)) == 0){
-                list_operations[[i_operations]] =
-                  c("from" = from, "to" = to, operation = "drop")
-                i_operations = i_operations + 1
-              }
-            }
+          if (is_DAG_and_restricted(DAG_new)){
+            list_operations[[i_operations]] = c("from" = from, "to" = to,
+                                                operation = "drop")
+            i_operations = i_operations + 1
           }
 
           # Reversal
           DAG_new = bnlearn::reverse.arc(DAG, from, to, check.cycles = FALSE)
-          if (bnlearn::acyclic(DAG_new)){
-            if (!(has_interfering_vstrucs(DAG_new))){
-              if (length(active_cycles(DAG_new, early.stopping = TRUE)) == 0){
-                list_operations[[i_operations]] =
-                  c("from" = from, "to" = to, operation = "reverse")
-                i_operations = i_operations + 1
-              }
-            }
+          if (is_DAG_and_restricted(DAG_new)){
+            list_operations[[i_operations]] = c("from" = from, "to" = to,
+                                                operation = "reverse")
+            i_operations = i_operations + 1
           }
         }
       }

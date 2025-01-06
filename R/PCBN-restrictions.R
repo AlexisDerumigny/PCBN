@@ -53,6 +53,20 @@ is_restrictedDAG <- function(DAG, verbose = 2, check_both = TRUE)
   return (is_restricted)
 }
 
+# This returns TRUE only if the DAG is indeed acyclic
+# and if it satisfies the restrictions.
+# It has early stopping, so it returns FALSE if it is not a DAG
+# and only then does it check the restrictions.
+is_DAG_and_restricted <- function(DAG, verbose = 0)
+{
+  is_DAG = bnlearn::acyclic(DAG)
+  if (!is_DAG){
+    return (FALSE)
+  }
+
+  return (is_restrictedDAG(DAG, verbose = verbose, check_both = FALSE))
+}
+
 
 #' Turns a general graph into a restricted graph.
 #'
