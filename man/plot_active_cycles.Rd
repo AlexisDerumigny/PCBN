@@ -19,6 +19,7 @@ DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
 DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
 
 activeCycles = active_cycles(DAG)  # 2 active cycles
+
 plot_active_cycles(DAG, activeCycles)
 
 }

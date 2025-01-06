@@ -41,8 +41,9 @@ Development of the PCBN package
 
 - File `PCBN-restrictions.R`
 
-  - `is_restrictedDAG()`, `DAG_to_restrictedDAG()`, `fix_active_cycles()`
-    and `fix_interfering_vstructs` are already checked and working.
+  - `is_restrictedDAG()`, `DAG_to_restrictedDAG()`,
+    `fix_active_cycles()` and `fix_interfering_vstructs` are already
+    checked and working.
 
 ## 3. Simulation and estimation
 
@@ -87,7 +88,8 @@ Development of the PCBN package
 - File `Graph_activeCycles.R`
 
   - `active_cycles()`, `path_hasConvergingConnections()`,
-    `path_hasChords()` are already checked and working.
+    `path_hasChords()`, `plot_active_cycles()` are already checked and
+    working.
 
 ## 5. Choice of PCBN structure by Hill Climbing (work in progress)
 

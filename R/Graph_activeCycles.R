@@ -191,11 +191,20 @@ path_hasChords <- function(DAG, path){
 #' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
 #'
 #' activeCycles = active_cycles(DAG)  # 2 active cycles
+#'
 #' plot_active_cycles(DAG, activeCycles)
 #'
 #' @export
 #'
 plot_active_cycles = function(DAG, active_cycle_list){
+  if (!requireNamespace("Rgraphviz", quietly = TRUE)) {
+    warning("The package 'Rgraphviz' needs to be installed for this function ",
+            "to work.\nYou can download it using the following command:\n",
+            "install.packages('BiocManager')\nBiocManager::install()\n",
+            "BiocManager::install('Rgraphviz')")
+    return ()
+  }
+
   if (length(active_cycle_list)==0){
     stop("No active cycles")
   }
@@ -232,7 +241,7 @@ plot_active_cycles = function(DAG, active_cycle_list){
         df = rbind(df, data.frame(list(from=node2, to=node1)))
       }
     }
-    bnlearn::graphviz.plot(DAG , highlight = list(arcs = df, col = "red", lwd = 3))
+    bnlearn::graphviz.plot(DAG, highlight = list(arcs = df, col = "red", lwd = 3))
   }
 }
 

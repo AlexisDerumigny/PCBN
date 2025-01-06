@@ -25,7 +25,8 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    data.tree
+    data.tree,
+    Rgraphviz
 URL: https://github.com/AlexisDerumigny/PCBN
 BugReports: https://github.com/AlexisDerumigny/PCBN/issues
 Config/testthat/edition: 3
