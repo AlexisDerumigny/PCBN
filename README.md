@@ -85,6 +85,9 @@ Development of the PCBN package
   A vignette *“B-sets and interfering v-structures”* has been written to
   explain how these functions work.
 
+  **TODO**: add better visualization of interfering v-structures, as was
+  done in `plot_active_cycles()` for the active cycles.
+
 - File `Graph_activeCycles.R`
 
   - `active_cycles()`, `path_hasConvergingConnections()`,
