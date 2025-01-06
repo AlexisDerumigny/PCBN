@@ -100,6 +100,7 @@ test_that("DAG_to_restrictedDAG works with complicated graph", {
   fixed_DAG = DAG_to_restrictedDAG(DAG)
 
   expect_false(find_B_sets(fixed_DAG)$has_interfering_vstrucs)
+  expect_true(is_restrictedDAG(fixed_DAG, verbose = 0, check_both = FALSE))
 } )
 
 
