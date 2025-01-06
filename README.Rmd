@@ -109,6 +109,14 @@ knitr::opts_chunk$set(echo = TRUE)
    are already checked and working.
 
 
+- File `PCBN-distances.R`
+   + `distance_DAGs()` and `have_2PCBN_theSameOrdering` work, but are not
+   exported. There is also a draft of something with KL divergence
+   (`KL_divergence_PCBN()`, `KL_divergence_GBN()`).
+   
+   **TODO**: improve and clean this. What do we need? What do we want from this?
+
+
 ## 5. Choice of PCBN structure by Hill Climbing (work in progress)
 
 - File `Hill_climbing.R`

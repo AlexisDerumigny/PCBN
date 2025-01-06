@@ -45,18 +45,6 @@ copy_hash <- function(hash) {
   return(new)
 }
 
-#' Take symmetric difference of two vectors
-#'
-#' @param a Vector 1
-#' @param b Vector 2
-#'
-#' @returns Symmetric difference of a and b
-sym_diff <- function(a,b) setdiff(union(a,b), intersect(a,b))
-
-
-
-
-
 
 ####################################################
 ##### For data with standard normal margins  #######
@@ -91,38 +79,5 @@ to_uniform_scale <- function(data){
     data_new[[i]] = VineCopula::pobs(data[[i]])
   }
   return(data_new)
-}
-
-
-
-
-
-
-###################################
-###### not used? ##################
-##################################
-
-
-# Takes in two PCBNs and returns TRUE if they have the same ordering
-check_correct_order <- function(PCBN1, PCBN2) {
-  order1 = PCBN1$order_hash
-  order2 = PCBN2$order_hash
-  DAG1 = PCBN1$DAG
-  DAG2 = PCBN2$DAG
-
-  # TODO: Graphs should have distance equal to 0
-
-  # For now assume they do
-  node.names = bnlearn::nodes(DAG1)
-  # Loop over all v-structures
-  for (v in node.names){
-    if (length(DAG1$nodes[[v]]$parents) > 1){
-      # The orders should be the same everywhere
-      if (!min(order1[[v]] == order2[[v]])) {
-        return(FALSE)
-      }
-    }
-  }
-  return(TRUE)
 }
 
