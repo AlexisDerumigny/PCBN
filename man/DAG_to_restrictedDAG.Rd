@@ -8,15 +8,16 @@
 \usage{
 DAG_to_restrictedDAG(DAG)
 
-fix_active_cycles(DAG, active_cycles)
+fix_active_cycles(DAG, active_cycles_list = NULL)
 
-fix_interfering_vstructs(DAG, all_B_sets)
+fix_interfering_vstructs(DAG, all_B_sets = NULL)
 }
 \arguments{
 \item{DAG}{a directed acyclic graph object, of class \code{bn}.}
 
-\item{active_cycles, all_B_sets}{respective outputs of the functions
-\code{\link{active_cycles}} and \code{\link{find_B_sets}}.}
+\item{active_cycles_list, all_B_sets}{respective outputs of the functions
+\code{\link{active_cycles}} and \code{\link{find_B_sets}}.
+If they are \code{NULL}, the respective function is called to compute them.}
 }
 \value{
 Restricted DAG.

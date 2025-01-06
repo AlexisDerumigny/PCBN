@@ -7,7 +7,7 @@
 \usage{
 active_cycles(DAG, early.stopping = FALSE)
 
-plot_active_cycles(DAG, active_cycle_list = NULL)
+plot_active_cycles(DAG, active_cycles_list = NULL)
 }
 \arguments{
 \item{DAG}{Directed Acyclic}
@@ -15,7 +15,7 @@ plot_active_cycles(DAG, active_cycle_list = NULL)
 \item{early.stopping}{if \code{TRUE}, stop at the first active cycle that is
 found.}
 
-\item{active_cycle_list}{a list of active cycles as given by
+\item{active_cycles_list}{a list of active cycles as given by
 \code{active_cycles}. If this is \code{NULL}, the function
 \code{active_cycles} is run on \code{DAG} to find the active cycles to be
 displayed.}
@@ -65,5 +65,9 @@ active_cycles(DAG, early.stopping = TRUE)  # The first active cycle
 # Plotting the active cycles
 plot_active_cycles(DAG)
 # which is the same as
-plot_active_cycles(DAG, active_cycle_list = active_cycles(DAG))
+plot_active_cycles(DAG, active_cycles_list = active_cycles(DAG))
+
+fixedDAG = fix_active_cycles(DAG)
+plot_active_cycles(fixedDAG)
+
 }

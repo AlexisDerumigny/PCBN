@@ -72,7 +72,7 @@ is_DAG_and_restricted <- function(DAG, verbose = 0)
 #'
 #' @param DAG a directed acyclic graph object, of class \code{bn}.
 #'
-#' @param active_cycles,all_B_sets respective outputs of the functions
+#' @param active_cycles_list,all_B_sets respective outputs of the functions
 #' \code{\link{active_cycles}} and \code{\link{find_B_sets}}.
 #'
 #' @returns Restricted DAG.
@@ -108,11 +108,11 @@ DAG_to_restrictedDAG <- function(DAG) {
   repeat {
 
     # Remove active cycles
-    active_cycles = active_cycles(DAG)
-    hasActiveCycles = length(active_cycles) > 0
+    active_cycles_list = active_cycles(DAG)
+    hasActiveCycles = length(active_cycles_list) > 0
 
     if (hasActiveCycles) {
-      DAG = fix_active_cycles(DAG, active_cycles)
+      DAG = fix_active_cycles(DAG, active_cycles_list)
     }
 
     # Remove interfering v-structures
@@ -134,10 +134,10 @@ DAG_to_restrictedDAG <- function(DAG) {
 
 #' @rdname DAG_to_restrictedDAG
 #' @export
-fix_active_cycles <- function(DAG, active_cycles) {
+fix_active_cycles <- function(DAG, active_cycles_list = NULL) {
 
   # Point arcs from all nodes to the v-structure
-  for (ac in active_cycles) {
+  for (ac in active_cycles_list) {
     vstruc = ac[[1]]
     rest = ac[which(ac != vstruc)]
     for (node in rest) {

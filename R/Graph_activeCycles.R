@@ -5,7 +5,7 @@
 #' @param early.stopping if \code{TRUE}, stop at the first active cycle that is
 #' found.
 #'
-#' @param active_cycle_list a list of active cycles as given by
+#' @param active_cycles_list a list of active cycles as given by
 #' \code{active_cycles}. If this is \code{NULL}, the function
 #' \code{active_cycles} is run on \code{DAG} to find the active cycles to be
 #' displayed.
@@ -51,7 +51,7 @@
 #' # Plotting the active cycles
 #' plot_active_cycles(DAG)
 #' # which is the same as
-#' plot_active_cycles(DAG, active_cycle_list = active_cycles(DAG))
+#' plot_active_cycles(DAG, active_cycles_list = active_cycles(DAG))
 #'
 #' @export
 active_cycles <- function(DAG, early.stopping = FALSE)
@@ -197,7 +197,7 @@ path_hasChords <- function(DAG, path){
 #' @rdname active_cycles
 #' @export
 #'
-plot_active_cycles = function(DAG, active_cycle_list = NULL){
+plot_active_cycles = function(DAG, active_cycles_list = NULL){
   if (!requireNamespace("Rgraphviz", quietly = TRUE)) {
     warning("The package 'Rgraphviz' needs to be installed for this function ",
             "to work.\nYou can download it using the following command:\n",
@@ -205,17 +205,17 @@ plot_active_cycles = function(DAG, active_cycle_list = NULL){
             "BiocManager::install('Rgraphviz')")
     return ()
   }
-  if (is.null(active_cycle_list)){
-    active_cycle_list = active_cycles(DAG)
+  if (is.null(active_cycles_list)){
+    active_cycles_list = active_cycles(DAG)
   }
 
-  if (length(active_cycle_list)==0){
+  if (length(active_cycles_list)==0){
     cat("The list of active cycles is empty. \n")
     return ()
   }
 
   adj.mat = bnlearn::amat(DAG)
-  L = length(active_cycle_list)
+  L = length(active_cycles_list)
   for (i in 1:L){
     if (i > 1){
       more.plots <- readline(prompt = "Plot next active cycle? (Y/N): ")
@@ -225,7 +225,7 @@ plot_active_cycles = function(DAG, active_cycle_list = NULL){
     }
 
     cat("Plotting active cycle ", i, "of", L, "\n")
-    active_cycle = active_cycle_list[[i]]
+    active_cycle = active_cycles_list[[i]]
 
     # Graphviz requires a dataframe of the arcs to highlight them
     # So, vector active_cycle -> dataframe of arcs along this active cycle df
