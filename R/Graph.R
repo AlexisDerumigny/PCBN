@@ -155,51 +155,54 @@ active_cycles <- function(DAG, early.stopping = FALSE)
     # where there is a trail between w and z that does not involve v
     # such that this trail has no converging connection and no chords
 
-    if (length(parents) > 1)
-    {
+    if (length(parents) < 2){
+      next # go to next node `v`
+    } # We now know v has at least two parents.
+
+    for (i_w in 2:length(parents)) {
+      w = parents[i_w]
       # We can only restrict ourselves to the parents up to w
       # so that we do not count the couples (w,z) and (z,w) twice.
-      for (i_w in 2:length(parents))
-      {
-        w = parents[i_w]
-        for (i_z in 1:(i_w - 1))
-        {
-          z = parents[i_z]
+      for (i_z in 1:(i_w - 1)) {
+        z = parents[i_z]
 
-          # Parents must be non-adjacent, otherwise there is a chord directly
-          if (adj.mat[w,z] == 0 & adj.mat[z,w] == 0){
+        # If parents are adjacent then there is a chord directly
+        if (adj.mat[w,z] == 1 || adj.mat[z,w] == 1){
+          next # go to the next parent `i_z`
+        } # We now know that the considered parents are not adjacent
 
-            # Parents in an active cycle are joined by a trail
-            # with no chords and with no converging connection
-            # consisting of nodes not adjacent to v
-            # (the undirected cycle has no chords)
+        # Parents in an active cycle are joined by a trail with no chords and
+        # with no converging connection consisting of nodes not adjacent to v
+        # (this means that there are no chords in the undirected cycle).
 
-            # This means that no node in pa(v) or ch(v) can be on the trail
+        # Therefore, no node in pa(v) nor in ch(v) can be on the trail
 
-            # 1: Remove all nodes in pa(v)\{w,z}, ch(v) and v
-            toRemove = c(v, parents[-c(i_z, i_w)], children)
-            DAG_igraph_rem = DAG_igraph - toRemove
+        # 1: Remove all nodes in pa(v)\{w,z}, ch(v) and v
+        toRemove = c(v, parents[-c(i_z, i_w)], children)
+        DAG_igraph_rem = DAG_igraph - toRemove
 
-            # Find all undirected paths between w and z
-            paths = igraph::all_simple_paths(DAG_igraph_rem, w, z)
+        # Find all undirected paths between w and z
+        paths = igraph::all_simple_paths(DAG_igraph_rem, w, z)
+        if (length(paths) == 0){
+          next # there are no path to consider
+        }
 
-            # 2: Check for converging connections and chords
-            if (length(paths) > 0){
-              for (i in 1:length(paths)){
-                names_path_nodes = names(paths[[i]])
+        # 2: Check for converging connections and chords
+        for (i in 1:length(paths)){
+          names_path_nodes = names(paths[[i]])
 
-                if (!path_hasConvergingConnections(DAG, names_path_nodes) &&
-                    !path_hasChords(DAG, names_path_nodes)){
-                  L = length(active_cycle_list)
-                  path_vec = c(v, names_path_nodes) # v + path = active cycle
-                  active_cycle_list[[L + 1]] = path_vec
+          if (path_hasConvergingConnections(DAG, names_path_nodes) ||
+              path_hasChords(DAG, names_path_nodes)){
+            next # not an active cycle
+          } # we now know that this is an active cycle
 
-                  if (early.stopping){
-                    return (active_cycle_list = active_cycle_list)
-                  }
-                }
-              }
-            }
+          # We store the new active cycle (node v, path) as a new element
+          # of the list
+          active_cycle_list[[length(active_cycle_list) + 1
+                             ]] <- c(v, names_path_nodes)
+
+          if (early.stopping){
+            return (active_cycle_list = active_cycle_list)
           }
         }
       }
