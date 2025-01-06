@@ -30,15 +30,17 @@ remove_CondInd <- function(DAG, node, cond_set){
   return(new_cond_set)
 }
 
-#' Create empty graph
+#' Create empty DAG
 #'
-#' `create_DAG()` creates a directed graph with a total of `N_nodes` nodes and no arcs.
-#' The graph is a bnlearn object.
-#' The nodes are named `U1`, `U2`, etc.
+#' This function creates a directed graph with a total of `N_nodes` nodes and
+#' no arcs. The nodes are named `U1`, `U2`, etc.
 #'
 #' @param N_nodes An integer equal to the number of nodes
-#' @returns A bnlearn graph object with `N_nodes` nodes and no arcs
+#'
+#' @returns A \code{bnlearn} graph object with `N_nodes` nodes and no arcs
+#'
 #' @seealso [bnlearn::empty.graph()] which this function wraps.
+#'
 #' @examples
 #' create_DAG(6)
 #' create_DAG(10)
