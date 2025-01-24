@@ -194,7 +194,8 @@ find_B_sets_v <- function(DAG, v)
 #' i.e. by increasing order of set cardinality.
 #' Typically, this will be the output of \code{find_B_sets_v}.
 #'
-#' @returns TRUE if the list forms an ordered sequence, FALSE if not.
+#' @returns \code{TRUE} if the B-sets form an ordered sequence,
+#' otherwise returns \code{FALSE}.
 #'
 #' @examples
 #' B_sets = matrix(c(FALSE, FALSE, FALSE, FALSE,

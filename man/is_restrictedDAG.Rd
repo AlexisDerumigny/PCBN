@@ -11,18 +11,18 @@ is_restrictedDAG(DAG, verbose = 2, check_both = TRUE)
 \item{DAG}{the DAG object}
 
 \item{verbose}{if \code{verbose} is \code{2}, details are printed.
-If \code{verbose} is \code{1}, details are printed only if an active cyle
+If \code{verbose} is \code{1}, details are printed only if an active cycle
 or an interfering v-structure is found.
-If \code{verbose} is \code{0} the function does not print and only returns
-the result.}
+If \code{verbose} is \code{0} the function does not print anything and only
+returns \code{TRUE} or \code{FALSE}.}
 
 \item{check_both}{if \code{TRUE}, both v-structures and active cycles are
 checked anyway. If \code{FALSE}, the function stops early if it already found
 any v-structures.}
 }
 \value{
-a Boolean indicating whether or not the PCBN satisfies the
-restrictions.
+\code{TRUE} if the PCBN satisfies both restrictions.
+\code{FALSE} if at least one of the restrictions is not satisfies.
 }
 \description{
 Does a DAG satisfy the restrictions of no active cycle and no

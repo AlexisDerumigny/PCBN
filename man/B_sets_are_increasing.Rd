@@ -14,7 +14,8 @@ i.e. by increasing order of set cardinality.
 Typically, this will be the output of \code{find_B_sets_v}.}
 }
 \value{
-TRUE if the list forms an ordered sequence, FALSE if not.
+\code{TRUE} if the B-sets form an ordered sequence,
+otherwise returns \code{FALSE}.
 }
 \description{
 Checks if the B-sets for a particular node form an increasing sequence.

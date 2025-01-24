@@ -3,17 +3,19 @@
 #' interfering v-structures
 #'
 #' @param DAG the DAG object
+#'
 #' @param verbose if \code{verbose} is \code{2}, details are printed.
-#' If \code{verbose} is \code{1}, details are printed only if an active cyle
+#' If \code{verbose} is \code{1}, details are printed only if an active cycle
 #' or an interfering v-structure is found.
-#' If \code{verbose} is \code{0} the function does not print and only returns
-#' the result.
+#' If \code{verbose} is \code{0} the function does not print anything and only
+#' returns \code{TRUE} or \code{FALSE}.
+#'
 #' @param check_both if \code{TRUE}, both v-structures and active cycles are
 #' checked anyway. If \code{FALSE}, the function stops early if it already found
 #' any v-structures.
 #'
-#' @return a Boolean indicating whether or not the PCBN satisfies the
-#' restrictions.
+#' @return \code{TRUE} if the PCBN satisfies both restrictions.
+#' \code{FALSE} if at least one of the restrictions is not satisfies.
 #'
 #' @examples
 #'
