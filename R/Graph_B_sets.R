@@ -2,6 +2,10 @@
 #'
 #' @param DAG Directed Acyclic Graph
 #'
+#' @param verbose if \code{verbose} is 0, do not print anything.
+#' If \code{verbose} is positive, print the name of the first node at which the
+#' interfering v-structure is found.
+#'
 #' @returns TRUE if graph contains interfering vs and FALSE if not
 #'
 #' @examples
@@ -16,7 +20,7 @@
 #' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
 #'
 #' # There is one interfering v-structure
-#' has_interfering_vstrucs(DAG)
+#' has_interfering_vstrucs(DAG, verbose = 1)
 #'
 #' DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
 #' # Now no interfering v-structure
@@ -24,7 +28,7 @@
 #'
 #' @export
 #'
-has_interfering_vstrucs <- function(DAG)
+has_interfering_vstrucs <- function(DAG, verbose = 0)
 {
   node.names = bnlearn::nodes(DAG)
   for (v in node.names) {
@@ -34,6 +38,9 @@ has_interfering_vstrucs <- function(DAG)
       if (!B_sets_are_increasing(B_set)) {
         # Early returning because we already know at this point where is the
         # first interfering v-structure.
+        if (verbose > 0){
+          cat("Interfering v-structure found at node ", v, ".\n")
+        }
         return (TRUE)
       }
     }

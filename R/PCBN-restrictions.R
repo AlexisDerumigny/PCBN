@@ -28,10 +28,8 @@
 #' @export
 is_restrictedDAG <- function(DAG, verbose = 2, check_both = TRUE)
 {
-  has_vstructs = has_interfering_vstrucs(DAG)
-  if (has_vstructs && verbose >= 1){
-    cat("At least one v-structure was found.\n")
-  } else if (!has_vstructs && verbose >= 2){
+  has_vstructs = has_interfering_vstrucs(DAG, verbose = verbose)
+  if (!has_vstructs && verbose >= 2){
     cat("No v-structures were found.\n")
   }
 

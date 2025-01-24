@@ -4,10 +4,14 @@
 \alias{has_interfering_vstrucs}
 \title{Checks if graph has interfering v-structures}
 \usage{
-has_interfering_vstrucs(DAG)
+has_interfering_vstrucs(DAG, verbose = 0)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph}
+
+\item{verbose}{if \code{verbose} is 0, do not print anything.
+If \code{verbose} is positive, print the name of the first node at which the
+interfering v-structure is found.}
 }
 \value{
 TRUE if graph contains interfering vs and FALSE if not
@@ -27,7 +31,7 @@ DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
 DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
 
 # There is one interfering v-structure
-has_interfering_vstrucs(DAG)
+has_interfering_vstrucs(DAG, verbose = 1)
 
 DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
 # Now no interfering v-structure
