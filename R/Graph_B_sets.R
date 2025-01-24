@@ -6,7 +6,8 @@
 #' If \code{verbose} is positive, print the name of the first node at which the
 #' interfering v-structure is found.
 #'
-#' @returns TRUE if graph contains interfering vs and FALSE if not
+#' @returns \code{TRUE} if graph contains (at least) an interfering v-structure,
+#' and \code{FALSE} if it does not contain any interfering v-structure.
 #'
 #' @examples
 #'

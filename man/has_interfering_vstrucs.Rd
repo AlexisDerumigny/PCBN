@@ -14,7 +14,8 @@ If \code{verbose} is positive, print the name of the first node at which the
 interfering v-structure is found.}
 }
 \value{
-TRUE if graph contains interfering vs and FALSE if not
+\code{TRUE} if graph contains (at least) an interfering v-structure,
+and \code{FALSE} if it does not contain any interfering v-structure.
 }
 \description{
 Checks if graph has interfering v-structures

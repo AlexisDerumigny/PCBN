@@ -25,8 +25,8 @@ any v-structures.}
 \code{FALSE} if at least one of the restrictions is not satisfies.
 }
 \description{
-Does a DAG satisfy the restrictions of no active cycle and no
-interfering v-structures
+This functions checks whether the DAG is restricted, i.e. whether it has no
+active cycles nor any interfering v-structures.
 }
 \examples{
 
@@ -38,4 +38,11 @@ DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
 
 is_restrictedDAG(DAG)  # 1 active cycle
 
+}
+\seealso{
+\code{\link{DAG_to_restrictedDAG}} for one way of making the DAG
+to be restricted if it is not the case.
+
+\code{\link{active_cycles}} to find all active cycles.
+\code{\link{has_interfering_vstrucs}} to check only for interfering v-structures.
 }

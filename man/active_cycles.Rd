@@ -82,3 +82,10 @@ has_active_cycles(fixedDAG)
 plot(fixedDAG)
 
 }
+\seealso{
+the helper functions \code{\link{path_hasConvergingConnections}},
+\code{\link{path_hasChords}} that are used to find the active cycles.
+
+\code{\link{is_restrictedDAG}} to check also whether the DAG contains
+interfering v-structures.
+}

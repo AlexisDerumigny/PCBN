@@ -17,8 +17,8 @@ path_hasChords(DAG, path)
 \value{
 \code{path_hasConvergingConnections} returns \code{TRUE}
 if the path contains a converging connection.
-\code{path_hasChords} returns \code{TRUE}
-if the path contains a chord..
+
+\code{path_hasChords} returns \code{TRUE} if the path contains a chord.
 }
 \description{
 Checks a path for converging connections and chords.
@@ -44,4 +44,7 @@ path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') )
 # TRUE: has a converging connection
 path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 
+}
+\seealso{
+\code{\link{active_cycles}} which uses these two functions.
 }

@@ -21,6 +21,12 @@
 #' \code{plot_active_cycles} is called for its side-effects only. It plots the
 #' active cycles if any, and else prints a message.
 #'
+#' @seealso the helper functions \code{\link{path_hasConvergingConnections}},
+#' \code{\link{path_hasChords}} that are used to find the active cycles.
+#'
+#' \code{\link{is_restrictedDAG}} to check also whether the DAG contains
+#' interfering v-structures.
+#'
 #' @examples
 #'
 #' DAG = create_empty_DAG(4)
@@ -145,8 +151,10 @@ active_cycles <- function(DAG, early.stopping = FALSE)
 #'
 #' @return \code{path_hasConvergingConnections} returns \code{TRUE}
 #' if the path contains a converging connection.
-#' \code{path_hasChords} returns \code{TRUE}
-#' if the path contains a chord..
+#'
+#' \code{path_hasChords} returns \code{TRUE} if the path contains a chord.
+#'
+#' @seealso \code{\link{active_cycles}} which uses these two functions.
 #'
 #' @examples
 #'

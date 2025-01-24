@@ -2,6 +2,9 @@
 #' Does a DAG satisfy the restrictions of no active cycle and no
 #' interfering v-structures
 #'
+#' This functions checks whether the DAG is restricted, i.e. whether it has no
+#' active cycles nor any interfering v-structures.
+#'
 #' @param DAG the DAG object
 #'
 #' @param verbose if \code{verbose} is \code{2}, details are printed.
@@ -16,6 +19,12 @@
 #'
 #' @return \code{TRUE} if the PCBN satisfies both restrictions.
 #' \code{FALSE} if at least one of the restrictions is not satisfies.
+#'
+#' @seealso \code{\link{DAG_to_restrictedDAG}} for one way of making the DAG
+#' to be restricted if it is not the case.
+#'
+#' \code{\link{active_cycles}} to find all active cycles.
+#' \code{\link{has_interfering_vstrucs}} to check only for interfering v-structures.
 #'
 #' @examples
 #'
@@ -75,6 +84,9 @@ is_DAG_and_restricted <- function(DAG)
 #' If they are \code{NULL}, the respective function is called to compute them.
 #'
 #' @returns Restricted DAG.
+#'
+#' @seealso \code{\link{is_restrictedDAG}} to check whether a given DAG is
+#' restricted.
 #'
 #' @examples
 #' # DAG with an active cycle at node 5

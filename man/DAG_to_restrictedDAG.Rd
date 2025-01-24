@@ -51,3 +51,7 @@ DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
 fixed_DAG = DAG_to_restrictedDAG(DAG)
 
 }
+\seealso{
+\code{\link{is_restrictedDAG}} to check whether a given DAG is
+restricted.
+}
