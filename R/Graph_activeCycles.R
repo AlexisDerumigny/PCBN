@@ -202,7 +202,7 @@ path_hasChords <- function(DAG, path){
 
   for (i in 1:(N - 2)){
     for(j in (i+2):N){ # Ensures that we don't check arcs twice
-      if (adj.mat[path[i], path[j]] ||
+      if (adj.mat[path[i], path[j]] > 0 ||
           adj.mat[path[j], path[i]] > 0){
         return(TRUE)
       }
