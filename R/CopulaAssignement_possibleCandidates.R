@@ -1,13 +1,9 @@
 
 #' Possible candidates to be added to a partial order
 #'
-#' @param DAG Directed Acyclic Graph.
-#' @param w,v nodes in DAG. \code{w} is assumed to be a parent of \code{v}.
-#' @param order_v partial order for node v.
-#' @param order_hash hashmap of parental orders
-#' @param B_minus_O B-set setminus partial order
-#'
-#' @returns \code{possible_candidates} returns a vector of possible candidates.
+#' When given a partial order of a PCBN, one can complete it by adding one
+#' of the parents' node to the partial order. Some nodes can be added; they are
+#' then called "possible candidates".
 #'
 #' \code{possible_candidate_incoming_arc} returns a node \code{o} such \code{w}
 #' is a parent of \code{o}, and \code{w} can be used as an incoming arc to
@@ -20,10 +16,56 @@
 #' \code{o} such \code{o} is a parent of \code{w}, and \code{w} can be used as
 #' an outgoing arc to \code{v} by the node \code{o}.
 #'
+#' @param DAG Directed Acyclic Graph.
+#' @param w,v nodes in DAG. \code{w} is assumed to be a parent of \code{v}.
+#' @param order_v partial order for node v.
+#' @param order_hash hashmap of parental orders
+#' @param B_minus_O this is the current B-set, without the elements of
+#' \code{order_v}, i.e. this is the set of elements that could be considered
+#' possible candidates.
+#'
+#' @returns \code{possible_candidates} returns a vector of possible candidates,
+#' potentially empty.
+#' Both \code{possible_candidate_incoming_arc} and
+#' \code{possible_candidate_outgoing_arc} return either a node \code{o}, or
+#' \code{NULL} if they could not find such a node.
+#'
+#' @seealso \code{\link{dsep_set}} for checking whether two sets of nodes are d-separated
+#' by another set.
+#' \code{\link{find_B_sets}} to find the B-sets.
+#'
+#'
+#' @examples
+#'
+#' DAG = create_empty_DAG(4)
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
+#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#'
+#' order_hash = r2r::hashmap()
+#' order_hash[['U3']] = c("U1", "U2")
+#'
+#' # Node of interest
+#' v = "U4"
+#'
+#' # If we start by 1, then the arc 1 -> 3 cannot be used as an incoming arc
+#' # (it is actually an outgoing arc)
+#' possible_candidate_incoming_arc(
+#'   DAG = DAG, w = "U3", v = v, order_v = c("U1"), order_hash = order_hash)
+#' possible_candidate_outgoing_arc(
+#'   DAG = DAG, w = "U3", v = v, order_v = c("U1"), order_hash = order_hash)
+#' possible_candidates(
+#'   DAG = DAG, v = v, order_v = c("U1"), order_hash = order_hash, B_minus_O = "U2")
+#'
+#'
 #' @export
 possible_candidates <- function(DAG, v, order_v, order_hash, B_minus_O)
 {
   Poss.Cand = c()
+  # We check every element in `B_minus_O` to see whether it can be a
+  # possible candidate.
   for (w in B_minus_O){
     # Independence
     if (dsep_set(DAG, w, order_v)){
