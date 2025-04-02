@@ -10,6 +10,7 @@ fit_copulas(
   DAG,
   order_hash,
   familyset = c(1, 3, 4, 5, 6),
+  familyMatrix = NULL,
   e,
   verbose = 1
 )
@@ -31,6 +32,10 @@ fit_all_orders(
 \item{order_hash}{hashmap of parental orders}
 
 \item{familyset}{vector of copula families}
+
+\item{familyMatrix}{matrix of families, with named rows and columns.
+This should be used if the copula families are known/fixed.
+This overrides \code{familyset}.}
 
 \item{e}{environment containing all the hashmaps}
 
@@ -106,5 +111,5 @@ print(result_all_orders$metrics)
 
 }
 \seealso{
-[BiCopCondFit] which this function wraps.
+\code{\link{BiCopCondFit}} which this function wraps.
 }

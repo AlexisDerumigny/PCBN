@@ -246,8 +246,45 @@ test_that("fit_copulas respects the adjacency matrix", {
   result = fit_copulas(data = mydata, DAG = DAG, order_hash = order_hash,
                        familyset = 1, e = e, verbose = verbose)
 
-
   expect_equal(result$copula_mat$fam, my_PCBN$copula_mat$fam)
+})
+
+
+test_that("fit_copulas can take the family object from familyMatrix", {
+
+  DAG = create_empty_DAG(3)
+  DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+
+  order_hash = r2r::hashmap()
+  order_hash[['U3']] = c("U2")
+
+  fam = matrix(c(0, 0, 0,
+                 0, 0, 1,
+                 0, 0, 0), byrow = TRUE, ncol = 3)
+
+  tau = 0.8 * fam
+
+  my_PCBN = new_PCBN(
+    DAG, order_hash,
+    copula_mat = list(tau = tau, fam = fam))
+
+  mydata = PCBN_sim(my_PCBN, N = 5)
+
+  result1 = fit_copulas(data = mydata, DAG = DAG, order_hash = order_hash,
+                        familyset = 1, e = default_envir(), verbose = verbose)
+
+  result3 = fit_copulas(data = mydata, DAG = DAG, order_hash = order_hash,
+                        familyset = 3, e = default_envir(), verbose = verbose)
+
+  colnames(fam) <- rownames(fam) <- paste0("U", 1:3)
+
+  result_matrix = fit_copulas(
+    data = mydata, DAG = DAG, order_hash = order_hash,
+    familyset = 3,  # should be ignore since familyMatrix is given
+    familyMatrix = fam, e = default_envir(), verbose = verbose)
+
+  expect_true (identical(result1$copula_mat, result_matrix$copula_mat) )
+  expect_false(identical(result3$copula_mat, result_matrix$copula_mat) )
 })
 
 

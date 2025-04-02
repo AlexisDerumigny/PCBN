@@ -289,6 +289,10 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 #' @param DAG Directed Acyclic Graph
 #' @param order_hash hashmap of parental orders
 #' @param familyset vector of copula families
+#' @param familyMatrix matrix of families, with named rows and columns.
+#' This should be used if the copula families are known/fixed.
+#' This overrides \code{familyset}.
+#'
 #' @param e environment containing all the hashmaps
 #' @param score_metric name of the metric used to choose the best order.
 #' Possible choices are \code{logLik}, \code{AIC} and \code{BIC}.
@@ -315,7 +319,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 #'   \code{fitted_list}.
 #' }
 #'
-#' @seealso [BiCopCondFit] which this function wraps.
+#' @seealso \code{\link{BiCopCondFit}} which this function wraps.
 #'
 #' @examples
 #'
@@ -362,6 +366,7 @@ fit_copulas <- function(data,
                         DAG,
                         order_hash,
                         familyset = c(1, 3, 4, 5, 6),
+                        familyMatrix = NULL,
                         e,
                         verbose = 1) {
   tau = bnlearn::amat(DAG)
@@ -392,8 +397,14 @@ fit_copulas <- function(data,
               if (length(parents_up_to_w)) {
                 c(" given ", parents_up_to_w)} else {c()}, "...\n")
         }
-        C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset, order_hash,
-                         e = e, verbose = verbose)
+        if (is.null(familyMatrix)){
+          # use family set
+          C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset = familyset,
+                           order_hash, e = e, verbose = verbose)
+        } else {
+          C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset = familyMatrix[w, v],
+                           order_hash, e = e, verbose = verbose)
+        }
 
         tau[w, v] = C$tau
         fam[w, v] = C$family
