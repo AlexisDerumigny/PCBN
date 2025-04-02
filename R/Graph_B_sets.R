@@ -55,7 +55,7 @@ has_interfering_vstrucs <- function(DAG, verbose = 0)
 #' @param DAG A bnlearn graph object
 #' @param v node at which we want to find the B-sets
 #'
-#' @returns \code{find_B_sets} list with three elements \itemize{
+#' @returns \code{find_B_sets} returns a list with three elements \itemize{
 #'    \item \code{B_sets} list of B-sets matrices for each node;
 #'
 #'    \item \code{has_interfering_vstrucs} a boolean specifying if the graph

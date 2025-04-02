@@ -15,7 +15,7 @@ find_B_sets_v(DAG, v)
 \item{v}{node at which we want to find the B-sets}
 }
 \value{
-\code{find_B_sets} list with three elements \itemize{
+\code{find_B_sets} returns a list with three elements \itemize{
    \item \code{B_sets} list of B-sets matrices for each node;
 
    \item \code{has_interfering_vstrucs} a boolean specifying if the graph
