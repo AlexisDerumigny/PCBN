@@ -19,7 +19,7 @@ test_that("new_PCBN respect contraints on copula_mat", {
                         copula_mat = list(tau = matrix(1:9, ncol = 9),
                                           fam = matrix(1:9, ncol = 9)) ) )
 
-  # Missing family/tau
+  # Missing family
   fam = matrix(c(0, 0, 0,
                  0, 0, 1,
                  0, 0, 0), byrow = TRUE, ncol = 3)
@@ -29,7 +29,7 @@ test_that("new_PCBN respect contraints on copula_mat", {
                         copula_mat = list(tau = tau, fam = fam) ) )
 
 
-  # Extra family/tau
+  # Extra family
   fam = matrix(c(0, 1, 1,
                  0, 0, 1,
                  0, 0, 0), byrow = TRUE, ncol = 3)
@@ -37,6 +37,30 @@ test_that("new_PCBN respect contraints on copula_mat", {
 
   expect_error(new_PCBN(DAG = DAG, order_hash = order_hash,
                         copula_mat = list(tau = tau, fam = fam) ) )
+
+
+  # Extra tau
+  fam = matrix(c(0, 0, 1,
+                 0, 0, 1,
+                 0, 0, 0), byrow = TRUE, ncol = 3)
+  tau = 0.2 * matrix(c(0, 1, 1,
+                       0, 0, 1,
+                       0, 0, 0), byrow = TRUE, ncol = 3)
+
+  expect_error(new_PCBN(DAG = DAG, order_hash = order_hash,
+                        copula_mat = list(tau = tau, fam = fam) ) )
+
+
+  # tau = 0
+  fam = matrix(c(0, 0, 1,
+                 0, 0, 1,
+                 0, 0, 0), byrow = TRUE, ncol = 3)
+  tau = 0.2 * matrix(c(0, 0, 0,
+                       0, 0, 1,
+                       0, 0, 0), byrow = TRUE, ncol = 3)
+
+  expect_warning(new_PCBN(DAG = DAG, order_hash = order_hash,
+                          copula_mat = list(tau = tau, fam = fam) ) )
 })
 
 
