@@ -9,7 +9,18 @@ by the conditional independencies of the graph}
 \usage{
 default_envir()
 
-BiCopCondFit(data, DAG, v, w, cond_set, familyset, order_hash, e, verbose = 1)
+BiCopCondFit(
+  data,
+  DAG,
+  v,
+  w,
+  cond_set,
+  familyset,
+  order_hash,
+  e,
+  verbose = 1,
+  method
+)
 
 ComputeCondMargin(
   data,
@@ -19,7 +30,8 @@ ComputeCondMargin(
   familyset,
   order_hash,
   e,
-  verbose = 1
+  verbose = 1,
+  method = method
 )
 }
 \arguments{
@@ -40,6 +52,9 @@ They should be ordered from the smallest to the biggest.}
 
 \item{verbose}{if \code{0}, don't print anything.
 If \code{verbose >= 1}, print information about the fitting procedure.}
+
+\item{method}{indicates the estimation method (\code{"mle"} for maximum
+likelihood estimation or \code{"itau"} of inversion of Kendall's tau)}
 }
 \value{
 \code{default_envir} returns an environment to be passed
@@ -79,14 +94,15 @@ e = default_envir()
 ls(e)
 C_13 = BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",
                     cond_set = c(), familyset = 1, order_hash = order_hash,
-                    e = e)
+                    e = e, method = "mle")
 
 C_23_1 = BiCopCondFit(data = mydata, DAG = DAG, v = "U2", w = "U3",
                       cond_set = "U1", familyset = 1, order_hash = order_hash,
-                      e = e)
+                      e = e, method = "itau")
 
 U_2_13 = ComputeCondMargin(data = mydata, DAG = DAG,
                            v = "U2", cond_set = c("U1", "U3"),
-                           familyset = 1, order_hash = order_hash, e = e)
+                           familyset = 1, order_hash = order_hash, e = e,
+                           method = "mle")
 
 }

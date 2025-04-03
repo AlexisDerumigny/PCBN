@@ -37,7 +37,7 @@ test_that("BiCopCondFit estimates the copulas well",  {
 
   C_12 = BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U2",
                       cond_set = c(), familyset = 1, order_hash = order_hash,
-                      e = e, verbose = verbose)
+                      e = e, verbose = verbose, method = "mle")
 
   C_12_direct = VineCopula::BiCopSelect(mydata[, "U1"], mydata[, "U2"], familyset = 1)
 
@@ -45,7 +45,7 @@ test_that("BiCopCondFit estimates the copulas well",  {
 
   C_13 = BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",
                       cond_set = c(), familyset = 1, order_hash = order_hash,
-                      e = e, verbose = verbose)
+                      e = e, verbose = verbose, method = "mle")
 
   C_13_direct = VineCopula::BiCopSelect(mydata[, "U1"], mydata[, "U3"], familyset = 1)
 
@@ -53,20 +53,20 @@ test_that("BiCopCondFit estimates the copulas well",  {
 
   BiCopCondFit(data = mydata, DAG = DAG, v = "U2", w = "U4",
                cond_set = c(), familyset = 1, order_hash = order_hash,
-               e = e, verbose = verbose)
+               e = e, verbose = verbose, method = "mle")
 
   BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U4",
                cond_set = c("U2"), familyset = 1, order_hash = order_hash,
-               e = e, verbose = verbose)
+               e = e, verbose = verbose, method = "mle")
 
   BiCopCondFit(data = mydata, DAG = DAG, v = "U3", w = "U4",
                cond_set = c("U1", "U2"), familyset = 1, order_hash = order_hash,
-               e = e, verbose = verbose)
+               e = e, verbose = verbose, method = "mle")
 
 
   C_12_again = BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U2",
                             cond_set = c(), familyset = 1, order_hash = order_hash,
-                            e = e, verbose = verbose)
+                            e = e, verbose = verbose, method = "mle")
 
   expect_equal(C_12_again$tau, C_12_direct$tau)
 
@@ -78,7 +78,7 @@ test_that("BiCopCondFit makes all the keys as specified",  {
 
   BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U2",
                cond_set = c(), familyset = 1, order_hash = order_hash,
-               e = e, verbose = verbose)
+               e = e, verbose = verbose, method = "mle")
 
   # We get all the keys in a textual form
   all_keys_keychain = e$keychain |>
@@ -102,7 +102,7 @@ test_that("BiCopCondFit completes the hashmaps as needed",  {
 
   BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U2",
                cond_set = c(), familyset = 1, order_hash = order_hash,
-               e = e, verbose = verbose)
+               e = e, verbose = verbose, method = "mle")
   # ls(e)
   # length(r2r::keys(e$keychain))
   # r2r::keys(e$keychain)[[1]] |> print_key_keychain()
@@ -123,7 +123,7 @@ test_that("BiCopCondFit completes the hashmaps as needed",  {
 
   BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",
                cond_set = c(), familyset = 1, order_hash = order_hash,
-               e = e, verbose = verbose)
+               e = e, verbose = verbose, method = "mle")
 
   # Both copulas are different, so the keys should also be different
   expect_true(! identical(e$keychain[[list(margins = c("U1", "U2"),
@@ -140,15 +140,15 @@ test_that("BiCopCondFit completes the hashmaps as needed",  {
 
   BiCopCondFit(data = mydata, DAG = DAG, v = "U2", w = "U4",
                cond_set = c(), familyset = 1, order_hash = order_hash,
-               e = e, verbose = verbose)
+               e = e, verbose = verbose, method = "mle")
 
   BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U4",
                cond_set = c("U2"), familyset = 1, order_hash = order_hash,
-               e = e, verbose = verbose)
+               e = e, verbose = verbose, method = "mle")
 
   BiCopCondFit(data = mydata, DAG = DAG, v = "U3", w = "U4",
                cond_set = c("U1", "U2"), familyset = 1, order_hash = order_hash,
-               e = e, verbose = verbose)
+               e = e, verbose = verbose, method = "mle")
 
   all_keys_keychain = e$keychain |>
     r2r::keys() |>
@@ -165,7 +165,7 @@ test_that("ComputeCondMargin works", {
 
   U1 = ComputeCondMargin(data = mydata, DAG = my_PCBN, v = "U1", cond_set = NULL,
                          familyset = 1, order_hash = order_hash,
-                         e = e, verbose = verbose)
+                         e = e, verbose = verbose, method = "mle")
 
   expect_identical(U1, mydata[, "U1"])
 
@@ -182,7 +182,7 @@ test_that("fit_copulas gives the same results as what is in the keychain", {
   e = default_envir()
 
   result = fit_copulas(data = mydata, DAG = DAG, order_hash = order_hash,
-                       familyset = 1, e = e, verbose = verbose)
+                       familyset = 1, e = e, verbose = verbose, method = "mle")
 
   expect_equal(
     e$copula_hash[[
@@ -244,7 +244,7 @@ test_that("fit_copulas respects the adjacency matrix", {
   e = default_envir()
 
   result = fit_copulas(data = mydata, DAG = DAG, order_hash = order_hash,
-                       familyset = 1, e = e, verbose = verbose)
+                       familyset = 1, e = e, verbose = verbose, method = "mle")
 
   expect_equal(result$copula_mat$fam, my_PCBN$copula_mat$fam)
 })
@@ -397,11 +397,11 @@ test_that("fit_copulas works for an example of dimension 5", {
   expect_equal(
     BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",
                  cond_set = c(), familyset = 1, order_hash = order_hash,
-                 e = e, verbose = verbose)$tau ,
+                 e = e, verbose = verbose, method = "mle")$tau ,
 
     BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",
                  cond_set = c(), familyset = 1, order_hash = order_hash,
-                 e = default_envir(), verbose = verbose)$tau
+                 e = default_envir(), verbose = verbose, method = "mle")$tau
   )
 })
 

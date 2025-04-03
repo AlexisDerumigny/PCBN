@@ -25,6 +25,8 @@ default_envir <- function(){
 #' @param familyset vector of copula families
 #' @param order_hash hashmap of parental orders
 #' @param e environment containing all the hashmaps
+#' @param method indicates the estimation method (\code{"mle"} for maximum
+#' likelihood estimation or \code{"itau"} of inversion of Kendall's tau)
 #'
 #' @param verbose if \code{0}, don't print anything.
 #' If \code{verbose >= 1}, print information about the fitting procedure.
@@ -62,26 +64,28 @@ default_envir <- function(){
 #' ls(e)
 #' C_13 = BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",
 #'                     cond_set = c(), familyset = 1, order_hash = order_hash,
-#'                     e = e)
+#'                     e = e, method = "mle")
 #'
 #' C_23_1 = BiCopCondFit(data = mydata, DAG = DAG, v = "U2", w = "U3",
 #'                       cond_set = "U1", familyset = 1, order_hash = order_hash,
-#'                       e = e)
+#'                       e = e, method = "itau")
 #'
 #' U_2_13 = ComputeCondMargin(data = mydata, DAG = DAG,
 #'                            v = "U2", cond_set = c("U1", "U3"),
-#'                            familyset = 1, order_hash = order_hash, e = e)
+#'                            familyset = 1, order_hash = order_hash, e = e,
+#'                            method = "mle")
 #'
 #' @export
 #'
 BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
-                         verbose = 1)
+                         verbose = 1, method)
 {
   if (v > w){
     # We switch them. From now on, v < w
     return (BiCopCondFit(data = data, DAG = DAG, v = w, w = v,
                          cond_set = cond_set, familyset = familyset,
-                         order_hash = order_hash, e = e, verbose = verbose))
+                         order_hash = order_hash, e = e, verbose = verbose,
+                         method = method))
   }
 
   # If the conditioning set is null,
@@ -121,17 +125,18 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
   # We now need to estimate the (conditional) copula
   # so we first get the two margins
   v_given_cond = ComputeCondMargin(data, DAG, v, cond_set, familyset, order_hash,
-                                   e = e, verbose = verbose)
+                                   e = e, verbose = verbose, method = method)
 
   w_given_cond = ComputeCondMargin(data, DAG, w, cond_set, familyset, order_hash,
-                                   e = e, verbose = verbose)
+                                   e = e, verbose = verbose, method = method)
 
   # We can now estimate the (simplified) conditional copula
   if (verbose > 0){
     cat("Estimating the copula of ", v, " and ", w,
         if (length(cond_set)) {c(" given ", cond_set)} else {c()}, "\n")
   }
-  C_wv = VineCopula::BiCopSelect(w_given_cond, v_given_cond, familyset = familyset)
+  C_wv = VineCopula::BiCopSelect(w_given_cond, v_given_cond, familyset = familyset,
+                                 method = method)
 
   if (is.null(copula_key)){
     v_key = e$keychain[[list(margin = v, cond = cond_set_v)]]
@@ -163,7 +168,7 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
 #' @export
 #'
 ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
-                              e, verbose = 1)
+                              e, verbose = 1, method = method)
 {
   # Remove as much elements as possible by conditional independence
   cond_set = remove_CondInd(DAG, v, cond_set)
@@ -242,7 +247,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
   # If our copula is not in the hash map -> fit it!
   if (is.null(C_wv)){
     C_wv = BiCopCondFit(data, DAG, w, v, cond_set_minus_w, familyset, order_hash,
-                        e = e, verbose = verbose)
+                        e = e, verbose = verbose, method = method)
   }
 
   # 5- We get the two conditional margins ======================================
@@ -254,13 +259,15 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
     v_given_rest <- ComputeCondMargin(data = data, DAG = DAG, v = v,
                                       cond_set = cond_set_minus_w,
                                       familyset = familyset,
-                                      order_hash = order_hash, e = e, verbose = verbose)
+                                      order_hash = order_hash, e = e, verbose = verbose,
+                                      method = method)
   }
   if (is.null(w_given_rest)){
     w_given_rest <- ComputeCondMargin(data = data, DAG = DAG, v = w,
                                       cond_set = cond_set_minus_w_simpW,
                                       familyset = familyset,
-                                      order_hash = order_hash, e = e, verbose = verbose)
+                                      order_hash = order_hash, e = e, verbose = verbose,
+                                      method = method)
   }
 
   # 6- We compute the new conditional margin ===================================
@@ -299,6 +306,9 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 #'
 #' @param verbose if \code{0}, don't print anything.
 #' If \code{verbose >= 1}, print information about the simulation procedure.
+#'
+#' @param method indicates the estimation method (\code{"mle"} for maximum
+#' likelihood estimation or \code{"itau"} of inversion of Kendall's tau).
 #'
 #' @returns \code{fit_copulas} returns the fitted PCBN, with an additional
 #' element called \code{metrics} which is a named vector of length 3 with names
@@ -368,7 +378,8 @@ fit_copulas <- function(data,
                         familyset = c(1, 3, 4, 5, 6),
                         familyMatrix = NULL,
                         e,
-                        verbose = 1) {
+                        verbose = 1,
+                        method = "mle") {
   tau = bnlearn::amat(DAG)
   fam = bnlearn::amat(DAG)
 
@@ -400,10 +411,10 @@ fit_copulas <- function(data,
         if (is.null(familyMatrix)){
           # use family set
           C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset = familyset,
-                           order_hash, e = e, verbose = verbose)
+                           order_hash, e = e, verbose = verbose, method = method)
         } else {
           C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset = familyMatrix[w, v],
-                           order_hash, e = e, verbose = verbose)
+                           order_hash, e = e, verbose = verbose, method = method)
         }
 
         tau[w, v] = C$tau

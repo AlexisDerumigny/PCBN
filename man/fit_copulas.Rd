@@ -12,7 +12,8 @@ fit_copulas(
   familyset = c(1, 3, 4, 5, 6),
   familyMatrix = NULL,
   e,
-  verbose = 1
+  verbose = 1,
+  method = "mle"
 )
 
 fit_all_orders(
@@ -41,6 +42,9 @@ This overrides \code{familyset}.}
 
 \item{verbose}{if \code{0}, don't print anything.
 If \code{verbose >= 1}, print information about the simulation procedure.}
+
+\item{method}{indicates the estimation method (\code{"mle"} for maximum
+likelihood estimation or \code{"itau"} of inversion of Kendall's tau).}
 
 \item{score_metric}{name of the metric used to choose the best order.
 Possible choices are \code{logLik}, \code{AIC} and \code{BIC}.}

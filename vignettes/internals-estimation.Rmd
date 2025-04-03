@@ -84,7 +84,8 @@ We start by fitting the copula of $(U_1, U_2)$.
 
 ```{r}
 BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U2",
-             cond_set = c(), familyset = 1, order_hash = order_hash, e = e)
+             cond_set = c(), familyset = 1, order_hash = order_hash, e = e,
+             method = "mle")
 ```
 
 This is stored in `e$copula_hash`.
@@ -114,7 +115,7 @@ In the same way as before, we fit the copula of $(U_1, U_3)$.
 ```{r}
 BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U3",
              cond_set = c(), familyset = 1, order_hash = order_hash,
-             e = e)
+             e = e, method = "mle")
 ```
 
 Remember that the ordered parents of $U_4$ are $U_2$, $U_1$ and $U_3$.
@@ -123,7 +124,7 @@ Therefore, we fit first the copula of $(U_2, U_4)$.
 ```{r}
 BiCopCondFit(data = mydata, DAG = DAG, v = "U2", w = "U4",
              cond_set = c(), familyset = 1, order_hash = order_hash,
-             e = e)
+             e = e, method = "mle")
 ```
 
 Then, we fit the copula of $(U_1, U_4) \, | \, U_2$.
@@ -131,7 +132,7 @@ Then, we fit the copula of $(U_1, U_4) \, | \, U_2$.
 ```{r}
 BiCopCondFit(data = mydata, DAG = DAG, v = "U1", w = "U4",
              cond_set = c("U2"), familyset = 1, order_hash = order_hash,
-             e = e)
+             e = e, method = "mle")
 ```
 
 Finally, we fit the copula of $(U_3, U_4) \, | \, U_1, U_2$.
@@ -139,7 +140,7 @@ Finally, we fit the copula of $(U_3, U_4) \, | \, U_1, U_2$.
 ```{r}
 BiCopCondFit(data = mydata, DAG = DAG, v = "U3", w = "U4",
              cond_set = c("U1", "U2"), familyset = 1, order_hash = order_hash,
-             e = e)
+             e = e, method = "mle")
 ```
 
 ## Corresponding computation trees of the copulas
@@ -216,13 +217,13 @@ function `ComputeCondMargin`.
 ```{r}
 BiCopCondFit(data = mydata, DAG = DAG, v = "U4", w = "U6",
              cond_set = c(), familyset = 1, order_hash = order_hash,
-             e = e)
+             e = e, method = "mle")
 ```
 
 ```{r}
 BiCopCondFit(data = mydata, DAG = DAG, v = "U5", w = "U6",
              cond_set = c("U4"), familyset = 1, order_hash = order_hash,
-             e = e)
+             e = e, method = "mle")
 ```
 
 
@@ -232,12 +233,12 @@ BiCopCondFit(data = mydata, DAG = DAG, v = "U5", w = "U6",
 ```{r}
 BiCopCondFit(data = mydata, DAG = DAG, v = "U4", w = "U7",
              cond_set = c(), familyset = 1, order_hash = order_hash,
-             e = e)
+             e = e, method = "mle")
 ```
 
 ```{r}
 BiCopCondFit(data = mydata, DAG = DAG, v = "U6", w = "U7",
              cond_set = c("U4"), familyset = 1, order_hash = order_hash,
-             e = e)
+             e = e, method = "mle")
 ```
 
