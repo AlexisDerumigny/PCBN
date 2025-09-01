@@ -1,9 +1,10 @@
 Package: PCBN
-Title: Inference of Pair-Copula Bayesian Networks under restrictions
+Title: Inference of Pair-Copula Bayesian Networks
 Version: 0.0.1.3
 Authors@R: c(
     person("Alexis", "Derumigny", , email = "a.f.f.derumigny@tudelft.nl", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6163-8097")),
-    person("Niels", "Horsman", , "niels.horsman@hotmail.nl", role = c("aut"))
+    person("Niels", "Horsman", , "niels.horsman@hotmail.nl", role = c("aut")),
+    person("Dorota", "Kurowicka", , "D.Kurowicka@tudelft.nl", role = c("aut"))
     )
 Description: Creates, fits and samples Pair-Copula Bayesian networks (PCBN)
     under some restrictions on the underlying Directed Acyclic Graph (DAG),
