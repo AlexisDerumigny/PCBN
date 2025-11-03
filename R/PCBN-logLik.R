@@ -7,7 +7,7 @@
 #' on \eqn{[0,1]}. This is the same as the logarithm of the density of the PCBN
 #' at the observations.
 #'
-#' @param PCBN the PCBN object
+#' @param object the PCBN object
 #' @param data_uniform the dataset for which the log-likelihood is computed.
 #' It must have already been standardized to uniform margins.
 #' @param ... other arguments, ignored for the moment
@@ -37,12 +37,12 @@
 #'
 #' @export
 #'
-logLik.PCBN <- function(PCBN, data_uniform, ...){
+logLik.PCBN <- function(object, data_uniform, ...){
 
   # Unpack PCBN object
-  DAG = PCBN$DAG
-  order_hash = PCBN$order_hash
-  copula_mat = PCBN$copula_mat
+  DAG = object$DAG
+  order_hash = object$order_hash
+  copula_mat = object$copula_mat
 
   log_lik = 0
 
@@ -61,8 +61,8 @@ logLik.PCBN <- function(PCBN, data_uniform, ...){
         # Compute the required margins
         lower = if (i_parent == 1) {c()
         } else {parents[1:(i_parent - 1)]}
-        v_given_lower = compute_sample_margin(PCBN, data_uniform, v, lower)
-        w_given_lower = compute_sample_margin(PCBN, data_uniform, w, lower)
+        v_given_lower = compute_sample_margin(object, data_uniform, v, lower)
+        w_given_lower = compute_sample_margin(object, data_uniform, w, lower)
 
         log_lik_arc_w_to_v = sum(log(
           VineCopula::BiCopPDF(w_given_lower, v_given_lower, family = fam, par = par)))
