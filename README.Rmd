@@ -73,9 +73,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - File `PCBN-logLik.R`
    
-   + `logLik.PCBN()` and `PCBN_PDF()` are working. 
-   
-   **TODO:** add methods `AIC` and `BIC`.
+   + `logLik.PCBN()` and `PCBN_PDF()` are working.
 
 
 - File `Estimation.R`
@@ -104,9 +102,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
   A vignette _"B-sets and interfering v-structures"_ has been written to
   explain how these functions work.
-  
-  **TODO**: add better visualization of interfering v-structures, as was done
-  in `plot_active_cycles()` for the active cycles.
 
 
 - File `Graph_activeCycles.R`
