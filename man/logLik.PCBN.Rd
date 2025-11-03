@@ -4,10 +4,10 @@
 \alias{logLik.PCBN}
 \title{Log-likelihood of a PCBN object}
 \usage{
-\method{logLik}{PCBN}(PCBN, data_uniform, ...)
+\method{logLik}{PCBN}(object, data_uniform, ...)
 }
 \arguments{
-\item{PCBN}{the PCBN object}
+\item{object}{the PCBN object}
 
 \item{data_uniform}{the dataset for which the log-likelihood is computed.
 It must have already been standardized to uniform margins.}
