@@ -1,6 +1,6 @@
 Package: PCBN
 Title: Inference of Pair-Copula Bayesian Networks
-Version: 0.0.1.3
+Version: 0.1.0
 Authors@R: c(
     person("Alexis", "Derumigny", , email = "a.f.f.derumigny@tudelft.nl", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6163-8097")),
     person("Niels", "Horsman", , "niels.horsman@hotmail.nl", role = c("aut")),
@@ -8,7 +8,8 @@ Authors@R: c(
     )
 Description: Creates, fits and samples Pair-Copula Bayesian networks (PCBN)
     under some restrictions on the underlying Directed Acyclic Graph (DAG),
-    that is, no active cycles nor interfering v-structures.
+    that is, no active cycles nor interfering v-structures, following 
+    Derumigny, Horsman and Kurowicka (2025) <doi:10.48550/arXiv.2510.03518>.
 License: GPL (>= 2)
 Encoding: UTF-8
 Imports: 
@@ -16,7 +17,7 @@ Imports:
     igraph,
     r2r,
     VineCopula
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Suggests: 
     knitr,
     rmarkdown,

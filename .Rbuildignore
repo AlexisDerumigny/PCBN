@@ -5,3 +5,4 @@ README.Rmd$
 ^Meta$
 Development.md
 ^\.github$
+^cran-comments\.md$
