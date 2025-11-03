@@ -1,9 +1,23 @@
 
 # Package PCBN
 
+# How to install
 
+The release version on CRAN:
 
+``` r
+install.packages("PCBN")
+```
 
+The development version from GitHub:
 
+``` r
+# install.packages("remotes")
+remotes::install_github("AlexisDerumigny/PCBN")
+```
 
+# References
 
+Derumigny A., Horsman N., & Kurowicka D. Restrictions of PCBNs for
+integration-free computations
+[arXiv:2510.03518](https://arxiv.org/pdf/2510.03518).
