@@ -1,6 +1,6 @@
 Package: PCBN
 Title: Inference of Pair-Copula Bayesian Networks
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Alexis", "Derumigny", , email = "a.f.f.derumigny@tudelft.nl", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6163-8097")),
     person("Niels", "Horsman", , "niels.horsman@hotmail.nl", role = c("aut")),
