@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 
 # Adjusting options to display wide R output
-options(width = 120)
+old <- options(width = 120)
 ```
 
 
@@ -148,4 +148,12 @@ print(B_sets_unique)
 B_sets_cut_increments(B_sets_unique)
 ```
 
+
+
+
+```{r}
+# Setting back the options to what they were before (following CRAN's policy)
+
+options(old)
+```
 

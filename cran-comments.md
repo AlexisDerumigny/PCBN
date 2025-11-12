@@ -1,3 +1,8 @@
+
+- we added code to reset the user's options at the end of the vignette
+  `Bsets-v-structs.R`.
+
+
 ## Test environments
 
 * Windows 11 (release)
