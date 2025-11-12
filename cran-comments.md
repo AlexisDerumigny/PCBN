@@ -2,6 +2,9 @@
 - we added code to reset the user's options at the end of the vignette
   `Bsets-v-structs.R`.
 
+- we added value tags for the functions `plot.PCBN` and `print.PCBN`
+  (their documentation is also now merged into one single `.Rd` file)
+
 
 ## Test environments
 

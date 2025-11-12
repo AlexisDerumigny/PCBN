@@ -126,24 +126,24 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
   return (PCBN)
 }
 
-#' Plot function
-#'
-#' @param x PCBN object
-#' @param ... other arguments, unused
+#' @rdname print.PCBN
 #'
 #' @export
 plot.PCBN <- function(x, ...){
   plot(x$DAG)
 }
 
-#' Print function
+
+#' Print and plot PCBN objects
 #'
 #' @param x PCBN object
 #'
-#' @param print.orders if \code{all}, print all orders.
-#' If \code{non-empty}, this only prints the non-empty ones.
+#' @param print.orders if \code{"all"}, print all orders.
+#' If \code{"non-empty"}, this only prints the non-empty ones.
 #'
 #' @param ... other arguments, unused
+#'
+#' @returns No return value, both functions are called for side effects only.
 #'
 #' @examples
 #' DAG = create_empty_DAG(3)
@@ -162,6 +162,7 @@ plot.PCBN <- function(x, ...){
 #'   DAG, order_hash,
 #'   copula_mat = list(tau = tau, fam = fam))
 #' print(my_PCBN)
+#' plot(my_PCBN)
 #'
 #' @export
 print.PCBN <- function(x, print.orders = "non-empty", ...){
