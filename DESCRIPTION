@@ -6,7 +6,7 @@ Authors@R: c(
     person("Niels", "Horsman", , "niels.horsman@hotmail.nl", role = c("aut")),
     person("Dorota", "Kurowicka", , "D.Kurowicka@tudelft.nl", role = c("aut"))
     )
-Description: Creates, fits and samples Pair-Copula Bayesian networks (PCBN)
+Description: Creates, fits and samples Pair-Copula Bayesian Networks (PCBN)
     under some restrictions on the underlying Directed Acyclic Graph (DAG),
     that is, no active cycles nor interfering v-structures, following 
     Derumigny, Horsman and Kurowicka (2025) <doi:10.48550/arXiv.2510.03518>.
