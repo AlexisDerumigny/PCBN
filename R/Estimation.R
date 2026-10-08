@@ -168,7 +168,7 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
 #' @export
 #'
 ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
-                              e, verbose = 1, method = method)
+                              e, verbose = 1, method)
 {
   # Remove as much elements as possible by conditional independence
   cond_set = remove_CondInd(DAG, v, cond_set)

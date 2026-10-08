@@ -31,7 +31,7 @@ ComputeCondMargin(
   order_hash,
   e,
   verbose = 1,
-  method = method
+  method
 )
 }
 \arguments{
