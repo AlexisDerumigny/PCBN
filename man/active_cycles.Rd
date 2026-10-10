@@ -6,17 +6,23 @@
 \alias{plot_active_cycles}
 \title{Checks if a graph contains active cycles}
 \usage{
-active_cycles(DAG, early.stopping = FALSE)
+active_cycles(DAG, early.stopping = FALSE, graph_backend = NULL)
 
-has_active_cycles(DAG)
+has_active_cycles(DAG, graph_backend = NULL)
 
-plot_active_cycles(DAG, active_cycles_list = NULL)
+plot_active_cycles(DAG, active_cycles_list = NULL, graph_backend = NULL)
 }
 \arguments{
 \item{DAG}{Directed Acyclic}
 
 \item{early.stopping}{if \code{TRUE}, stop at the first active cycle that is
 found.}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 
 \item{active_cycles_list}{a list of active cycles as given by
 \code{active_cycles}. If this is \code{NULL}, the function

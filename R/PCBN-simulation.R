@@ -51,11 +51,11 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE, verbose = 1)
   }
 
   # Initialize data frame
-  nodes = bnlearn::nodes(object$DAG)
+  nodes = .graph_nodes(object$DAG)
   data = data.frame(matrix(ncol = length(nodes), nrow = N))
   colnames(data) <- nodes
 
-  well_ordering = bnlearn::node.ordering(object$DAG)
+  well_ordering = .graph_node_ordering(object$DAG)
   for (node in well_ordering) {
     parents = object$order_hash[[node]]
 
@@ -72,7 +72,7 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE, verbose = 1)
         # We must compute the conditional margin parent|lower using a proper recursion
         lower = if (i_parent == 1) {c()} else {parents[1:(i_parent - 1)]}
 
-        parent_given_lower = compute_sample_margin(object = object, data = data,
+        parent_given_lower = .compute_sample_margin(object = object, data = data,
                                                    v = parents[i_parent],
                                                    cond_set = lower,
                                                    check_PCBN = FALSE,
@@ -154,6 +154,12 @@ PCBN_sim <- function(object, N, check_PCBN = TRUE, verbose = 1)
 compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE,
                                   verbose = 1)
 {
+  return (.compute_sample_margin(object, data, v, cond_set, check_PCBN, verbose))
+}
+
+.compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE,
+                                   verbose = 1)
+{
   if (check_PCBN){
     .checkPCBNobject_for_simulation(object, verbose = verbose)
   }
@@ -168,7 +174,7 @@ compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE,
   }
 
   # Remove nodes by conditional independence
-  cond_set_dependent = remove_CondInd(DAG, v, cond_set)
+  cond_set_dependent = .remove_CondInd(DAG, v, cond_set)
 
   if (verbose > 1 & !identical(cond_set, cond_set_dependent)){
     cat("Trying to estimated the cond cdf of ", v, " given ", cond_set_dependent, "...\n")
@@ -180,7 +186,7 @@ compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE,
   }
 
   # Find specified c_{wv|cond_set_minus_w}
-  cop_specified = find_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+  cop_specified = .find_cond_copula_specified(DAG = DAG, order_hash = order_hash,
                                              v = v, cond = cond_set_dependent)
   w = cop_specified$w
   cond_set_minus_w = cop_specified$cond_set_minus_w
@@ -194,10 +200,10 @@ compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE,
     # FIXME: the performance can potentially be improved
     # by caching these sample margins to reuse them whenever needed
 
-    w_given_rest = compute_sample_margin(object, data, w, cond_set_minus_w,
+    w_given_rest = .compute_sample_margin(object, data, w, cond_set_minus_w,
                                          check_PCBN = FALSE, verbose = verbose)
 
-    v_given_rest = compute_sample_margin(object, data, v, cond_set_minus_w,
+    v_given_rest = .compute_sample_margin(object, data, v, cond_set_minus_w,
                                          check_PCBN = FALSE, verbose = verbose)
 
     v_given_cond = VineCopula::BiCopHfunc1(u1 = w_given_rest,
@@ -209,10 +215,10 @@ compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE,
     tau = copula_mat$tau[v, w]
     par = VineCopula::BiCopTau2Par(fam, tau)
 
-    w_given_rest = compute_sample_margin(object, data, w, cond_set_minus_w,
+    w_given_rest = .compute_sample_margin(object, data, w, cond_set_minus_w,
                                          check_PCBN = FALSE, verbose = verbose)
 
-    v_given_rest = compute_sample_margin(object, data, v, cond_set_minus_w,
+    v_given_rest = .compute_sample_margin(object, data, v, cond_set_minus_w,
                                          check_PCBN = FALSE, verbose = verbose)
 
     v_given_cond = VineCopula::BiCopHfunc2(u1 = v_given_rest, u2 = w_given_rest,
@@ -251,7 +257,7 @@ compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE,
 #
 .checkPCBNobject_for_simulation <- function(PCBN, verbose)
 {
-  is_restricted = is_restrictedDAG(PCBN$DAG, verbose = verbose, check_both = FALSE)
+  is_restricted = .is_restrictedDAG(PCBN$DAG, verbose = verbose, check_both = FALSE)
   if (!is_restricted){
     stop(errorCondition(
       message = paste0("The DAG does not satisfy the restrictions. ",
@@ -259,7 +265,7 @@ compute_sample_margin <- function(object, data, v, cond_set, check_PCBN = TRUE,
       class = "UnRestrictedPCBNError"))
   }
 
-  is_order_abiding_Bsets = is_order_abiding_Bsets(DAG = PCBN$DAG,
+  is_order_abiding_Bsets = .is_order_abiding_Bsets(DAG = PCBN$DAG,
                                                   order_hash = PCBN$order_hash)
   if (!is_order_abiding_Bsets){
     stop(errorCondition(

@@ -12,7 +12,8 @@
 \arguments{
 \item{x}{PCBN object}
 
-\item{...}{other arguments, unused}
+\item{...}{Arguments passed to the backend plotting function by \code{plot};
+unused by \code{print}.}
 
 \item{print.orders}{if \code{"all"}, print all orders.
 If \code{"non-empty"}, this only prints the non-empty ones.}

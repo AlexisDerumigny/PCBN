@@ -1,6 +1,7 @@
 #' Finds all possible copula assignments given a DAG
 #'
 #' @param DAG Directed Acyclic Graph
+#' @inheritParams create_empty_DAG
 #'
 #' @returns a list of hashmaps containing the possible orders
 #'
@@ -21,15 +22,21 @@
 #' }
 #'
 #' @export
-find_all_orders <- function(DAG) {
+find_all_orders <- function(DAG, graph_backend = NULL) {
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.find_all_orders(DAG))
+}
+
+.find_all_orders <- function(DAG)
+{
   # Start with empty order
   order_hash = r2r::hashmap()
   all_orders = list(order_hash)
 
-  well_ordering = bnlearn::node.ordering(DAG)
+  well_ordering = .graph_node_ordering(DAG)
   # Add all possible orders for node v to each order_hash
   for (node in well_ordering) {
-    all_orders = extend_orders(DAG, all_orders, node)
+    all_orders = .extend_orders(DAG, all_orders, node)
   }
   return(all_orders)
 }
@@ -38,6 +45,7 @@ find_all_orders <- function(DAG) {
 #' Fills in all possible orders for the next node for each possible order
 #'
 #' @param DAG Directed Acyclic Graph
+#' @inheritParams create_empty_DAG
 #' @param all_orders list of orders
 #' @param node node
 #'
@@ -69,9 +77,15 @@ find_all_orders <- function(DAG) {
 #' # We never pick U2 and U3 first, because their copula is not specified
 #'
 #' @export
-extend_orders <- function(DAG, all_orders, node)
+extend_orders <- function(DAG, all_orders, node, graph_backend = NULL)
 {
-  parents = DAG$nodes[[node]]$parents
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.extend_orders(DAG, all_orders, node))
+}
+
+.extend_orders <- function(DAG, all_orders, node)
+{
+  parents = .graph_parents(DAG, node)
   # If the node has no parents then there is no order to be added.
   if (length(parents) == 0) {
     return (all_orders)
@@ -97,12 +111,12 @@ extend_orders <- function(DAG, all_orders, node)
   for (order in all_orders) {
     copy_order = copy_hash(order)
     # If node has no parents do add NULL
-    if (length(DAG$nodes[[node]]$parents) == 0) {
+    if (length(.graph_parents(DAG, node)) == 0) {
       copy_order[[node]] = NULL
       extended[[length(extended) + 1]] = copy_order
     } else{
       # Else add all possible orders for v to the list
-      orders_node = find_all_orders_v(DAG, node, order)
+      orders_node = .find_all_orders_v(DAG, node, order)
       for (node_order in orders_node) {
         copy_order = copy_hash(order)
         copy_order[[node]] = node_order
@@ -116,6 +130,7 @@ extend_orders <- function(DAG, all_orders, node)
 #' Finds all possible orders of node v given previous copula assignments
 #'
 #' @param DAG Directed Acyclic Graph
+#' @inheritParams create_empty_DAG
 #' @param v node
 #' @param order_hash hashmap of orders
 #'
@@ -156,10 +171,16 @@ extend_orders <- function(DAG, all_orders, node)
 #'
 #'
 #' @export
-find_all_orders_v <- function(DAG, v, order_hash)
+find_all_orders_v <- function(DAG, v, order_hash, graph_backend = NULL)
 {
-  parents = DAG$nodes[[v]]$parents
-  B_sets_v = find_B_sets_v(DAG = DAG, v = v)
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.find_all_orders_v(DAG, v, order_hash))
+}
+
+.find_all_orders_v <- function(DAG, v, order_hash)
+{
+  parents = .graph_parents(DAG, v)
+  B_sets_v = .find_B_sets_v(DAG = DAG, v = v)
   B_sets_v = unique(B_sets_v)
   delta_B_sets = B_sets_cut_increments(B_sets_v)
 
@@ -174,7 +195,7 @@ find_all_orders_v <- function(DAG, v, order_hash)
         B_minus_O = setdiff(delta_B_set, order)
 
         # Each possible candidate results in a different order
-        for (w in possible_candidates(DAG, v, order, order_hash, B_minus_O)) {
+        for (w in .possible_candidates(DAG, v, order, order_hash, B_minus_O)) {
           new_order = append(order, w)
           new_order_list[[length(new_order_list) + 1]] = new_order
         }
@@ -189,6 +210,7 @@ find_all_orders_v <- function(DAG, v, order_hash)
 #' Complete an order and check whether these are valid orders on parents sets
 #'
 #' @param DAG the DAG
+#' @inheritParams create_empty_DAG
 #' @param order_hash the hashmaps of orders
 #'
 #' @returns \code{NULL}. This function has only side-effects,
@@ -214,13 +236,19 @@ find_all_orders_v <- function(DAG, v, order_hash)
 #'
 #' @export
 #'
-complete_and_check_orders <- function(DAG, order_hash)
+complete_and_check_orders <- function(DAG, order_hash, graph_backend = NULL)
 {
-  node.names = bnlearn::nodes(DAG)
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.complete_and_check_orders(DAG, order_hash))
+}
+
+.complete_and_check_orders <- function(DAG, order_hash)
+{
+  node.names = .graph_nodes(DAG)
   for (i_node in 1:length(node.names)){
     node = node.names[[i_node]]
 
-    parents = bnlearn::parents(x = DAG, node = node)
+    parents = .graph_parents(DAG, node)
 
     if (is.null(order_hash[[node]]))
     {
@@ -251,6 +279,7 @@ complete_and_check_orders <- function(DAG, order_hash)
 #' Check whether a certain order abides by the B-sets
 #'
 #' @param DAG the considered DAG
+#' @inheritParams create_empty_DAG
 #' @param order_hash the hashmaps of parents ordering
 #'
 #' @param B_sets matrix of B-sets, assumed to be increasing.
@@ -278,12 +307,18 @@ complete_and_check_orders <- function(DAG, order_hash)
 #' is_order_abiding_Bsets(DAG, order_hash)
 #'
 #' @export
-is_order_abiding_Bsets <- function(DAG, order_hash)
+is_order_abiding_Bsets <- function(DAG, order_hash, graph_backend = NULL)
 {
-  nodes = bnlearn::nodes(DAG)
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.is_order_abiding_Bsets(DAG, order_hash))
+}
+
+.is_order_abiding_Bsets <- function(DAG, order_hash)
+{
+  nodes = .graph_nodes(DAG)
   for (i_node in 1:length(nodes)){
     node = nodes[i_node]
-    B_sets = find_B_sets_v(DAG, node)
+    B_sets = .find_B_sets_v(DAG, node)
     # We test only if there are at least 2 parents
     # otherwise this is always TRUE.
     if (ncol(B_sets) >= 2){

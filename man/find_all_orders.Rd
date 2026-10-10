@@ -4,10 +4,16 @@
 \alias{find_all_orders}
 \title{Finds all possible copula assignments given a DAG}
 \usage{
-find_all_orders(DAG)
+find_all_orders(DAG, graph_backend = NULL)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
 a list of hashmaps containing the possible orders

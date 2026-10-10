@@ -4,7 +4,7 @@
 \alias{dsep_set}
 \title{D-separation of two nodes given a set in a DAG}
 \usage{
-dsep_set(DAG, X, Y, Z = NULL)
+dsep_set(DAG, X, Y, Z = NULL, graph_backend = NULL)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph}
@@ -14,6 +14,12 @@ dsep_set(DAG, X, Y, Z = NULL)
 \item{Y}{node}
 
 \item{Z}{set}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
 \code{TRUE} if the sets are d-separated and \code{FALSE} if not

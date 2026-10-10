@@ -5,12 +5,18 @@
 \alias{find_B_sets_v}
 \title{Find all the B-sets of a given DAG}
 \usage{
-find_B_sets(DAG)
+find_B_sets(DAG, graph_backend = NULL)
 
-find_B_sets_v(DAG, v)
+find_B_sets_v(DAG, v, graph_backend = NULL)
 }
 \arguments{
-\item{DAG}{A bnlearn graph object}
+\item{DAG}{A bnlearn or caugi DAG.}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 
 \item{v}{node at which we want to find the B-sets}
 }

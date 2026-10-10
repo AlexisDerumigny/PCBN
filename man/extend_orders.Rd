@@ -4,7 +4,7 @@
 \alias{extend_orders}
 \title{Fills in all possible orders for the next node for each possible order}
 \usage{
-extend_orders(DAG, all_orders, node)
+extend_orders(DAG, all_orders, node, graph_backend = NULL)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph}
@@ -12,6 +12,12 @@ extend_orders(DAG, all_orders, node)
 \item{all_orders}{list of orders}
 
 \item{node}{node}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
 list of order hashmaps

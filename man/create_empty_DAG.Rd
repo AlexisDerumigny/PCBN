@@ -4,13 +4,19 @@
 \alias{create_empty_DAG}
 \title{Create empty DAG}
 \usage{
-create_empty_DAG(N_nodes)
+create_empty_DAG(N_nodes, graph_backend = "bnlearn")
 }
 \arguments{
-\item{N_nodes}{An integer equal to the number of nodes}
+\item{N_nodes}{A positive integer equal to the number of nodes}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
-A \code{bnlearn} graph object with `N_nodes` nodes and no arcs
+A native graph for the selected backend, with `N_nodes` nodes and no arcs.
 }
 \description{
 This function creates a directed graph with a total of `N_nodes` nodes and
@@ -19,8 +25,13 @@ no arcs. The nodes are named `U1`, `U2`, etc.
 \examples{
 create_empty_DAG(6)
 create_empty_DAG(10)
+if (requireNamespace("caugi", quietly = TRUE)) {
+  DAG = create_empty_DAG(3, graph_backend = "caugi")
+  DAG = caugi::add_edges(DAG, from = "U1", edge = "-->", to = "U3")
+  dsep_set(DAG, "U1", "U2")
+}
 
 }
 \seealso{
-[bnlearn::empty.graph()] which this function wraps.
+\code{bnlearn::empty.graph()} and \code{caugi::caugi()}.
 }

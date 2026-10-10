@@ -163,7 +163,7 @@ test_that("BiCopCondFit completes the hashmaps as needed",  {
 test_that("ComputeCondMargin works", {
   e = default_envir()
 
-  U1 = ComputeCondMargin(data = mydata, DAG = my_PCBN, v = "U1", cond_set = NULL,
+  U1 = ComputeCondMargin(data = mydata, DAG = my_PCBN$DAG, v = "U1", cond_set = NULL,
                          familyset = 1, order_hash = order_hash,
                          e = e, verbose = verbose, method = "mle")
 

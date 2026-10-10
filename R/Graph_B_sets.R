@@ -1,6 +1,7 @@
 #' Checks if graph has interfering v-structures
 #'
 #' @param DAG Directed Acyclic Graph
+#' @inheritParams create_empty_DAG
 #'
 #' @param verbose if \code{verbose} is 0, do not print anything.
 #' If \code{verbose} is positive, print the name of the first node at which the
@@ -29,13 +30,19 @@
 #'
 #' @export
 #'
-has_interfering_vstrucs <- function(DAG, verbose = 0)
+has_interfering_vstrucs <- function(DAG, verbose = 0, graph_backend = NULL)
 {
-  node.names = bnlearn::nodes(DAG)
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.has_interfering_vstrucs(DAG, verbose))
+}
+
+.has_interfering_vstrucs <- function(DAG, verbose = 0)
+{
+  node.names = .graph_nodes(DAG)
   for (v in node.names) {
-    parents = DAG$nodes[[v]]$parent
+    parents = .graph_parents(DAG, v)
     if (length(parents) > 0) {
-      B_set = find_B_sets_v(DAG = DAG, v = v)
+      B_set = .find_B_sets_v(DAG = DAG, v = v)
       if (!B_sets_are_increasing(B_set)) {
         # Early returning because we already know at this point where is the
         # first interfering v-structure.
@@ -52,7 +59,8 @@ has_interfering_vstrucs <- function(DAG, verbose = 0)
 
 #' Find all the B-sets of a given DAG
 #'
-#' @param DAG A bnlearn graph object
+#' @param DAG A bnlearn or caugi DAG.
+#' @inheritParams create_empty_DAG
 #' @param v node at which we want to find the B-sets
 #'
 #' @returns \code{find_B_sets} returns a list with three elements \itemize{
@@ -85,19 +93,25 @@ has_interfering_vstrucs <- function(DAG, verbose = 0)
 #'
 #' @export
 #'
-find_B_sets <- function(DAG)
+find_B_sets <- function(DAG, graph_backend = NULL)
+{
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.find_B_sets(DAG))
+}
+
+.find_B_sets <- function(DAG)
 {
   has_interfering_vstrucs = FALSE
   nodes_with_inter_vs = list()
-  node.names = bnlearn::nodes(DAG)
-  adj.mat = bnlearn::amat(DAG)
+  node.names = .graph_nodes(DAG)
+  adj.mat = .graph_adjacency(DAG)
   B_set_list = list()
 
   for (v in node.names) {
-    B_set = find_B_sets_v(DAG = DAG, v = v)
+    B_set = .find_B_sets_v(DAG = DAG, v = v)
     B_set_list[[v]] = B_set
 
-    parents = DAG$nodes[[v]]$parent
+    parents = .graph_parents(DAG, v)
     if (length(parents) > 0) {
       if (!B_sets_are_increasing(B_set)) {
         has_interfering_vstrucs = TRUE
@@ -116,11 +130,17 @@ find_B_sets <- function(DAG)
 #'
 #' @rdname find_B_sets
 #' @export
-find_B_sets_v <- function(DAG, v)
+find_B_sets_v <- function(DAG, v, graph_backend = NULL)
 {
-  parents = DAG$nodes[[v]]$parent
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.find_B_sets_v(DAG, v))
+}
+
+.find_B_sets_v <- function(DAG, v)
+{
+  parents = .graph_parents(DAG, v)
   nparents = length(parents)
-  children = DAG$nodes[[v]]$children
+  children = .graph_children(DAG, v)
 
   if (nparents == 0) {
     all_B_sets = matrix(nrow = 2 + length(children), ncol = 0)
@@ -135,7 +155,7 @@ find_B_sets_v <- function(DAG, v)
   } else if (length(children) == 1) {
     all_B_sets = rbind(
       rep(FALSE, nparents) ,
-      parents %in% DAG$nodes[[children]]$parents,
+      parents %in% .graph_parents(DAG, children),
       rep(TRUE, nparents)
     )
   } else { # We know now that length(children) > 1
@@ -145,7 +165,7 @@ find_B_sets_v <- function(DAG, v)
                         FUN.VALUE = rep(TRUE, nparents),
                         FUN = function(i){
                           # This returns a vector of booleans of the same size as `parents`
-                          parents %in% DAG$nodes[[children[i]]]$parents
+                          parents %in% .graph_parents(DAG, children[i])
                         })
 
     if (nparents > 1){

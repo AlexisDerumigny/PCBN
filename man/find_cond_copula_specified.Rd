@@ -4,7 +4,7 @@
 \alias{find_cond_copula_specified}
 \title{Find among parents of a node, the one that has a conditional copula specified}
 \usage{
-find_cond_copula_specified(DAG, order_hash, v, cond)
+find_cond_copula_specified(DAG, order_hash, v, cond, graph_backend = NULL)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph object corresponding to the model}
@@ -17,6 +17,12 @@ find_cond_copula_specified(DAG, order_hash, v, cond)
 It is assumed that conditionally independent nodes have already been
 removed by the function \code{\link{remove_CondInd}}.
 It is assumed to have been already sorted.}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
 a list with \itemize{

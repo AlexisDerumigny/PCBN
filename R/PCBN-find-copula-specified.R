@@ -2,6 +2,7 @@
 #' Checks if a given (conditional) copula has already been specified
 #'
 #' @param DAG Directed Acyclic Graph object corresponding to the model
+#' @inheritParams create_empty_DAG
 #' @param order_hash hashmap of orders of the parental sets
 #' @param w node in DAG
 #' @param v node in DAG
@@ -34,8 +35,13 @@
 #'
 #' @export
 #'
-is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
-  if (dsep_set(DAG, w, v, cond)){
+is_cond_copula_specified <- function(DAG, order_hash, w, v, cond, graph_backend = NULL){
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.is_cond_copula_specified(DAG, order_hash, w, v, cond))
+}
+
+.is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
+  if (.dsep_set(DAG, w, v, cond)){
     return(TRUE)
   } else {
     if(length(cond) == 0){ # We transform NULL to character(0)
@@ -71,6 +77,7 @@ is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
 #' Find among parents of a node, the one that has a conditional copula specified
 #'
 #' @param DAG Directed Acyclic Graph object corresponding to the model
+#' @inheritParams create_empty_DAG
 #' @param order_hash hashmap of orders of the parental sets
 #' @param v node in DAG
 #' @param cond vector of nodes in DAG. This must not be empty.
@@ -107,14 +114,20 @@ is_cond_copula_specified <- function(DAG, order_hash, w, v, cond){
 #'
 #' @export
 #'
-find_cond_copula_specified <- function(DAG, order_hash, v, cond)
+find_cond_copula_specified <- function(DAG, order_hash, v, cond, graph_backend = NULL)
+{
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.find_cond_copula_specified(DAG, order_hash, v, cond))
+}
+
+.find_cond_copula_specified <- function(DAG, order_hash, v, cond)
 {
   # Find specified c_{wv|cond_set_minus_w}
   w = NULL
   for (i_w in 1:length(cond)) {
     w_proposed = cond[i_w]
     cond_set_minus_w = cond[-i_w]
-    if (is_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+    if (.is_cond_copula_specified(DAG = DAG, order_hash = order_hash,
                                  w = w_proposed, v = v,
                                  cond = cond_set_minus_w)) {
       w = w_proposed

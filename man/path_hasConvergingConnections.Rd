@@ -5,14 +5,20 @@
 \alias{path_hasChords}
 \title{Checks a path for converging connections and chords.}
 \usage{
-path_hasConvergingConnections(DAG, path)
+path_hasConvergingConnections(DAG, path, graph_backend = NULL)
 
-path_hasChords(DAG, path)
+path_hasChords(DAG, path, graph_backend = NULL)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph.}
 
 \item{path}{character vector of nodes in the DAG forming a trail.}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
 \code{path_hasConvergingConnections} returns \code{TRUE}
