@@ -27,7 +27,7 @@ create_empty_DAG(6)
 create_empty_DAG(10)
 if (requireNamespace("caugi", quietly = TRUE)) {
   DAG = create_empty_DAG(3, graph_backend = "caugi")
-  DAG = caugi::add_edges(DAG, from = "U1", edge = "-->", to = "U3")
+  DAG = set_arc(DAG, "U1", "U3")
   dsep_set(DAG, "U1", "U2")
 }
 

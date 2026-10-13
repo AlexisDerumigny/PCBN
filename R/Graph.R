@@ -12,8 +12,8 @@
 #' @examples
 #'
 #' DAG = create_empty_DAG(3)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
 #'
 #' remove_CondInd(DAG = DAG, node = "U1", cond_set = c("U2"))
 #' remove_CondInd(DAG = DAG, node = "U3", cond_set = c("U1"))
@@ -58,7 +58,7 @@ remove_CondInd <- function(DAG, node, cond_set, graph_backend = NULL){
 #' create_empty_DAG(10)
 #' if (requireNamespace("caugi", quietly = TRUE)) {
 #'   DAG = create_empty_DAG(3, graph_backend = "caugi")
-#'   DAG = caugi::add_edges(DAG, from = "U1", edge = "-->", to = "U3")
+#'   DAG = set_arc(DAG, "U1", "U3")
 #'   dsep_set(DAG, "U1", "U2")
 #' }
 #'
@@ -91,11 +91,11 @@ create_empty_DAG <- function(N_nodes, graph_backend = "bnlearn"){
 #' @examples
 #'
 #' DAG = create_empty_DAG(5)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U4')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U4')
 #'
 #' dsep_set(DAG, 'U1', 'U5')
 #'

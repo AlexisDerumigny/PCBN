@@ -23,15 +23,15 @@ library(PCBN)
 
 ```{r}
 DAG = create_empty_DAG(7)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U4', 'U6')
-DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
-DAG = bnlearn::set.arc(DAG, 'U4', 'U7')
-DAG = bnlearn::set.arc(DAG, 'U6', 'U7')
+DAG = set_arc(DAG, 'U1', 'U2')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U4', 'U6')
+DAG = set_arc(DAG, 'U5', 'U6')
+DAG = set_arc(DAG, 'U4', 'U7')
+DAG = set_arc(DAG, 'U6', 'U7')
 ```
 
 

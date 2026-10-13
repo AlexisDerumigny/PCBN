@@ -30,11 +30,11 @@ D-separation of two nodes given a set in a DAG
 \examples{
 
 DAG = create_empty_DAG(5)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
 
 dsep_set(DAG, 'U1', 'U5')
 

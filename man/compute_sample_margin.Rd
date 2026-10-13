@@ -45,8 +45,8 @@ Computes a conditional margin during sampling
 \examples{
 
 DAG = create_empty_DAG(3)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
 
 order_hash = r2r::hashmap()
 order_hash[['U3']] = c("U1", "U2")

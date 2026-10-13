@@ -37,10 +37,10 @@ active cycles nor any interfering v-structures.
 \examples{
 
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U2')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
 
 is_restrictedDAG(DAG)  # 1 active cycle
 

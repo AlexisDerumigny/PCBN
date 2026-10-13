@@ -29,18 +29,18 @@ Checks if graph has interfering v-structures
 \examples{
 
 DAG = create_empty_DAG(5)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
 
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U2', 'U5')
+DAG = set_arc(DAG, 'U3', 'U5')
 
 # There is one interfering v-structure
 has_interfering_vstrucs(DAG, verbose = 1)
 
-DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+DAG = set_arc(DAG, 'U1', 'U5')
 # Now no interfering v-structure
 has_interfering_vstrucs(DAG)
 

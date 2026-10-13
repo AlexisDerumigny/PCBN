@@ -31,14 +31,14 @@ sets of the children of $v$ with $v$'s own parents sets.
 They can be obtained using the function
 ```{r}
 DAG = create_empty_DAG(6)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+DAG = set_arc(DAG, 'U1', 'U5')
+DAG = set_arc(DAG, 'U2', 'U5')
+DAG = set_arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U4', 'U5')
 
-DAG = bnlearn::set.arc(DAG, 'U1', 'U6')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U6')
-DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
+DAG = set_arc(DAG, 'U1', 'U6')
+DAG = set_arc(DAG, 'U2', 'U6')
+DAG = set_arc(DAG, 'U5', 'U6')
 ```
 
 ```{r, fig.height=8, fig.width=8}
@@ -74,13 +74,13 @@ Here is an example of a graph with interfering v-structures.
 
 ```{r}
 DAG = create_empty_DAG(5)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
 
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U2', 'U5')
+DAG = set_arc(DAG, 'U3', 'U5')
 ```
 
 ```{r, fig.height=6, fig.width=6}
@@ -115,7 +115,7 @@ To fix this, we can add one of the missing arcs.
 This makes the interfering v-structure disappear.
 
 ```{r}
-DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+DAG = set_arc(DAG, 'U1', 'U5')
 has_interfering_vstrucs(DAG)
 ```
 

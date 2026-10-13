@@ -31,29 +31,29 @@
 #' @examples
 #'
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U4')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U4')
 #'
 #' active_cycles(DAG)  # no active cycle
 #'
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U2')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U4')
 #'
 #' active_cycles(DAG)  # 1 active cycle
 #'
 #' DAG = create_empty_DAG(5)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+#' DAG = set_arc(DAG, 'U1', 'U2')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U2', 'U5')
+#' DAG = set_arc(DAG, 'U3', 'U5')
 #'
 #' active_cycles(DAG)  # 2 active cycles
 #' active_cycles(DAG, early.stopping = TRUE)  # The first active cycle
@@ -167,20 +167,20 @@ active_cycles <- function(DAG, early.stopping = FALSE, graph_backend = NULL)
 #' @examples
 #'
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U2')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U3', 'U4')
 #' path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 #' path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 #'
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U4')
 #' path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 #' path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # TRUE: has a chord
 #'
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U4', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U2')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U4', 'U3')
 #' path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') )
 #' # TRUE: has a converging connection
 #' path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE

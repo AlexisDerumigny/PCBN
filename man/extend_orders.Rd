@@ -27,11 +27,11 @@ Fills in all possible orders for the next node for each possible order
 }
 \examples{
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
 
 # Start with empty order
 order_hash = r2r::hashmap()

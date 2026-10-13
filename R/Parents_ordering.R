@@ -7,11 +7,11 @@
 #'
 #' @examples
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U4')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U4')
 #' all_orders = find_all_orders(DAG)
 #' length(all_orders)
 #' # 8 orders
@@ -53,11 +53,11 @@ find_all_orders <- function(DAG, graph_backend = NULL) {
 #'
 #' @examples
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U4')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U4')
 #'
 #' # Start with empty order
 #' order_hash = r2r::hashmap()
@@ -138,15 +138,15 @@ extend_orders <- function(DAG, all_orders, node, graph_backend = NULL)
 #'
 #' @examples
 #' DAG = create_empty_DAG(5)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
-#' DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U4')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U5')
+#' DAG = set_arc(DAG, 'U2', 'U5')
+#' DAG = set_arc(DAG, 'U3', 'U5')
+#' DAG = set_arc(DAG, 'U4', 'U5')
 #'
 #' # Start with empty order
 #' order_hash = r2r::hashmap()
@@ -221,9 +221,9 @@ find_all_orders_v <- function(DAG, v, order_hash, graph_backend = NULL)
 #' @examples
 #'
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U3', 'U4')
 #'
 #' order_hash = r2r::hashmap()
 #' try({complete_and_check_orders(DAG, order_hash)})
@@ -294,10 +294,10 @@ complete_and_check_orders <- function(DAG, order_hash, graph_backend = NULL)
 #' @examples
 #'
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U4')
 #'
 #' order_hash = r2r::hashmap()
 #' order_hash[['U3']] = c("U1", "U2")

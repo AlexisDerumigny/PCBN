@@ -29,8 +29,8 @@ Remove elements from a conditioning set by using conditional independence
 \examples{
 
 DAG = create_empty_DAG(3)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
 
 remove_CondInd(DAG = DAG, node = "U1", cond_set = c("U2"))
 remove_CondInd(DAG = DAG, node = "U3", cond_set = c("U1"))

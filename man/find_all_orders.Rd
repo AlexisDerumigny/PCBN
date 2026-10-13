@@ -23,11 +23,11 @@ Finds all possible copula assignments given a DAG
 }
 \examples{
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
 all_orders = find_all_orders(DAG)
 length(all_orders)
 # 8 orders

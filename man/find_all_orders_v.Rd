@@ -27,15 +27,15 @@ Finds all possible orders of node v given previous copula assignments
 }
 \examples{
 DAG = create_empty_DAG(5)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U5')
+DAG = set_arc(DAG, 'U2', 'U5')
+DAG = set_arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U4', 'U5')
 
 # Start with empty order
 order_hash = r2r::hashmap()

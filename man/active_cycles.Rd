@@ -47,29 +47,29 @@ Checks if a graph contains active cycles
 \examples{
 
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
 
 active_cycles(DAG)  # no active cycle
 
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U2')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
 
 active_cycles(DAG)  # 1 active cycle
 
 DAG = create_empty_DAG(5)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U1', 'U2')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U2', 'U5')
+DAG = set_arc(DAG, 'U3', 'U5')
 
 active_cycles(DAG)  # 2 active cycles
 active_cycles(DAG, early.stopping = TRUE)  # The first active cycle

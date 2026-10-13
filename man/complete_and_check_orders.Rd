@@ -28,9 +28,9 @@ Complete an order and check whether these are valid orders on parents sets
 \examples{
 
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U3', 'U4')
 
 order_hash = r2r::hashmap()
 try({complete_and_check_orders(DAG, order_hash)})

@@ -113,13 +113,52 @@
   return(caugi::d_separated(DAG, X, Y, Z))
 }
 
+#' Add a directed arc to a graph
+#'
+#' Adds an arc from one node to another, using the graph's backend by default.
+#' An existing arc in the same direction is left unchanged. Both nodes must
+#' already exist in the graph. Arcs that would create a directed cycle are
+#' rejected.
+#'
+#' @param DAG A bnlearn or caugi directed acyclic graph.
+#' @param from Name of the node where the arc starts.
+#' @param to Name of the node where the arc ends.
+#' @inheritParams create_empty_DAG
+#' @return The updated graph in the resolved backend.
+#' @examples
+#' DAG = create_empty_DAG(3)
+#' DAG = set_arc(DAG, "U1", "U3")
+#' DAG = set_arc(DAG, "U2", "U3")
+#'
+#' if (requireNamespace("caugi", quietly = TRUE)) {
+#'   DAG = create_empty_DAG(3, graph_backend = "caugi")
+#'   DAG = set_arc(DAG, "U1", "U3")
+#'   DAG = set_arc(DAG, "U2", "U3")
+#' }
+#' @export
+set_arc <- function(DAG, from, to, graph_backend = NULL) {
+  DAG = .prepare_graph(DAG, graph_backend)
+  nodes = .graph_nodes(DAG)
+
+  for (node in list(from, to)) {
+    if (!is.character(node) || length(node) != 1L || is.na(node) ||
+        !node %in% nodes) {
+      stop("'from' and 'to' must each name an existing node.", call. = FALSE)
+    }
+  }
+
+  return(.graph_set_arc(DAG, from, to))
+}
+
 .graph_set_arc <- function(DAG, from, to) {
   if (inherits(DAG, "bn")) {
     return(bnlearn::set.arc(DAG, from, to))
   }
+
   if (from %in% .graph_parents(DAG, to)) {
     return(DAG)
   }
+
   return(caugi::add_edges(DAG, from = from, edge = "-->", to = to))
 }
 
@@ -127,6 +166,7 @@
   if (inherits(DAG, "bn")) {
     return(bnlearn::as.igraph(DAG))
   }
+
   return(caugi::as_igraph(DAG))
 }
 
@@ -137,6 +177,7 @@
     # Caugi constructs a plot object; printing it actually draws the graph.
     print(plot(DAG, ...))
   }
+
   invisible(NULL)
 }
 

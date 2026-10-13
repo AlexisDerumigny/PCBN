@@ -34,11 +34,11 @@ Turns a general graph into a restricted graph.
 \examples{
 # DAG with an active cycle at node 5
 DAG = create_empty_DAG(5)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U1', 'U2')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U4', 'U5')
 
 # Fixed graph has extra arcs 1 -> 5, 2 -> 5
 fixed_DAG = DAG_to_restrictedDAG(DAG)
@@ -46,12 +46,12 @@ fixed_DAG = DAG_to_restrictedDAG(DAG)
 
 # DAG with an interfering v-structures node 3
 DAG = create_empty_DAG(5)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U2', 'U5')
+DAG = set_arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U3', 'U5')
 
 # Fixed graph has extra arc 1 -> 5
 fixed_DAG = DAG_to_restrictedDAG(DAG)
