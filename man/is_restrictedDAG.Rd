@@ -5,7 +5,7 @@
 \title{Does a DAG satisfy the restrictions of no active cycle and no
 interfering v-structures}
 \usage{
-is_restrictedDAG(DAG, verbose = 2, check_both = TRUE)
+is_restrictedDAG(DAG, verbose = 2, check_both = TRUE, graph_backend = NULL)
 }
 \arguments{
 \item{DAG}{the DAG object}
@@ -19,6 +19,12 @@ returns \code{TRUE} or \code{FALSE}.}
 \item{check_both}{if \code{TRUE}, both v-structures and active cycles are
 checked anyway. If \code{FALSE}, the function stops early if it already found
 any v-structures.}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
 \code{TRUE} if the PCBN satisfies both restrictions.
@@ -31,10 +37,10 @@ active cycles nor any interfering v-structures.
 \examples{
 
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U2')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
 
 is_restrictedDAG(DAG)  # 1 active cycle
 

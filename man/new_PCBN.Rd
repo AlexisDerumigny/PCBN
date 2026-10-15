@@ -4,10 +4,10 @@
 \alias{new_PCBN}
 \title{Initializes PCBN class}
 \usage{
-new_PCBN(DAG, order_hash, copula_mat, verbose = 0)
+new_PCBN(DAG, order_hash, copula_mat, verbose = 0, graph_backend = NULL)
 }
 \arguments{
-\item{DAG}{the corresponding DAG (a `bn` object)}
+\item{DAG}{The corresponding bnlearn or caugi DAG.}
 
 \item{order_hash}{a hashmap of character vectors
 Each character vector corresponds
@@ -23,17 +23,24 @@ where \code{d} is the number of nodes in the graph \code{DAG}.}
 \item{verbose}{If \code{0}, no message is printed.
 If \code{1} (recommended),
 information is printed during the checking of the PCBN.}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
-the new PCBN
+The new PCBN, with the selected native graph in \code{DAG}
+and the resolved backend in \code{graph_backend}.
 }
 \description{
 Initializes PCBN class
 }
 \examples{
 DAG = create_empty_DAG(3)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
 
 order_hash = r2r::hashmap()
 order_hash[['U3']] = c("U1", "U2")

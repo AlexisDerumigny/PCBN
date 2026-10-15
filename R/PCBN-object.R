@@ -1,7 +1,8 @@
 
 #' Initializes PCBN class
 #'
-#' @param DAG the corresponding DAG (a `bn` object)
+#' @param DAG The corresponding bnlearn or caugi DAG.
+#' @inheritParams create_empty_DAG
 #' @param order_hash a hashmap of character vectors
 #' Each character vector corresponds
 #' to the order of the parents for the given node.
@@ -17,12 +18,13 @@
 #' If \code{1} (recommended),
 #' information is printed during the checking of the PCBN.
 #'
-#' @return the new PCBN
+#' @return The new PCBN, with the selected native graph in \code{DAG}
+#' and the resolved backend in \code{graph_backend}.
 #'
 #' @examples
 #' DAG = create_empty_DAG(3)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
 #'
 #' order_hash = r2r::hashmap()
 #' order_hash[['U3']] = c("U1", "U2")
@@ -38,7 +40,13 @@
 #'
 #' @export
 #'
-new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
+new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0, graph_backend = NULL)
+{
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.new_PCBN(DAG, order_hash, copula_mat, verbose))
+}
+
+.new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
 {
   # Checking the components of copula_mat
   if (!is.list(copula_mat) || length(copula_mat) < 2){
@@ -49,7 +57,7 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
       ! ("fam" %in% names(copula_mat)) ){
     stop("'copula_mat' must include at least elements named 'tau' and 'fam'.")
   }
-  d = bnlearn::nnodes(DAG)
+  d = length(.graph_nodes(DAG))
 
   if (!is.matrix(copula_mat$tau) ||
       nrow(copula_mat$tau) != ncol(copula_mat$tau) ||
@@ -64,7 +72,7 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
          "where d is the number of nodes of DAG.")
   }
 
-  adjacency_mat = bnlearn::amat(DAG)
+  adjacency_mat = .graph_adjacency(DAG)
   specified_taus = (copula_mat$tau != 0)
   if ( any(specified_taus > adjacency_mat)){
     stop("'copula_mat$tau' not well specified, there is a non-zero Kendall's tau,
@@ -81,10 +89,10 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
   }
 
   # Check 'order_hash' and complete if necessary
-  complete_and_check_orders(DAG, order_hash)
+  .complete_and_check_orders(DAG, order_hash)
 
   # Checking the matching of colnames/rownames to the names of the nodes
-  nodes_names = bnlearn::nodes(DAG)
+  nodes_names = .graph_nodes(DAG)
   if (length(setdiff(colnames(copula_mat$fam), nodes_names))){
     stop("The colnames of copula_mat$fam do not match with the names in the DAG")
   }
@@ -102,7 +110,7 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
   if (is.null(colnames(copula_mat$fam)) || is.null(rownames(copula_mat$fam)) ){
     if (verbose > 0){
       cat("Missing colnames and/or rownames in 'copula_mat$fam'.\n",
-          "They are automatically replaced by 'bnlearn::nodes(DAG)', ",
+          "They are automatically replaced by the graph's node names, ",
           "assuming that the column and the rows of 'copula_mat$fam' ",
           "are in the right order.\n")
     }
@@ -111,7 +119,7 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
   if (is.null(colnames(copula_mat$tau)) || is.null(rownames(copula_mat$tau)) ){
     if (verbose > 0){
       cat("Missing colnames and/or rownames in 'copula_mat$tau'.\n",
-          "They are automatically replaced by 'bnlearn::nodes(DAG)', ",
+          "They are automatically replaced by the graph's node names, ",
           "assuming that the column and the rows of 'copula_mat$tau' ",
           "are in the right order.\n")
     }
@@ -119,6 +127,7 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
   }
 
   PCBN = list(DAG = DAG,
+              graph_backend = .graph_backend(DAG),
               order_hash = order_hash,
               copula_mat = copula_mat)
 
@@ -130,7 +139,7 @@ new_PCBN <- function(DAG, order_hash, copula_mat, verbose = 0)
 #'
 #' @export
 plot.PCBN <- function(x, ...){
-  plot(x$DAG)
+  .graph_plot(.prepare_graph(x$DAG, x$graph_backend), ...)
 }
 
 
@@ -141,14 +150,15 @@ plot.PCBN <- function(x, ...){
 #' @param print.orders if \code{"all"}, print all orders.
 #' If \code{"non-empty"}, this only prints the non-empty ones.
 #'
-#' @param ... other arguments, unused
+#' @param ... Arguments passed to the backend plotting function by \code{plot};
+#' unused by \code{print}.
 #'
 #' @returns No return value, both functions are called for side effects only.
 #'
 #' @examples
 #' DAG = create_empty_DAG(3)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
 #'
 #' order_hash = r2r::hashmap()
 #' order_hash[['U3']] = c("U1", "U2")
@@ -170,7 +180,8 @@ print.PCBN <- function(x, print.orders = "non-empty", ...){
   print(x$copula_mat)
 
   cat("Parental orderings:\n")
-  well_ordering = bnlearn::node.ordering(x$DAG)
+  DAG = .prepare_graph(x$DAG, x$graph_backend)
+  well_ordering = .graph_node_ordering(DAG)
 
   # Show the ordering for each node
   for (node in well_ordering) {

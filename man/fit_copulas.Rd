@@ -13,7 +13,8 @@ fit_copulas(
   familyMatrix = NULL,
   e,
   verbose = 1,
-  method = "mle"
+  method = "mle",
+  graph_backend = NULL
 )
 
 fit_all_orders(
@@ -22,7 +23,8 @@ fit_all_orders(
   familyset = c(1, 3, 4, 5, 6),
   e,
   score_metric = "BIC",
-  verbose = 1
+  verbose = 1,
+  graph_backend = NULL
 )
 }
 \arguments{
@@ -45,6 +47,12 @@ If \code{verbose >= 1}, print information about the simulation procedure.}
 
 \item{method}{indicates the estimation method (\code{"mle"} for maximum
 likelihood estimation or \code{"itau"} of inversion of Kendall's tau).}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 
 \item{score_metric}{name of the metric used to choose the best order.
 Possible choices are \code{logLik}, \code{AIC} and \code{BIC}.}
@@ -77,8 +85,8 @@ Fit all possible orders given a DAG
 \examples{
 
 DAG = create_empty_DAG(3)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
 
 order_hash = r2r::hashmap()
 order_hash[['U3']] = c("U1", "U2")

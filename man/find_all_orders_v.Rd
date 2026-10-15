@@ -4,7 +4,7 @@
 \alias{find_all_orders_v}
 \title{Finds all possible orders of node v given previous copula assignments}
 \usage{
-find_all_orders_v(DAG, v, order_hash)
+find_all_orders_v(DAG, v, order_hash, graph_backend = NULL)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph}
@@ -12,6 +12,12 @@ find_all_orders_v(DAG, v, order_hash)
 \item{v}{node}
 
 \item{order_hash}{hashmap of orders}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
 list of vectors containing all possible orders for v
@@ -21,15 +27,15 @@ Finds all possible orders of node v given previous copula assignments
 }
 \examples{
 DAG = create_empty_DAG(5)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U5')
+DAG = set_arc(DAG, 'U2', 'U5')
+DAG = set_arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U4', 'U5')
 
 # Start with empty order
 order_hash = r2r::hashmap()

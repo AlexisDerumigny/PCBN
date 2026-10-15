@@ -17,6 +17,7 @@
 #' an outgoing arc to \code{v} by the node \code{o}.
 #'
 #' @param DAG Directed Acyclic Graph.
+#' @inheritParams create_empty_DAG
 #' @param w,v nodes in DAG. \code{w} is assumed to be a parent of \code{v}.
 #' @param order_v partial order for node v.
 #' @param order_hash hashmap of parental orders
@@ -38,11 +39,11 @@
 #' @examples
 #'
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U4')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U4')
 #'
 #' order_hash = r2r::hashmap()
 #' order_hash[['U3']] = c("U1", "U2")
@@ -61,19 +62,25 @@
 #'
 #'
 #' @export
-possible_candidates <- function(DAG, v, order_v, order_hash, B_minus_O)
+possible_candidates <- function(DAG, v, order_v, order_hash, B_minus_O, graph_backend = NULL)
+{
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.possible_candidates(DAG, v, order_v, order_hash, B_minus_O))
+}
+
+.possible_candidates <- function(DAG, v, order_v, order_hash, B_minus_O)
 {
   Poss.Cand = c()
   # We check every element in `B_minus_O` to see whether it can be a
   # possible candidate.
   for (w in B_minus_O){
     # Independence
-    if (dsep_set(DAG, w, order_v)){
+    if (.dsep_set(DAG, w, order_v)){
       Poss.Cand = append(Poss.Cand, w)
-    } else if (!is.null(possible_candidate_incoming_arc(DAG, w, v,
+    } else if (!is.null(.possible_candidate_incoming_arc(DAG, w, v,
                                                         order_v, order_hash))){
       Poss.Cand = append(Poss.Cand, w)
-    } else if (!is.null(possible_candidate_outgoing_arc(DAG, w, v,
+    } else if (!is.null(.possible_candidate_outgoing_arc(DAG, w, v,
                                                         order_v, order_hash))){
       Poss.Cand = append(Poss.Cand, w)
     }
@@ -84,9 +91,15 @@ possible_candidates <- function(DAG, v, order_v, order_hash, B_minus_O)
 
 #' @rdname possible_candidates
 #' @export
-possible_candidate_incoming_arc <- function(DAG, w, v, order_v, order_hash)
+possible_candidate_incoming_arc <- function(DAG, w, v, order_v, order_hash, graph_backend = NULL)
 {
-  adj.mat = bnlearn::amat(DAG)
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.possible_candidate_incoming_arc(DAG, w, v, order_v, order_hash))
+}
+
+.possible_candidate_incoming_arc <- function(DAG, w, v, order_v, order_hash)
+{
+  adj.mat = .graph_adjacency(DAG)
 
   order_v_sorted = sort(order_v)
   # We inspect each node in the order
@@ -121,7 +134,7 @@ possible_candidate_incoming_arc <- function(DAG, w, v, order_v, order_hash)
       {
         # If all the pa_o_up_to_w are in order_v
         # we check whether the d-separation holds:
-        if (dsep_set(DAG = DAG, X = w,
+        if (.dsep_set(DAG = DAG, X = w,
                      Y = setdiff(order_v, pa_o_up_to_w_and_o),
                      Z = pa_o_up_to_w_and_o) ) {
           return(o)
@@ -136,8 +149,14 @@ possible_candidate_incoming_arc <- function(DAG, w, v, order_v, order_hash)
 #' @rdname possible_candidates
 #' @export
 #'
-possible_candidate_outgoing_arc <- function(DAG, w, v, order_v, order_hash){
-  adj.mat = bnlearn::amat(DAG)
+possible_candidate_outgoing_arc <- function(DAG, w, v, order_v, order_hash, graph_backend = NULL){
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.possible_candidate_outgoing_arc(DAG, w, v, order_v, order_hash))
+}
+
+.possible_candidate_outgoing_arc <- function(DAG, w, v, order_v, order_hash)
+{
+  adj.mat = .graph_adjacency(DAG)
 
   order_v_sorted = sort(order_v)
 
@@ -156,7 +175,7 @@ possible_candidate_outgoing_arc <- function(DAG, w, v, order_v, order_hash){
       if (identical(order_v_sorted, pa_w_up_to_o_and_o)){
         return(o)
       } else if ( all(pa_w_up_to_o %in% order_v) ){
-        if (dsep_set(DAG = DAG, X = w, Y = setdiff(order_v, pa_w_up_to_o_and_o),
+        if (.dsep_set(DAG = DAG, X = w, Y = setdiff(order_v, pa_w_up_to_o_and_o),
                      Z = pa_w_up_to_o_and_o)) {
           return(o)
         }

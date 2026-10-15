@@ -12,7 +12,8 @@
 \arguments{
 \item{x}{PCBN object}
 
-\item{...}{other arguments, unused}
+\item{...}{Arguments passed to the backend plotting function by \code{plot};
+unused by \code{print}.}
 
 \item{print.orders}{if \code{"all"}, print all orders.
 If \code{"non-empty"}, this only prints the non-empty ones.}
@@ -25,8 +26,8 @@ Print and plot PCBN objects
 }
 \examples{
 DAG = create_empty_DAG(3)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
 
 order_hash = r2r::hashmap()
 order_hash[['U3']] = c("U1", "U2")

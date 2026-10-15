@@ -4,7 +4,7 @@
 \alias{has_interfering_vstrucs}
 \title{Checks if graph has interfering v-structures}
 \usage{
-has_interfering_vstrucs(DAG, verbose = 0)
+has_interfering_vstrucs(DAG, verbose = 0, graph_backend = NULL)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph}
@@ -12,6 +12,12 @@ has_interfering_vstrucs(DAG, verbose = 0)
 \item{verbose}{if \code{verbose} is 0, do not print anything.
 If \code{verbose} is positive, print the name of the first node at which the
 interfering v-structure is found.}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
 \code{TRUE} if graph contains (at least) an interfering v-structure,
@@ -23,18 +29,18 @@ Checks if graph has interfering v-structures
 \examples{
 
 DAG = create_empty_DAG(5)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
 
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U2', 'U5')
+DAG = set_arc(DAG, 'U3', 'U5')
 
 # There is one interfering v-structure
 has_interfering_vstrucs(DAG, verbose = 1)
 
-DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
+DAG = set_arc(DAG, 'U1', 'U5')
 # Now no interfering v-structure
 has_interfering_vstrucs(DAG)
 

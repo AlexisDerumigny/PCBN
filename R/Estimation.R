@@ -19,6 +19,7 @@ default_envir <- function(){
 #'
 #' @param data data frame
 #' @param DAG Directed Acylic Graph
+#' @inheritParams create_empty_DAG
 #' @param v,w nodes of the graph
 #' @param cond_set vector of nodes of DAG. They should all be parents of v.
 #' They should be ordered from the smallest to the biggest.
@@ -43,8 +44,8 @@ default_envir <- function(){
 #' @examples
 #'
 #' DAG = create_empty_DAG(3)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
 #'
 #' order_hash = r2r::hashmap()
 #' order_hash[['U3']] = c("U1", "U2")
@@ -78,11 +79,19 @@ default_envir <- function(){
 #' @export
 #'
 BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
+                         verbose = 1, method, graph_backend = NULL)
+{
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.BiCopCondFit(data, DAG, v, w, cond_set, familyset, order_hash, e,
+                       verbose, method))
+}
+
+.BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
                          verbose = 1, method)
 {
   if (v > w){
     # We switch them. From now on, v < w
-    return (BiCopCondFit(data = data, DAG = DAG, v = w, w = v,
+    return (.BiCopCondFit(data = data, DAG = DAG, v = w, w = v,
                          cond_set = cond_set, familyset = familyset,
                          order_hash = order_hash, e = e, verbose = verbose,
                          method = method))
@@ -100,10 +109,10 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
   } else {
     # We look for the keys of the two conditional margins in the hash
     # We try to simplify the conditioning set first
-    cond_set_v = remove_CondInd(DAG, v, cond_set)
+    cond_set_v = .remove_CondInd(DAG, v, cond_set)
     v_key = e$keychain[[list(margin = v, cond = cond_set_v)]]
 
-    cond_set_w = remove_CondInd(DAG, w, cond_set)
+    cond_set_w = .remove_CondInd(DAG, w, cond_set)
     w_key = e$keychain[[list(margin = w, cond = cond_set_w)]]
 
     if (!is.null(v_key) && !is.null(w_key)){
@@ -124,10 +133,10 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
 
   # We now need to estimate the (conditional) copula
   # so we first get the two margins
-  v_given_cond = ComputeCondMargin(data, DAG, v, cond_set, familyset, order_hash,
+  v_given_cond = .ComputeCondMargin(data, DAG, v, cond_set, familyset, order_hash,
                                    e = e, verbose = verbose, method = method)
 
-  w_given_cond = ComputeCondMargin(data, DAG, w, cond_set, familyset, order_hash,
+  w_given_cond = .ComputeCondMargin(data, DAG, w, cond_set, familyset, order_hash,
                                    e = e, verbose = verbose, method = method)
 
   # We can now estimate the (simplified) conditional copula
@@ -168,10 +177,18 @@ BiCopCondFit <- function(data, DAG, v, w, cond_set, familyset, order_hash, e,
 #' @export
 #'
 ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
+                              e, verbose = 1, method, graph_backend = NULL)
+{
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.ComputeCondMargin(data, DAG, v, cond_set, familyset, order_hash, e,
+                            verbose, method))
+}
+
+.ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
                               e, verbose = 1, method)
 {
   # Remove as much elements as possible by conditional independence
-  cond_set = remove_CondInd(DAG, v, cond_set)
+  cond_set = .remove_CondInd(DAG, v, cond_set)
 
   # 1- We see if the result is already available ===============================
 
@@ -199,13 +216,13 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 
   # To compute we need C_{w,v|cond_set\{w}} and use the h-function
   # Pick a `w` in `cond_set` such that this copula is specified
-  cop_specified = find_cond_copula_specified(DAG = DAG, order_hash = order_hash,
+  cop_specified = .find_cond_copula_specified(DAG = DAG, order_hash = order_hash,
                                              v = v, cond = cond_set)
   w = cop_specified$w
   cond_set_minus_w = cop_specified$cond_set_minus_w
 
   # We try to simplify this new conditioning set
-  cond_set_minus_w_simpV = remove_CondInd(DAG, v, cond_set_minus_w)
+  cond_set_minus_w_simpV = .remove_CondInd(DAG, v, cond_set_minus_w)
 
 
   # 3- We find all necessary keys ==============================================
@@ -218,7 +235,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
   }
 
   # We try to simplify the conditioning set for w
-  cond_set_minus_w_simpW = remove_CondInd(DAG, w, cond_set_minus_w)
+  cond_set_minus_w_simpW = .remove_CondInd(DAG, w, cond_set_minus_w)
   w_key = e$keychain[[list(margin = w, cond = cond_set_minus_w_simpW)]]
   if (is.null(w_key)){
     stop("The conditional margin ", w, " | ", cond_set_minus_w_simpW,
@@ -246,7 +263,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 
   # If our copula is not in the hash map -> fit it!
   if (is.null(C_wv)){
-    C_wv = BiCopCondFit(data, DAG, w, v, cond_set_minus_w, familyset, order_hash,
+    C_wv = .BiCopCondFit(data, DAG, w, v, cond_set_minus_w, familyset, order_hash,
                         e = e, verbose = verbose, method = method)
   }
 
@@ -256,14 +273,14 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
   v_given_rest = e$margin_hash[[v_key]]
   w_given_rest = e$margin_hash[[w_key]]
   if (is.null(v_given_rest)){
-    v_given_rest <- ComputeCondMargin(data = data, DAG = DAG, v = v,
+    v_given_rest <- .ComputeCondMargin(data = data, DAG = DAG, v = v,
                                       cond_set = cond_set_minus_w,
                                       familyset = familyset,
                                       order_hash = order_hash, e = e, verbose = verbose,
                                       method = method)
   }
   if (is.null(w_given_rest)){
-    w_given_rest <- ComputeCondMargin(data = data, DAG = DAG, v = w,
+    w_given_rest <- .ComputeCondMargin(data = data, DAG = DAG, v = w,
                                       cond_set = cond_set_minus_w_simpW,
                                       familyset = familyset,
                                       order_hash = order_hash, e = e, verbose = verbose,
@@ -294,6 +311,7 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 #'
 #' @param data data frame
 #' @param DAG Directed Acyclic Graph
+#' @inheritParams create_empty_DAG
 #' @param order_hash hashmap of parental orders
 #' @param familyset vector of copula families
 #' @param familyMatrix matrix of families, with named rows and columns.
@@ -334,8 +352,8 @@ ComputeCondMargin <- function(data, DAG, v, cond_set, familyset, order_hash,
 #' @examples
 #'
 #' DAG = create_empty_DAG(3)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
 #'
 #' order_hash = r2r::hashmap()
 #' order_hash[['U3']] = c("U1", "U2")
@@ -379,15 +397,29 @@ fit_copulas <- function(data,
                         familyMatrix = NULL,
                         e,
                         verbose = 1,
+                        method = "mle", graph_backend = NULL) {
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.fit_copulas(data, DAG, order_hash, familyset, familyMatrix, e,
+                       verbose, method))
+}
+
+# Internal fitting calls reuse the graph validated at the public entry point.
+.fit_copulas <- function(data,
+                        DAG,
+                        order_hash,
+                        familyset = c(1, 3, 4, 5, 6),
+                        familyMatrix = NULL,
+                        e,
+                        verbose = 1,
                         method = "mle") {
-  tau = bnlearn::amat(DAG)
-  fam = bnlearn::amat(DAG)
+  tau = .graph_adjacency(DAG)
+  fam = .graph_adjacency(DAG)
 
   logLik = 0
   BIC = 0
   AIC = 0
 
-  node.names = bnlearn::node.ordering(DAG)
+  node.names = .graph_node_ordering(DAG)
   for (i_v in 1:length(node.names)) {
     v = node.names[i_v]
     parents = order_hash[[v]]
@@ -410,10 +442,10 @@ fit_copulas <- function(data,
         }
         if (is.null(familyMatrix)){
           # use family set
-          C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset = familyset,
+          C = .BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset = familyset,
                            order_hash, e = e, verbose = verbose, method = method)
         } else {
-          C = BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset = familyMatrix[w, v],
+          C = .BiCopCondFit(data, DAG, w, v, parents_up_to_w, familyset = familyMatrix[w, v],
                            order_hash, e = e, verbose = verbose, method = method)
         }
 
@@ -429,7 +461,7 @@ fit_copulas <- function(data,
   copula_mat = list(tau = tau, fam = fam)
   metrics = c(logLik = logLik, BIC = BIC, AIC = AIC)
 
-  PCBN = new_PCBN(
+  PCBN = .new_PCBN(
     DAG = DAG,
     order_hash = order_hash,
     copula_mat = copula_mat
@@ -446,8 +478,10 @@ fit_copulas <- function(data,
 #' @export
 #'
 fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
-                           e, score_metric = "BIC", verbose = 1)
+                           e, score_metric = "BIC", verbose = 1, graph_backend = NULL)
 {
+  DAG = .prepare_graph(DAG, graph_backend)
+
   all_metrics = c("logLik", "BIC", "AIC")
   if (! (score_metric %in% all_metrics) ){
     stop("Invalid 'score_metric': ", score_metric,
@@ -455,7 +489,7 @@ fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
          paste0(paste0("'", all_metrics, "'", sep = ""),
                 collapse = ", "), ".")
   }
-  all_orders = find_all_orders(DAG)
+  all_orders = .find_all_orders(DAG)
   fitted_list = list()
 
   metrics = matrix(nrow = length(all_orders), ncol = 3)
@@ -472,7 +506,7 @@ fit_all_orders <- function(data, DAG, familyset = c(1, 3, 4, 5, 6),
     }
 
     order = all_orders[[i_order]]
-    fitted_PCBN = fit_copulas(data, DAG, order, familyset, e = e,
+    fitted_PCBN = .fit_copulas(data, DAG, order, familyset, e = e,
                               verbose = verbose - 2)
 
     fitted_list[[i_order]] = fitted_PCBN

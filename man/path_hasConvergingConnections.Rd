@@ -5,14 +5,20 @@
 \alias{path_hasChords}
 \title{Checks a path for converging connections and chords.}
 \usage{
-path_hasConvergingConnections(DAG, path)
+path_hasConvergingConnections(DAG, path, graph_backend = NULL)
 
-path_hasChords(DAG, path)
+path_hasChords(DAG, path, graph_backend = NULL)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph.}
 
 \item{path}{character vector of nodes in the DAG forming a trail.}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
 \code{path_hasConvergingConnections} returns \code{TRUE}
@@ -26,20 +32,20 @@ Checks a path for converging connections and chords.
 \examples{
 
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U2')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U3', 'U4')
 path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U1', 'U4')
 path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # TRUE: has a chord
 
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U4', 'U3')
+DAG = set_arc(DAG, 'U1', 'U2')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U4', 'U3')
 path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') )
 # TRUE: has a converging connection
 path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE

@@ -24,10 +24,10 @@ Compress a given collection of B-sets
 }
 \examples{
 DAG = create_empty_DAG(5)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U4', 'U5')
 B_sets = find_B_sets_v(DAG, v = 'U4')
 
 B_sets_make_unique(B_sets)

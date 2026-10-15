@@ -31,21 +31,21 @@ Find all interfering v-structures for a given collection of B-sets
 }
 \examples{
 DAG = create_empty_DAG(7)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+DAG = set_arc(DAG, 'U1', 'U5')
+DAG = set_arc(DAG, 'U2', 'U5')
+DAG = set_arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U4', 'U5')
 
-DAG = bnlearn::set.arc(DAG, 'U1', 'U6')
-DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U7')
-DAG = bnlearn::set.arc(DAG, 'U5', 'U7')
+DAG = set_arc(DAG, 'U1', 'U6')
+DAG = set_arc(DAG, 'U5', 'U6')
+DAG = set_arc(DAG, 'U2', 'U7')
+DAG = set_arc(DAG, 'U5', 'U7')
 
 B_sets = find_B_sets_v(DAG, v = 'U5')
 find_interfering_v_from_B_sets(B_sets)
 
 # Adding the missing arc
-DAG = bnlearn::set.arc(DAG, 'U1', 'U7')
+DAG = set_arc(DAG, 'U1', 'U7')
 # Now no interfering v-structure
 B_sets = find_B_sets_v(DAG, v = 'U5')
 find_interfering_v_from_B_sets(B_sets)

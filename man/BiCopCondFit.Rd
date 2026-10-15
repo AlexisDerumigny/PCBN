@@ -19,7 +19,8 @@ BiCopCondFit(
   order_hash,
   e,
   verbose = 1,
-  method
+  method,
+  graph_backend = NULL
 )
 
 ComputeCondMargin(
@@ -31,7 +32,8 @@ ComputeCondMargin(
   order_hash,
   e,
   verbose = 1,
-  method
+  method,
+  graph_backend = NULL
 )
 }
 \arguments{
@@ -55,6 +57,12 @@ If \code{verbose >= 1}, print information about the fitting procedure.}
 
 \item{method}{indicates the estimation method (\code{"mle"} for maximum
 likelihood estimation or \code{"itau"} of inversion of Kendall's tau)}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
 \code{default_envir} returns an environment to be passed
@@ -73,8 +81,8 @@ by the conditional independencies of the graph
 \examples{
 
 DAG = create_empty_DAG(3)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
 
 order_hash = r2r::hashmap()
 order_hash[['U3']] = c("U1", "U2")

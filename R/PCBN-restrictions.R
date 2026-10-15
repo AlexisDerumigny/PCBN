@@ -6,6 +6,7 @@
 #' active cycles nor any interfering v-structures.
 #'
 #' @param DAG the DAG object
+#' @inheritParams create_empty_DAG
 #'
 #' @param verbose if \code{verbose} is \code{2}, details are printed.
 #' If \code{verbose} is \code{1}, details are printed only if an active cycle
@@ -29,17 +30,23 @@
 #' @examples
 #'
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U2')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U4')
 #'
 #' is_restrictedDAG(DAG)  # 1 active cycle
 #'
 #' @export
-is_restrictedDAG <- function(DAG, verbose = 2, check_both = TRUE)
+is_restrictedDAG <- function(DAG, verbose = 2, check_both = TRUE, graph_backend = NULL)
 {
-  has_vstructs = has_interfering_vstrucs(DAG, verbose = verbose)
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.is_restrictedDAG(DAG, verbose, check_both))
+}
+
+.is_restrictedDAG <- function(DAG, verbose = 2, check_both = TRUE)
+{
+  has_vstructs = .has_interfering_vstrucs(DAG, verbose = verbose)
   if (!has_vstructs && verbose >= 2){
     cat("No v-structures were found.\n")
   }
@@ -49,7 +56,7 @@ is_restrictedDAG <- function(DAG, verbose = 2, check_both = TRUE)
     return (FALSE)
   }
 
-  active_cycle = active_cycles(DAG = DAG, early.stopping = TRUE)
+  active_cycle = .active_cycles(DAG = DAG, early.stopping = TRUE)
   has_active_cycles = (length(active_cycle) > 0)
 
   if (has_active_cycles && verbose >= 1){
@@ -66,18 +73,38 @@ is_restrictedDAG <- function(DAG, verbose = 2, check_both = TRUE)
 # and if it satisfies the restrictions.
 # It has early stopping, so it returns FALSE if it is not a DAG
 # and only then does it check the restrictions.
-is_DAG_and_restricted <- function(DAG)
+is_DAG_and_restricted <- function(DAG, graph_backend = NULL)
 {
-  return (bnlearn::acyclic(DAG) &&
-            !has_interfering_vstrucs(DAG)&&
-            !has_active_cycles(DAG)
+  .graph_backend(DAG, graph_backend)
+
+  # Reject non-DAGs before preparation, which would raise an error for them.
+  is_dag = if (inherits(DAG, "bn")) {
+    .graph_acyclic(DAG)
+  } else {
+    .require_caugi()
+    caugi::is_dag(DAG)
+  }
+  if (!is_dag) {
+    return(FALSE)
+  }
+
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.is_DAG_and_restricted(DAG))
+}
+
+.is_DAG_and_restricted <- function(DAG)
+{
+  return (.graph_acyclic(DAG) &&
+            !.has_interfering_vstrucs(DAG)&&
+            !.has_active_cycles(DAG)
   )
 }
 
 
 #' Turns a general graph into a restricted graph.
 #'
-#' @param DAG a directed acyclic graph object, of class \code{bn}.
+#' @param DAG A bnlearn or caugi directed acyclic graph.
+#' @inheritParams create_empty_DAG
 #'
 #' @param active_cycles_list,all_B_sets respective outputs of the functions
 #' \code{\link{active_cycles}} and \code{\link{find_B_sets}}.
@@ -91,11 +118,11 @@ is_DAG_and_restricted <- function(DAG)
 #' @examples
 #' # DAG with an active cycle at node 5
 #' DAG = create_empty_DAG(5)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
-#' DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U2')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U5')
+#' DAG = set_arc(DAG, 'U4', 'U5')
 #'
 #' # Fixed graph has extra arcs 1 -> 5, 2 -> 5
 #' fixed_DAG = DAG_to_restrictedDAG(DAG)
@@ -103,35 +130,40 @@ is_DAG_and_restricted <- function(DAG)
 #'
 #' # DAG with an interfering v-structures node 3
 #' DAG = create_empty_DAG(5)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U4')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U5')
+#' DAG = set_arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U5')
 #'
 #' # Fixed graph has extra arc 1 -> 5
 #' fixed_DAG = DAG_to_restrictedDAG(DAG)
 #'
 #' @export
-DAG_to_restrictedDAG <- function(DAG) {
+DAG_to_restrictedDAG <- function(DAG, graph_backend = NULL) {
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.DAG_to_restrictedDAG(DAG))
+}
 
+.DAG_to_restrictedDAG <- function(DAG)
+{
   repeat {
 
     # Remove active cycles
-    active_cycles_list = active_cycles(DAG)
+    active_cycles_list = .active_cycles(DAG)
     hasActiveCycles = length(active_cycles_list) > 0
 
     if (hasActiveCycles) {
-      DAG = fix_active_cycles(DAG, active_cycles_list)
+      DAG = .fix_active_cycles(DAG, active_cycles_list)
     }
 
     # Remove interfering v-structures
-    res = find_B_sets(DAG)
+    res = .find_B_sets(DAG)
     hasInterferingVStructs = res$has_interfering_vstrucs
 
     if (hasInterferingVStructs) {
-      DAG = fix_interfering_vstructs(DAG, res)
+      DAG = .fix_interfering_vstructs(DAG, res)
     }
 
     if (!hasActiveCycles && !hasInterferingVStructs){
@@ -145,17 +177,22 @@ DAG_to_restrictedDAG <- function(DAG) {
 
 #' @rdname DAG_to_restrictedDAG
 #' @export
-fix_active_cycles <- function(DAG, active_cycles_list = NULL) {
+fix_active_cycles <- function(DAG, active_cycles_list = NULL, graph_backend = NULL) {
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.fix_active_cycles(DAG, active_cycles_list))
+}
 
+.fix_active_cycles <- function(DAG, active_cycles_list = NULL)
+{
   if (is.null(active_cycles_list)){
-    active_cycles_list = active_cycles(DAG)
+    active_cycles_list = .active_cycles(DAG)
   }
   # Point arcs from all nodes to the v-structure
   for (ac in active_cycles_list) {
     vstruc = ac[[1]]
     rest = ac[which(ac != vstruc)]
     for (node in rest) {
-      DAG = bnlearn::set.arc(DAG, node, vstruc)
+      DAG = .graph_set_arc(DAG, node, vstruc)
     }
   }
   return (DAG)
@@ -163,10 +200,15 @@ fix_active_cycles <- function(DAG, active_cycles_list = NULL) {
 
 #' @rdname DAG_to_restrictedDAG
 #' @export
-fix_interfering_vstructs <- function(DAG, all_B_sets = NULL){
+fix_interfering_vstructs <- function(DAG, all_B_sets = NULL, graph_backend = NULL){
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.fix_interfering_vstructs(DAG, all_B_sets))
+}
 
+.fix_interfering_vstructs <- function(DAG, all_B_sets = NULL)
+{
   if(is.null(all_B_sets)){
-    all_B_sets = find_B_sets(DAG)
+    all_B_sets = .find_B_sets(DAG)
   }
 
   for (v in all_B_sets$nodes_with_inter_vs) {
@@ -191,7 +233,7 @@ fix_interfering_vstructs <- function(DAG, all_B_sets = NULL){
         bq_j = rownames(B_sets)[j]
 
         for (node in nodes_in_i_not_in_j){
-          DAG = bnlearn::set.arc(DAG, node, bq_j)
+          DAG = .graph_set_arc(DAG, node, bq_j)
         }
       }
     }

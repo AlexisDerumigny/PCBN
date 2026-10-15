@@ -5,12 +5,18 @@
 \alias{find_B_sets_v}
 \title{Find all the B-sets of a given DAG}
 \usage{
-find_B_sets(DAG)
+find_B_sets(DAG, graph_backend = NULL)
 
-find_B_sets_v(DAG, v)
+find_B_sets_v(DAG, v, graph_backend = NULL)
 }
 \arguments{
-\item{DAG}{A bnlearn graph object}
+\item{DAG}{A bnlearn or caugi DAG.}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 
 \item{v}{node at which we want to find the B-sets}
 }
@@ -35,14 +41,14 @@ Find the B sets for a given node v
 }
 \examples{
 DAG = create_empty_DAG(6)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+DAG = set_arc(DAG, 'U1', 'U5')
+DAG = set_arc(DAG, 'U2', 'U5')
+DAG = set_arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U4', 'U5')
 
-DAG = bnlearn::set.arc(DAG, 'U1', 'U6')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U6')
-DAG = bnlearn::set.arc(DAG, 'U5', 'U6')
+DAG = set_arc(DAG, 'U1', 'U6')
+DAG = set_arc(DAG, 'U2', 'U6')
+DAG = set_arc(DAG, 'U5', 'U6')
 
 find_B_sets_v(DAG, v = 'U5')
 B_sets = find_B_sets(DAG)

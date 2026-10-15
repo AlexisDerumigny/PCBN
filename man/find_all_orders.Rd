@@ -4,10 +4,16 @@
 \alias{find_all_orders}
 \title{Finds all possible copula assignments given a DAG}
 \usage{
-find_all_orders(DAG)
+find_all_orders(DAG, graph_backend = NULL)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
 a list of hashmaps containing the possible orders
@@ -17,11 +23,11 @@ Finds all possible copula assignments given a DAG
 }
 \examples{
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
 all_orders = find_all_orders(DAG)
 length(all_orders)
 # 8 orders

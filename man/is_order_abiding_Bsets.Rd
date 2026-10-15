@@ -5,7 +5,7 @@
 \alias{is_order_abiding_Bsets_v}
 \title{Check whether a certain order abides by the B-sets}
 \usage{
-is_order_abiding_Bsets(DAG, order_hash)
+is_order_abiding_Bsets(DAG, order_hash, graph_backend = NULL)
 
 is_order_abiding_Bsets_v(B_sets, orderParents)
 }
@@ -13,6 +13,12 @@ is_order_abiding_Bsets_v(B_sets, orderParents)
 \item{DAG}{the considered DAG}
 
 \item{order_hash}{the hashmaps of parents ordering}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 
 \item{B_sets}{matrix of B-sets, assumed to be increasing.
 This can be the output of \code{\link{find_B_sets_v}}
@@ -30,10 +36,10 @@ Check whether a certain order abides by the B-sets
 \examples{
 
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U4')
 
 order_hash = r2r::hashmap()
 order_hash[['U3']] = c("U1", "U2")

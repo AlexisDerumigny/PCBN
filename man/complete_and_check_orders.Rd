@@ -4,12 +4,18 @@
 \alias{complete_and_check_orders}
 \title{Complete an order and check whether these are valid orders on parents sets}
 \usage{
-complete_and_check_orders(DAG, order_hash)
+complete_and_check_orders(DAG, order_hash, graph_backend = NULL)
 }
 \arguments{
 \item{DAG}{the DAG}
 
 \item{order_hash}{the hashmaps of orders}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 }
 \value{
 \code{NULL}. This function has only side-effects,
@@ -22,9 +28,9 @@ Complete an order and check whether these are valid orders on parents sets
 \examples{
 
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U3', 'U4')
 
 order_hash = r2r::hashmap()
 try({complete_and_check_orders(DAG, order_hash)})

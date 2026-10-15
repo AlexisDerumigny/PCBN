@@ -6,11 +6,32 @@
 \alias{possible_candidate_outgoing_arc}
 \title{Possible candidates to be added to a partial order}
 \usage{
-possible_candidates(DAG, v, order_v, order_hash, B_minus_O)
+possible_candidates(
+  DAG,
+  v,
+  order_v,
+  order_hash,
+  B_minus_O,
+  graph_backend = NULL
+)
 
-possible_candidate_incoming_arc(DAG, w, v, order_v, order_hash)
+possible_candidate_incoming_arc(
+  DAG,
+  w,
+  v,
+  order_v,
+  order_hash,
+  graph_backend = NULL
+)
 
-possible_candidate_outgoing_arc(DAG, w, v, order_v, order_hash)
+possible_candidate_outgoing_arc(
+  DAG,
+  w,
+  v,
+  order_v,
+  order_hash,
+  graph_backend = NULL
+)
 }
 \arguments{
 \item{DAG}{Directed Acyclic Graph.}
@@ -22,6 +43,12 @@ possible_candidate_outgoing_arc(DAG, w, v, order_v, order_hash)
 \item{B_minus_O}{this is the current B-set, without the elements of
 \code{order_v}, i.e. this is the set of elements that could be considered
 possible candidates.}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 
 \item{w, v}{nodes in DAG. \code{w} is assumed to be a parent of \code{v}.}
 }
@@ -52,11 +79,11 @@ an outgoing arc to \code{v} by the node \code{o}.
 \examples{
 
 DAG = create_empty_DAG(4)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U4')
 
 order_hash = r2r::hashmap()
 order_hash[['U3']] = c("U1", "U2")

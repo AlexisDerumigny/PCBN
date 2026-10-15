@@ -6,14 +6,20 @@
 \alias{fix_interfering_vstructs}
 \title{Turns a general graph into a restricted graph.}
 \usage{
-DAG_to_restrictedDAG(DAG)
+DAG_to_restrictedDAG(DAG, graph_backend = NULL)
 
-fix_active_cycles(DAG, active_cycles_list = NULL)
+fix_active_cycles(DAG, active_cycles_list = NULL, graph_backend = NULL)
 
-fix_interfering_vstructs(DAG, all_B_sets = NULL)
+fix_interfering_vstructs(DAG, all_B_sets = NULL, graph_backend = NULL)
 }
 \arguments{
-\item{DAG}{a directed acyclic graph object, of class \code{bn}.}
+\item{DAG}{A bnlearn or caugi directed acyclic graph.}
+
+\item{graph_backend}{Graph backend, either \code{"bnlearn"} or
+\code{"caugi"}. For functions accepting a graph, \code{NULL} (the
+default) uses its backend. An explicit backend converts the input graph.
+Creating a new graph defaults to \code{"bnlearn"}. The caugi backend
+requires the optional package \pkg{caugi} (version 1.3.0 or later).}
 
 \item{active_cycles_list, all_B_sets}{respective outputs of the functions
 \code{\link{active_cycles}} and \code{\link{find_B_sets}}.
@@ -28,11 +34,11 @@ Turns a general graph into a restricted graph.
 \examples{
 # DAG with an active cycle at node 5
 DAG = create_empty_DAG(5)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U4', 'U5')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U1', 'U2')
+DAG = set_arc(DAG, 'U2', 'U4')
+DAG = set_arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U4', 'U5')
 
 # Fixed graph has extra arcs 1 -> 5, 2 -> 5
 fixed_DAG = DAG_to_restrictedDAG(DAG)
@@ -40,12 +46,12 @@ fixed_DAG = DAG_to_restrictedDAG(DAG)
 
 # DAG with an interfering v-structures node 3
 DAG = create_empty_DAG(5)
-DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+DAG = set_arc(DAG, 'U1', 'U3')
+DAG = set_arc(DAG, 'U1', 'U4')
+DAG = set_arc(DAG, 'U2', 'U3')
+DAG = set_arc(DAG, 'U2', 'U5')
+DAG = set_arc(DAG, 'U3', 'U4')
+DAG = set_arc(DAG, 'U3', 'U5')
 
 # Fixed graph has extra arc 1 -> 5
 fixed_DAG = DAG_to_restrictedDAG(DAG)

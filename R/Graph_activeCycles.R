@@ -1,6 +1,7 @@
 #' Checks if a graph contains active cycles
 #'
 #' @param DAG Directed Acyclic
+#' @inheritParams create_empty_DAG
 #'
 #' @param early.stopping if \code{TRUE}, stop at the first active cycle that is
 #' found.
@@ -30,29 +31,29 @@
 #' @examples
 #'
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U4')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U4')
 #'
 #' active_cycles(DAG)  # no active cycle
 #'
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U2')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U4')
 #'
 #' active_cycles(DAG)  # 1 active cycle
 #'
 #' DAG = create_empty_DAG(5)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U5')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U5')
+#' DAG = set_arc(DAG, 'U1', 'U2')
+#' DAG = set_arc(DAG, 'U1', 'U3')
+#' DAG = set_arc(DAG, 'U2', 'U4')
+#' DAG = set_arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U2', 'U5')
+#' DAG = set_arc(DAG, 'U3', 'U5')
 #'
 #' active_cycles(DAG)  # 2 active cycles
 #' active_cycles(DAG, early.stopping = TRUE)  # The first active cycle
@@ -71,18 +72,24 @@
 #' plot(fixedDAG)
 #'
 #' @export
-active_cycles <- function(DAG, early.stopping = FALSE)
+active_cycles <- function(DAG, early.stopping = FALSE, graph_backend = NULL)
 {
-  node.names = bnlearn::nodes(DAG)
-  adj.mat = bnlearn::amat(DAG)
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.active_cycles(DAG, early.stopping))
+}
+
+.active_cycles <- function(DAG, early.stopping = FALSE)
+{
+  node.names = .graph_nodes(DAG)
+  adj.mat = .graph_adjacency(DAG)
   active_cycle_list = list()
 
   # Turn DAG into undirected graph
-  DAG_igraph = igraph::as_undirected(bnlearn::as.igraph(DAG))
+  DAG_igraph = igraph::as_undirected(.graph_as_igraph(DAG))
 
   for (v in node.names){
-    parents = DAG$nodes[[v]]$parent
-    children = DAG$nodes[[v]]$children
+    parents = .graph_parents(DAG, v)
+    children = .graph_children(DAG, v)
     # We look for active cycles of the form w -> v <- z
     # where there is a trail between w and z that does not involve v
     # such that this trail has no converging connection and no chords
@@ -123,8 +130,8 @@ active_cycles <- function(DAG, early.stopping = FALSE)
         for (i in 1:length(paths)){
           names_path_nodes = names(paths[[i]])
 
-          if (path_hasConvergingConnections(DAG, names_path_nodes) ||
-              path_hasChords(DAG, names_path_nodes)){
+          if (.path_hasConvergingConnections(DAG, names_path_nodes) ||
+              .path_hasChords(DAG, names_path_nodes)){
             next # not an active cycle
           } # we now know that this is an active cycle
 
@@ -147,6 +154,7 @@ active_cycles <- function(DAG, early.stopping = FALSE)
 #' Checks a path for converging connections and chords.
 #'
 #' @param DAG Directed Acyclic Graph.
+#' @inheritParams create_empty_DAG
 #' @param path character vector of nodes in the DAG forming a trail.
 #'
 #' @return \code{path_hasConvergingConnections} returns \code{TRUE}
@@ -159,28 +167,34 @@ active_cycles <- function(DAG, early.stopping = FALSE)
 #' @examples
 #'
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U3', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U2')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U3', 'U4')
 #' path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 #' path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 #'
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U4')
+#' DAG = set_arc(DAG, 'U1', 'U4')
 #' path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 #' path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # TRUE: has a chord
 #'
 #' DAG = create_empty_DAG(4)
-#' DAG = bnlearn::set.arc(DAG, 'U1', 'U2')
-#' DAG = bnlearn::set.arc(DAG, 'U2', 'U3')
-#' DAG = bnlearn::set.arc(DAG, 'U4', 'U3')
+#' DAG = set_arc(DAG, 'U1', 'U2')
+#' DAG = set_arc(DAG, 'U2', 'U3')
+#' DAG = set_arc(DAG, 'U4', 'U3')
 #' path_hasConvergingConnections(DAG, c('U1', 'U2', 'U3', 'U4') )
 #' # TRUE: has a converging connection
 #' path_hasChords(DAG, c('U1', 'U2', 'U3', 'U4') ) # FALSE
 #'
 #' @export
-path_hasConvergingConnections <- function(DAG, path){
-  node.names = bnlearn::nodes(DAG)
-  adj.mat = bnlearn::amat(DAG)
+path_hasConvergingConnections <- function(DAG, path, graph_backend = NULL){
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.path_hasConvergingConnections(DAG, path))
+}
+
+.path_hasConvergingConnections <- function(DAG, path)
+{
+  node.names = .graph_nodes(DAG)
+  adj.mat = .graph_adjacency(DAG)
   N = length(path)
 
   for (i in 2:(N - 1)){
@@ -195,9 +209,15 @@ path_hasConvergingConnections <- function(DAG, path){
 
 #' @rdname path_hasConvergingConnections
 #' @export
-path_hasChords <- function(DAG, path){
-  node.names = bnlearn::nodes(DAG)
-  adj.mat = bnlearn::amat(DAG)
+path_hasChords <- function(DAG, path, graph_backend = NULL){
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.path_hasChords(DAG, path))
+}
+
+.path_hasChords <- function(DAG, path)
+{
+  node.names = .graph_nodes(DAG)
+  adj.mat = .graph_adjacency(DAG)
   N = length(path)
 
   for (i in 1:(N - 2)){
@@ -216,16 +236,28 @@ path_hasChords <- function(DAG, path){
 #' @rdname active_cycles
 #' @export
 #'
-has_active_cycles = function(DAG){
-  return (length(active_cycles(DAG, early.stopping = TRUE)) > 0)
+has_active_cycles = function(DAG, graph_backend = NULL){
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.has_active_cycles(DAG))
+}
+
+.has_active_cycles <- function(DAG)
+{
+  return (length(.active_cycles(DAG, early.stopping = TRUE)) > 0)
 }
 
 
 #' @rdname active_cycles
 #' @export
 #'
-plot_active_cycles = function(DAG, active_cycles_list = NULL){
-  if (!requireNamespace("Rgraphviz", quietly = TRUE)) {
+plot_active_cycles = function(DAG, active_cycles_list = NULL, graph_backend = NULL){
+  DAG = .prepare_graph(DAG, graph_backend)
+  return (.plot_active_cycles(DAG, active_cycles_list))
+}
+
+.plot_active_cycles <- function(DAG, active_cycles_list = NULL)
+{
+  if (inherits(DAG, "bn") && !requireNamespace("Rgraphviz", quietly = TRUE)) {
     warning("The package 'Rgraphviz' needs to be installed for this function ",
             "to work.\nYou can download it using the following command:\n",
             "install.packages('BiocManager')\nBiocManager::install()\n",
@@ -233,7 +265,7 @@ plot_active_cycles = function(DAG, active_cycles_list = NULL){
     return (invisible())
   }
   if (is.null(active_cycles_list)){
-    active_cycles_list = active_cycles(DAG)
+    active_cycles_list = .active_cycles(DAG)
   }
 
   if (length(active_cycles_list)==0){
@@ -241,7 +273,7 @@ plot_active_cycles = function(DAG, active_cycles_list = NULL){
     return (invisible())
   }
 
-  adj.mat = bnlearn::amat(DAG)
+  adj.mat = .graph_adjacency(DAG)
   L = length(active_cycles_list)
   for (i in 1:L){
     if (i > 1){
@@ -273,7 +305,7 @@ plot_active_cycles = function(DAG, active_cycles_list = NULL){
         df = rbind(df, data.frame(list(from=node2, to=node1)))
       }
     }
-    bnlearn::graphviz.plot(DAG, highlight = list(arcs = df, col = "red", lwd = 3))
+    .graph_plot_highlight(DAG, df)
   }
 }
 
